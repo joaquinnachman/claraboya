@@ -2,6 +2,7 @@
 <html lang="es-AR">
 <head>
 <meta charset="UTF-8">
+<script>!function(d,w){var s,a,q=/[?&]app=1(&|$)/.test(location.search);try{s=w.sessionStorage;if(q)s.setItem('cbApp','1')}catch(e){}a=d.hasAttribute('data-app')||q||!!w.Capacitor||!!(s&&s.getItem('cbApp')==='1');try{a=a||matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){}if(!a)return;d.setAttribute('data-app','');var st=document.createElement('style');st.textContent='@view-transition{navigation:auto}';document.head.appendChild(st);function k(e,A){var t=s&&s.getItem('cbNav');if(!t&&A&&A.navigationType==='traverse'&&A.from&&A.entry&&A.entry.index<A.from.index)t='back';return t||'forward'}w.addEventListener('pageswap',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,e.activation))});w.addEventListener('pagereveal',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,w.navigation&&navigation.activation));try{s.removeItem('cbNav')}catch(x){}})}(document.documentElement,window)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Armador de setlists · Herramientas de producción | Claraboya Estudio</title>
 <meta name="description" content="Armador de setlists para bandas: repertorio con tonalidad, BPM y energía, orden automático, avisos de tonalidades repetidas y modo show con letra y metrónomo. Gratis, de Claraboya Estudio.">
@@ -160,6 +161,8 @@
 <meta name="apple-mobile-web-app-title" content="Claraboya">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <script src="../../herramientas/assets/pwa.js" defer></script>
+<link rel="stylesheet" href="../assets/app.css">
+<script src="../assets/app.js" defer></script>
 </head>
 <body class="tool" data-tool="armador-de-setlists">
 <a class="skip" href="#app">Ir a la herramienta</a>

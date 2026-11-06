@@ -2,6 +2,7 @@
 <html lang="es-AR">
 <head>
 <meta charset="UTF-8">
+<script>!function(d,w){var s,a,q=/[?&]app=1(&|$)/.test(location.search);try{s=w.sessionStorage;if(q)s.setItem('cbApp','1')}catch(e){}a=d.hasAttribute('data-app')||q||!!w.Capacitor||!!(s&&s.getItem('cbApp')==='1');try{a=a||matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){}if(!a)return;d.setAttribute('data-app','');var st=document.createElement('style');st.textContent='@view-transition{navigation:auto}';document.head.appendChild(st);function k(e,A){var t=s&&s.getItem('cbNav');if(!t&&A&&A.navigationType==='traverse'&&A.from&&A.entry&&A.entry.index<A.from.index)t='back';return t||'forward'}w.addEventListener('pageswap',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,e.activation))});w.addEventListener('pagereveal',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,w.navigation&&navigation.activation));try{s.removeItem('cbNav')}catch(x){}})}(document.documentElement,window)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Afinador online · Herramientas de producción | Claraboya Estudio</title>
 <meta name="description" content="Afinador online gratis para guitarra, bajo, ukelele, charango, violín y más, con afinaciones alternativas y modo cromático. Usa el micrófono y no graba nada. También como app para Android.">
@@ -56,6 +57,8 @@
 <meta name="apple-mobile-web-app-title" content="Claraboya">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <script src="../../herramientas/assets/pwa.js" defer></script>
+<link rel="stylesheet" href="../assets/app.css">
+<script src="../assets/app.js" defer></script>
 </head>
 <body class="tool" data-tool="afinador">
 <a class="skip" href="#app">Ir a la herramienta</a>
@@ -97,12 +100,12 @@
   <section class="dl" id="descargar" aria-labelledby="dl-t">
     <div class="dl__text">
       <p class="dl__kicker">App para Android</p>
-      <h2 class="dl__title" id="dl-t">Llevalo en el celular, sin internet</h2>
-      <p>El mismo afinador como app, para tenerlo a mano en la sala o en el escenario aunque no haya señal.</p>
-      <p class="dl__meta">Versión 1.0 · Android 5.1 o superior · 4,3 MB · Gratis</p>
+      <h2 class="dl__title" id="dl-t">Llevalo en la app, sin internet</h2>
+      <p>El afinador viene en la app de Claraboya, junto con el metrónomo y las demás herramientas, para tenerlo a mano en la sala o en el escenario aunque no haya señal.</p>
+      <p class="dl__meta">Versión {{APP_VERSION}} · Android 5.1 o superior · {{APP_SIZE}} · Gratis</p>
     </div>
     <div class="dl__side">
-      <a class="btn primary big" href="../../descargas/claraboya-afinador.apk" download>
+      <a class="btn primary big" href="../../descargas/claraboya.apk">
         <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
         Descargar el .apk
       </a>
@@ -111,7 +114,7 @@
         <ol>
           <li>Descargá el archivo desde el celular o la tablet.</li>
           <li>Abrilo. Android te va a pedir permiso para instalar apps desde tu navegador: aceptalo.</li>
-          <li>Tocá Instalar y abrí el afinador.</li>
+          <li>Tocá Instalar y abrí Claraboya.</li>
         </ol>
         <p>No está en Google Play: por eso Android avisa antes de instalarlo. En iPhone usá la versión online de esta página.</p>
       </details>

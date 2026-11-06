@@ -2,6 +2,7 @@
 <html lang="es-AR">
 <head>
 <meta charset="UTF-8">
+<script>!function(d,w){var s,a,q=/[?&]app=1(&|$)/.test(location.search);try{s=w.sessionStorage;if(q)s.setItem('cbApp','1')}catch(e){}a=d.hasAttribute('data-app')||q||!!w.Capacitor||!!(s&&s.getItem('cbApp')==='1');try{a=a||matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){}if(!a)return;d.setAttribute('data-app','');var st=document.createElement('style');st.textContent='@view-transition{navigation:auto}';document.head.appendChild(st);function k(e,A){var t=s&&s.getItem('cbNav');if(!t&&A&&A.navigationType==='traverse'&&A.from&&A.entry&&A.entry.index<A.from.index)t='back';return t||'forward'}w.addEventListener('pageswap',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,e.activation))});w.addEventListener('pagereveal',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,w.navigation&&navigation.activation));try{s.removeItem('cbNav')}catch(x){}})}(document.documentElement,window)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Herramientas de producción para músicos | Claraboya Estudio</title>
 <meta name="description" content="Nueve herramientas gratis para músicos, del tema al escenario: matriz de acordes, progresiones por clima, hoja de ruta, rider técnico, setlists, calentamiento vocal, afinador, metrónomo y buscador de BPM. Y apps para Android. De Claraboya Estudio.">
@@ -29,6 +30,8 @@
 <meta name="apple-mobile-web-app-title" content="Claraboya">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <script src="../herramientas/assets/pwa.js" defer></script>
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/app.js" defer></script>
 </head>
 <body class="hub" data-tool="herramientas">
 <a class="skip" href="#hub">Ir a las herramientas</a>
@@ -184,13 +187,12 @@
         </article>
         <article class="app-card">
           <span class="hub-card__num">App</span>
-          <h3 class="hub-card__name">Claraboya Afinador</h3>
-          <span class="hub-card__short">El afinador del estudio, sin internet</span>
-          <ul class="hub-card__feats"><li>14 instrumentos y modo cromático</li><li>Afinaciones alternativas y propias</li><li>La de 432 a 444 Hz y cejilla</li></ul>
-          <p class="app-card__meta">Versión 1.0 · Android 5.1 o superior · 4,3 MB</p>
+          <h3 class="hub-card__name">Claraboya para Android</h3>
+          <span class="hub-card__short">Las nueve herramientas en una app</span>
+          <ul class="hub-card__feats"><li>Afinador y metrónomo a un toque</li><li>Anda sin internet</li><li>Guarda tus archivos en Descargas</li></ul>
+          <p class="app-card__meta">Versión {{APP_VERSION}} · Android 5.1 o superior · {{APP_SIZE}}</p>
           <div class="app-card__actions">
-            <a class="btn primary" href="../descargas/claraboya-afinador.apk" download>Descargar .apk</a>
-            <a class="btn ghost" href="afinador/">Usar online</a>
+            <a class="btn primary" href="../descargas/claraboya.apk">Descargar .apk</a>
           </div>
         </article>
         <article class="app-card">
@@ -198,7 +200,7 @@
           <h3 class="hub-card__name">AirMix</h3>
           <span class="hub-card__short">Tu consola Behringer desde la tablet</span>
           <ul class="hub-card__feats"><li>Para XR12, XR16, XR18 y X32, por wifi</li><li>Faders, mutes, paneo, ecualización y dinámica</li><li>Envíos de monitor, escenas y medidores</li></ul>
-          <p class="app-card__meta" data-release="joaquinnachman/airmix" data-asset="AirMix.apk">Versión <span data-release-version>{{AIRMIX_VERSION}}</span> · Android 8 o superior · <span data-release-size>{{AIRMIX_SIZE}}</span><br>No está afiliada a Behringer ni a Music Tribe.</p>
+          <p class="app-card__meta">Versión {{AIRMIX_VERSION}} · Android 8 o superior · {{AIRMIX_SIZE}}<br>No está afiliada a Behringer ni a Music Tribe.</p>
           <div class="app-card__actions">
             <a class="btn primary" href="../descargas/airmix.apk" download>Descargar .apk</a>
           </div>

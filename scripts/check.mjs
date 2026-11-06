@@ -34,7 +34,7 @@ const redirects = (await fs.readFile(path.join(OUT, '_redirects'), 'utf8').catch
 const files = await walk(OUT);
 for (const file of files) {
   const ext = path.extname(file);
-  if (!['.html', '.js', '.css', '.webmanifest', '.json'].includes(ext)) continue;
+  if (!['.html', '.js', '.css', '.webmanifest', '.json'].includes(ext) && path.basename(file) !== '_redirects') continue;
   const text = await fs.readFile(file, 'utf8');
   const rel = '/' + path.relative(OUT, file).split(path.sep).join('/');
   const leftover = text.match(/\{\{[A-Z_]+\}\}/);

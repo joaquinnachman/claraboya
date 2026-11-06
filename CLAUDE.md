@@ -1,35 +1,48 @@
 # Claraboya — instrucciones para trabajar en este repo
 
 Web de Claraboya Estudio (claraboyaestudio.netlify.app) y sus herramientas gratis para músicos.
-Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web instalable y (próximamente) las apps de Android e iOS.
+Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web instalable y la APK de Android (iOS más adelante).
 
 ## Regla principal: una sola versión, todo se actualiza junto
-- La versión está en `VERSION` (formato `7.0.0`). **Todo cambio publicado sube la versión**:
-  - arreglos y ajustes chicos: el último número (7.0.0 → 7.0.1);
-  - herramienta nueva o función nueva: el del medio (7.0.1 → 7.1.0);
-  - cambio grande de la web o de las apps: el primero.
-- Cada versión se anota en `CAMBIOS.md`, arriba de todo, en castellano rioplatense y sin tecnicismos.
+- La versión está en `VERSION` (formato `7.1.0`) y vale para la web, la web instalada y la APK.
+- **Los cambios se juntan y salen los lunes.** Se trabaja siempre en la rama `proxima`; nunca se sube directo a `main`.
+- Cada cambio se anota en `CAMBIOS.md`, debajo de `## Próxima versión`, en castellano rioplatense y sin tecnicismos.
+- Si el cambio es una herramienta o función nueva, subir el número del medio en `VERSION` (7.1.0 → 7.2.0), una sola vez por tanda.
+  Si no se toca, al publicar se sube solo el último número.
 - Nunca escribir el número de versión a mano en las páginas: se usa `{{VERSION}}` y lo completa `scripts/build.mjs`.
-- Cuando existan las apps de Android e iOS, salen de este mismo repo y con este mismo número.
 
 ## Cómo se publica
-- Netlify está conectado a la rama `main`: cada push publica solo (corre `node scripts/build.mjs && node scripts/check.mjs`).
-- `web/` es el código fuente; `dist/` se genera y no se sube.
-- Antes de subir: `node scripts/build.mjs && node scripts/check.mjs` tiene que dar ok.
-- Probar en tamaño celular (375 px) y en compu, sin errores en la consola.
+- `Publicar versión` (`.github/workflows/publicar.yml`), lunes 9:00 de Argentina, o a mano desde Actions:
+  1. cierra la versión (`scripts/cerrar-version.mjs`): número final y título en `CAMBIOS.md`;
+  2. arma la APK oficial y crea el Release `vX.Y.Z` (marcado como último);
+  3. pasa `proxima` a `main` y Netlify publica la web.
+- La web toma, al publicarse, la AirMix vigente en ese momento (`_redirects` y textos), así cambia una vez por semana con todo lo demás.
+- Cada push a `proxima` arma una APK de prueba (Release `prueba`, preliminar). No llega a la web ni a nadie más.
+- Antes de subir: `node scripts/build.mjs && node scripts/check.mjs && node scripts/build-app.mjs` tiene que dar ok.
+- Probar en tamaño celular (375 px), tablet y compu, en la web común y en modo app (`?app=1`), sin errores en la consola.
 
 ## Qué hay
 - `web/index.html` + `style.css` + `main.js`: la página del estudio.
 - `web/herramientas/`: el selector y las 9 herramientas (01 Matriz de acordes … 09 Buscador de BPM).
-  - `assets/tools.js`: guardado local, copias, avisos y parámetros entre herramientas.
-  - `assets/pwa.js`: service worker, botón Instalar y versiones en vivo de las apps.
+  - `assets/tools.js`: guardado local, copias, avisos, parámetros entre herramientas y `CB.saveFile` (en la APK guarda en Descargas/Claraboya).
+  - `assets/pwa.js`: service worker y botón Instalar de la web.
+  - `assets/app.js` + `app.css`: la interfaz de app (barra de arriba, barra de abajo, transiciones, botón atrás, pantalla encendida, aviso de versión nueva). Solo actúa con `<html data-app>`.
   - `assets/vendor/`: librerías servidas desde la web (React, jsPDF, html2canvas). Nada de CDNs: tiene que andar sin internet.
+- `web/app/` (Inicio) y `web/app/estudio/` (Estudio): pantallas propias de la app.
+- Modo app: lo activa un script chico en el `<head>` de cada página si es la APK, la web instalada o `?app=1`.
+  En modo app se esconden cabecera, pie, textos de presentación y bloques de descarga de la web.
 - `web/sw.js`: service worker. Con internet pide todo a la red; sin internet sirve la copia guardada.
-- `web/descargas/`: .apk propias. AirMix no está acá: `_redirects` la manda al último Release de `joaquinnachman/airmix`.
+- `app/`: la APK (Capacitor 6). `scripts/build-app.mjs` arma `app/www` desde `dist/`:
+  marca las páginas con `data-app data-native` y cambia los links `carpeta/` por `carpeta/index.html`
+  (el servidor interno de la APK no abre carpetas). En JS, para links entre herramientas usar `CB.toolUrl()`.
+  - `app/native/MainActivity.java`: puente `window.ClaraboyaNativo` (guardar archivos, pantalla encendida, vibrar).
+  - `app/keystore/claraboya.jks`: llave de firma, pública (mismo criterio que AirMix). No cambiarla: si cambia, hay que desinstalar para actualizar.
+- La APK la arma GitHub Actions (`.github/workflows/app.yml`); no hay SDK de Android local.
 
 ## AirMix
 - Vive en su propio repo (`joaquinnachman/airmix`, apps nativas Kotlin + Swift). No se copia acá.
-- La web toma de su último Release la descarga, la versión y el peso. Con publicar una versión de AirMix alcanza.
+- En la app aparece entre las herramientas, pero se baja aparte (es otra app).
+- La web toma su último Release al publicarse cada lunes: descarga, versión y peso.
 
 ## Lo que NO va acá
 - Herramientas internas del estudio (presupuestos, luces, disponibilidad semanal, respuestas a clientes): quedan afuera.

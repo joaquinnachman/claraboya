@@ -1,0 +1,80 @@
+name: Publicar versión
+
+# Los lunes a las 9 (hora de Argentina) sale todo lo que se juntó en "proxima":
+# 1. se fija el número de versión y se cierra la entrada de CAMBIOS.md,
+# 2. se arma la APK oficial y se publica como Release,
+# 3. "proxima" pasa a "main" y Netlify publica la web (que ya apunta a la APK nueva y a la AirMix vigente).
+# También se puede correr a mano desde la pestaña Actions ("Run workflow").
+on:
+  schedule:
+    - cron: '0 12 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publicar
+  cancel-in-progress: false
+
+jobs:
+  preparar:
+    runs-on: ubuntu-latest
+    outputs:
+      publicar: ${{ steps.prep.outputs.publicar }}
+      version: ${{ steps.prep.outputs.version }}
+      sha: ${{ steps.prep.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: proxima
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cerrar la versión
+        id: prep
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          # si alguien arregló algo directo en main, se trae primero
+          git merge --no-edit origin/main
+          if [ "$(git rev-list --count origin/main..HEAD)" = "0" ]; then
+            echo "Nada nuevo para publicar esta semana."
+            echo "publicar=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          node scripts/cerrar-version.mjs "$(git show origin/main:VERSION)"
+          V=$(cat VERSION)
+          git add VERSION CAMBIOS.md
+          git commit -m "Versión $V" || true
+          git push origin HEAD:proxima
+          echo "publicar=true" >> "$GITHUB_OUTPUT"
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  apk:
+    needs: preparar
+    if: needs.preparar.outputs.publicar == 'true'
+    uses: ./.github/workflows/app.yml
+    with:
+      oficial: true
+      ref: ${{ needs.preparar.outputs.sha }}
+    secrets: inherit
+
+  web:
+    needs: [preparar, apk]
+    if: needs.preparar.outputs.publicar == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preparar.outputs.sha }}
+          fetch-depth: 0
+      - name: Pasar a main (Netlify publica solo)
+        run: git push origin ${{ needs.preparar.outputs.sha }}:refs/heads/main
+      - name: Resumen
+        run: echo "### Claraboya ${{ needs.preparar.outputs.version }} publicada" >> "$GITHUB_STEP_SUMMARY"

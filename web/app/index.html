@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es-AR" data-app>
+<head>
+<meta charset="UTF-8">
+<script>!function(d,w){var s,a,q=/[?&]app=1(&|$)/.test(location.search);try{s=w.sessionStorage;if(q)s.setItem('cbApp','1')}catch(e){}a=d.hasAttribute('data-app')||q||!!w.Capacitor||!!(s&&s.getItem('cbApp')==='1');try{a=a||matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){}if(!a)return;d.setAttribute('data-app','');var st=document.createElement('style');st.textContent='@view-transition{navigation:auto}';document.head.appendChild(st);function k(e,A){var t=s&&s.getItem('cbNav');if(!t&&A&&A.navigationType==='traverse'&&A.from&&A.entry&&A.entry.index<A.from.index)t='back';return t||'forward'}w.addEventListener('pageswap',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,e.activation))});w.addEventListener('pagereveal',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,w.navigation&&navigation.activation));try{s.removeItem('cbNav')}catch(x){}})}(document.documentElement,window)</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Claraboya</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/png" sizes="32x32" href="../img/icon-32.png">
+<link rel="apple-touch-icon" href="../img/app-180.png">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="preload" href="../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../herramientas/assets/tools.css">
+<link rel="stylesheet" href="../herramientas/assets/app.css">
+<script src="../herramientas/assets/tools.js" defer></script>
+<script src="../herramientas/assets/pwa.js" defer></script>
+<script src="../herramientas/assets/app.js" defer></script>
+</head>
+<body class="cb-home" data-tool="inicio" data-app-page="inicio">
+<main class="home">
+  <div class="home__top"><img class="home__logo" src="../img/cuadros-256.png" alt="" width="34" height="34"><span class="home__brand">Claraboya</span></div>
+  <h1 class="home__hello" data-cb-hello>Hola</h1>
+  <p class="home__sub">¿Qué hacemos hoy?</p>
+
+  <div class="cb-update" data-cb-update hidden>
+    <p>Hay una versión nueva de la app: <b data-cb-update-v></b></p>
+    <a class="btn" href="#">Bajarla</a>
+  </div>
+
+  <p class="home__label">A mano</p>
+  <div class="quick">
+    <a class="quick__tile" href="../herramientas/afinador/" style="--i:0"><svg aria-hidden="true"><use href="#i-afinador"/></svg><span class="quick__name">Afinador</span></a>
+    <a class="quick__tile" href="../herramientas/metronomo/" style="--i:1"><svg aria-hidden="true"><use href="#i-metronomo"/></svg><span class="quick__name">Metrónomo</span></a>
+    <a class="quick__tile" href="../herramientas/buscador-de-bpm/" style="--i:2"><svg aria-hidden="true"><use href="#i-bpm"/></svg><span class="quick__name">BPM de un tema</span></a>
+  </div>
+
+  <a class="resume" href="#" data-cb-resume hidden style="margin-top:12px;--i:3">
+    <span class="tile__icon"><svg aria-hidden="true"><use href="#i-ruta"/></svg></span>
+    <span><small>Seguí donde quedaste</small><b data-cb-resume-name></b></span>
+    <span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span>
+  </a>
+
+  <p class="home__label">Componer</p>
+  <div class="tiles">
+      <a class="tile" href="../herramientas/matriz-de-acordes/" style="--i:4"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-matriz"/></svg></span><span class="tile__name">Matriz de acordes</span><span class="tile__short">La canción, sección por sección</span></a>
+      <a class="tile" href="../herramientas/brujula-armonica/" style="--i:5"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-brujula"/></svg></span><span class="tile__name">Brújula armónica</span><span class="tile__short">Progresiones por clima</span></a>
+  </div>
+
+  <p class="home__label">Producir</p>
+  <div class="tiles">
+      <a class="tile tile--wide" href="../herramientas/hoja-de-ruta/" style="--i:6"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-ruta"/></svg></span><span><span class="tile__name">Hoja de ruta</span><span class="tile__short" style="display:block">Producción, grabación, mezcla y máster de cada tema</span></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
+  </div>
+
+  <p class="home__label">Salir a tocar</p>
+  <div class="tiles">
+      <a class="tile" href="../herramientas/armador-de-setlists/" style="--i:7"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-setlist"/></svg></span><span class="tile__name">Setlists</span><span class="tile__short">Orden del show y modo escenario</span></a>
+      <a class="tile" href="../herramientas/rider-tecnico/" style="--i:8"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-rider"/></svg></span><span class="tile__name">Rider técnico</span><span class="tile__short">Stage plot, input list y PDF</span></a>
+      <a class="tile tile--wide" href="../herramientas/calentamiento-vocal/" style="--i:9"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-voz"/></svg></span><span><span class="tile__name">Calentamiento vocal</span><span class="tile__short" style="display:block">Calentamientos en video antes de cantar</span></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
+  </div>
+
+  <div data-cb-android-only>
+    <p class="home__label">Para la consola</p>
+    <div class="tiles">
+      <a class="tile tile--wide" href="https://claraboyaestudio.netlify.app/descargas/airmix.apk" style="--i:10"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-airmix"/></svg></span><span><span class="tile__name">AirMix</span><span class="tile__short" style="display:block">Tu Behringer X Air desde la tablet. Es otra app: se baja aparte.</span></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-guardar"/></svg></span></a>
+    </div>
+  </div>
+</main>
+</body>
+</html>

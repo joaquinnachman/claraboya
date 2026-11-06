@@ -138,6 +138,20 @@
   }
   function saveFile(blob, filename) {
     filename = safeFilename(filename);
+    // En la APK: se guarda en Descargas/Claraboya con el puente nativo.
+    if (window.ClaraboyaNativo && window.ClaraboyaNativo.guardarArchivo) {
+      return new Promise(function (resolve) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var b64 = String(reader.result).split(',')[1] || '';
+          var msg = window.ClaraboyaNativo.guardarArchivo(b64, filename, blob.type || 'application/octet-stream');
+          if (msg) toast(msg, /^No /.test(msg));
+          resolve();
+        };
+        reader.onerror = function () { toast('No se pudo guardar el archivo.', true); resolve(); };
+        reader.readAsDataURL(blob);
+      });
+    }
     // Dentro de Claude (vista previa) las descargas pasan por la plataforma.
     if (window.claude && window.claude.use) {
       return window.claude.use('downloads').then(function (d) {
@@ -270,7 +284,8 @@
       qs = p.toString() ? '?' + p.toString() : '';
     }
     // en la vista previa no hay índice de carpetas
-    var file = document.documentElement.getAttribute('data-preview') ? 'index.html' : '';
+    // en la vista previa y en la APK no hay índice de carpetas
+    var file = (document.documentElement.getAttribute('data-preview') || document.documentElement.hasAttribute('data-native')) ? 'index.html' : '';
     return '../' + slug + '/' + file + qs;
   }
   // Enlaces "Seguí con" que dependen de lo que el usuario está haciendo: data-next-slug + data-next-query (JSON).

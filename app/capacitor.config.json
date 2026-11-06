@@ -1,0 +1,9 @@
+{
+  "appId": "com.claraboya.app",
+  "appName": "Claraboya",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#000000",
+    "allowMixedContent": false
+  }
+}

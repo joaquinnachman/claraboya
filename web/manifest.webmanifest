@@ -5,22 +5,77 @@
   "description": "Las herramientas de Claraboya Estudio para músicos: acordes, progresiones, hoja de ruta, rider, setlists, calentamiento vocal, afinador, metrónomo y BPM.",
   "lang": "es-AR",
   "dir": "ltr",
-  "start_url": "/herramientas/?desde=app",
+  "start_url": "/app/?desde=app",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#1F2426",
-  "theme_color": "#1F2426",
-  "categories": ["music", "productivity", "utilities"],
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "categories": [
+    "music",
+    "productivity",
+    "utilities"
+  ],
   "icons": [
-    { "src": "/img/app-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/img/app-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/img/app-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/img/app-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/app-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/app-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    { "name": "Afinador", "url": "/herramientas/afinador/?desde=app", "icons": [{ "src": "/img/app-192.png", "sizes": "192x192" }] },
-    { "name": "Metrónomo", "url": "/herramientas/metronomo/?desde=app", "icons": [{ "src": "/img/app-192.png", "sizes": "192x192" }] },
-    { "name": "Armador de setlists", "url": "/herramientas/armador-de-setlists/?desde=app", "icons": [{ "src": "/img/app-192.png", "sizes": "192x192" }] },
-    { "name": "Matriz de acordes", "url": "/herramientas/matriz-de-acordes/?desde=app", "icons": [{ "src": "/img/app-192.png", "sizes": "192x192" }] }
+    {
+      "name": "Afinador",
+      "url": "/herramientas/afinador/?desde=app",
+      "icons": [
+        {
+          "src": "/img/app-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Metrónomo",
+      "url": "/herramientas/metronomo/?desde=app",
+      "icons": [
+        {
+          "src": "/img/app-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Armador de setlists",
+      "url": "/herramientas/armador-de-setlists/?desde=app",
+      "icons": [
+        {
+          "src": "/img/app-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Matriz de acordes",
+      "url": "/herramientas/matriz-de-acordes/?desde=app",
+      "icons": [
+        {
+          "src": "/img/app-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }

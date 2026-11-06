@@ -1,0 +1,15 @@
+{
+  "name": "claraboya-app",
+  "version": "0.0.0",
+  "private": true,
+  "description": "App de Claraboya para Android: las herramientas de la web, empaquetadas con Capacitor. La versión sale del archivo VERSION del repo.",
+  "dependencies": {
+    "@capacitor/android": "6.2.0",
+    "@capacitor/app": "6.0.2",
+    "@capacitor/core": "6.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "3.0.5",
+    "@capacitor/cli": "6.2.0"
+  }
+}

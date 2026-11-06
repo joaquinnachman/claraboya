@@ -32,7 +32,7 @@ async function walk(dir) {
 }
 
 async function latestRelease(repo, assetName) {
-  const fallback = { version: 'más reciente', size: '1 MB', ok: false };
+  const fallback = { version: '', size: '', url: `https://github.com/${repo}/releases/latest/download/${assetName}`, ok: false };
   try {
     const headers = { Accept: 'application/vnd.github+json', 'User-Agent': 'claraboya-build' };
     if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
@@ -46,7 +46,7 @@ async function latestRelease(repo, assetName) {
     if (!m || !asset) return fallback;
     const mb = asset.size / (1024 * 1024);
     const size = (mb < 10 ? mb.toFixed(1) : String(Math.round(mb))).replace('.', ',').replace(/,0$/, '') + ' MB';
-    return { version: m[0], size, ok: true };
+    return { version: m[0], size, url: asset.browser_download_url, ok: true };
   } catch {
     return fallback;
   }
@@ -56,18 +56,23 @@ async function latestRelease(repo, assetName) {
 await fs.rm(OUT, { recursive: true, force: true });
 await fs.cp(SRC, OUT, { recursive: true });
 
-// 2. datos de afuera
+// 2. datos de afuera: la versión publicada de cada app en este momento
 const airmix = await latestRelease('joaquinnachman/airmix', 'AirMix.apk');
+const app = await latestRelease('joaquinnachman/claraboya', 'Claraboya.apk');
 
 // 3. reemplazos en archivos de texto
 const files = await walk(OUT);
 const values = {
   '{{VERSION}}': VERSION,
-  '{{AIRMIX_VERSION}}': airmix.version,
-  '{{AIRMIX_SIZE}}': airmix.size
+  '{{AIRMIX_VERSION}}': airmix.version || 'más reciente',
+  '{{AIRMIX_SIZE}}': airmix.size || '1 MB',
+  '{{AIRMIX_URL}}': airmix.url,
+  '{{APP_VERSION}}': app.version || VERSION,
+  '{{APP_SIZE}}': app.size || 'unos 7 MB'
 };
 for (const file of files) {
-  if (!TEXT.has(path.extname(file)) || path.basename(file) === 'sw.js') continue;
+  const base = path.basename(file);
+  if ((!TEXT.has(path.extname(file)) && base !== '_redirects') || base === 'sw.js') continue;
   let text = await fs.readFile(file, 'utf8');
   let changed = false;
   for (const [key, val] of Object.entries(values)) {
@@ -80,7 +85,7 @@ for (const file of files) {
 const rel = f => '/' + path.relative(OUT, f).split(path.sep).join('/');
 const all = (await walk(OUT)).map(rel);
 const precache = all.filter(u =>
-  (u.startsWith('/herramientas/') ||
+  (u.startsWith('/herramientas/') || u.startsWith('/app/') ||
    u.startsWith('/fonts/') ||
    /^\/img\/(app-|icon-32|logo\.webp)/.test(u) ||
    u === '/favicon.ico' || u === '/manifest.webmanifest')
@@ -106,9 +111,11 @@ await fs.writeFile(path.join(OUT, 'version.json'), JSON.stringify({
   version: VERSION,
   build: BUILD,
   fecha: new Date().toISOString(),
-  airmix: airmix.ok ? airmix.version : null
+  airmix: airmix.ok ? airmix.version : null,
+  app: app.ok ? app.version : null
 }, null, 2) + '\n');
 
 console.log(`Claraboya ${VERSION} (build ${BUILD})`);
 console.log(`  ${all.length} archivos, ${precache.length} guardados para usar sin internet`);
 console.log(`  AirMix: ${airmix.ok ? airmix.version + ' · ' + airmix.size : 'no se pudo consultar GitHub, queda el texto genérico'}`);
+console.log(`  App Claraboya: ${app.ok ? app.version + ' · ' + app.size : 'todavía sin Release (o GitHub no respondió)'}`);

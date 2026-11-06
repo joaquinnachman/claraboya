@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es-AR" data-app>
+<head>
+<meta charset="UTF-8">
+<script>!function(d,w){var s,a,q=/[?&]app=1(&|$)/.test(location.search);try{s=w.sessionStorage;if(q)s.setItem('cbApp','1')}catch(e){}a=d.hasAttribute('data-app')||q||!!w.Capacitor||!!(s&&s.getItem('cbApp')==='1');try{a=a||matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){}if(!a)return;d.setAttribute('data-app','');var st=document.createElement('style');st.textContent='@view-transition{navigation:auto}';document.head.appendChild(st);function k(e,A){var t=s&&s.getItem('cbNav');if(!t&&A&&A.navigationType==='traverse'&&A.from&&A.entry&&A.entry.index<A.from.index)t='back';return t||'forward'}w.addEventListener('pageswap',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,e.activation))});w.addEventListener('pagereveal',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,w.navigation&&navigation.activation));try{s.removeItem('cbNav')}catch(x){}})}(document.documentElement,window)</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estudio · Claraboya</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/icon-32.png">
+<link rel="apple-touch-icon" href="../../img/app-180.png">
+<link rel="manifest" href="../../manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="preload" href="../../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../herramientas/assets/tools.css">
+<link rel="stylesheet" href="../../herramientas/assets/app.css">
+<script src="../../herramientas/assets/tools.js" defer></script>
+<script src="../../herramientas/assets/pwa.js" defer></script>
+<script src="../../herramientas/assets/app.js" defer></script>
+</head>
+<body data-tool="estudio" data-app-page="estudio" data-app-title="Estudio">
+<main class="home" style="padding-top:14px">
+  <section class="studio-card">
+    <div class="studio-card__head"><img src="../../img/cuadros-256.png" alt="" width="44" height="44"><h2>Claraboya Estudio</h2></div>
+    <p>Grabamos, producimos, mezclamos y masterizamos en Vicente López. También mezclamos y masterizamos a distancia. Estas herramientas son las que usamos todos los días.</p>
+    <div class="btn-row">
+      <a class="btn btn--full btn--wa" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20de%20la%20app%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por"><svg class="btn__icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>Escribinos por WhatsApp</a>
+      <a class="btn" href="https://www.instagram.com/claraboya.estudio">Instagram</a>
+      <a class="btn" href="https://claraboyaestudio.netlify.app/">La web</a>
+    </div>
+  </section>
+
+  <div data-cb-android-only>
+    <p class="home__label">Para la consola</p>
+    <div class="list">
+      <a class="list__row" href="https://claraboyaestudio.netlify.app/descargas/airmix.apk"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-airmix"/></svg></span><span class="list__text"><b>AirMix</b><small>Tu Behringer X Air desde la tablet. Es otra app: se baja aparte.</small></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-guardar"/></svg></span></a>
+    </div>
+  </div>
+
+  <p class="home__label">Tus datos</p>
+  <div class="list">
+    <button class="list__row" type="button" data-cb-backup-all><span class="tile__icon"><svg aria-hidden="true"><use href="#i-guardar"/></svg></span><span class="list__text"><b>Guardar una copia de todo</b><small>Setlists, proyectos, riders y progresiones en un solo archivo.</small></span></button>
+    <button class="list__row" type="button" data-cb-restore-all><span class="tile__icon"><svg aria-hidden="true"><use href="#i-recuperar"/></svg></span><span class="list__text"><b>Recuperar una copia</b><small>Para pasar todo a otro celular o después de reinstalar.</small></span></button>
+  </div>
+
+  <p class="home__label">Esta app</p>
+  <div class="list">
+    <button class="list__row" type="button" data-cb-check><span class="tile__icon"><svg aria-hidden="true"><use href="#i-nuevo"/></svg></span><span class="list__text"><b>Versión <span data-cb-version></span></b><small data-cb-update-status>…</small></span></button>
+    <a class="list__row" href="https://cafecito.app/claraboyaestudio"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-cafe"/></svg></span><span class="list__text"><b>Invitanos un cafecito</b><small>Si la app te sirve, así nos das una mano.</small></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
+  </div>
+  <p class="home__fine">Hecha en Claraboya Estudio · Vicente López</p>
+</main>
+</body>
+</html>
