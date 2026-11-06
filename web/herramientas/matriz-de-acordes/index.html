@@ -1,0 +1,3455 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matriz de acordes · Herramientas de producción | Claraboya Estudio</title>
+<meta name="description" content="Matriz de acordes para componer: acordes de cada tonalidad y modo, sugerencias por sección, tensiones, dominantes secundarias, diagramas de guitarra y piano, letra y exportación. Gratis, de Claraboya Estudio.">
+<link rel="canonical" href="https://claraboyaestudio.netlify.app/herramientas/matriz-de-acordes/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1F2426">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Claraboya Estudio">
+<meta property="og:title" content="Matriz de acordes · Herramientas de producción | Claraboya Estudio">
+<meta property="og:description" content="Matriz de acordes para componer: acordes de cada tonalidad y modo, sugerencias por sección, tensiones, dominantes secundarias, diagramas de guitarra y piano, letra y exportación. Gratis, de Claraboya Estudio.">
+<meta property="og:url" content="https://claraboyaestudio.netlify.app/herramientas/matriz-de-acordes/">
+<meta property="og:image" content="https://claraboyaestudio.netlify.app/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/icon-32.png">
+<link rel="apple-touch-icon" href="../../img/app-180.png">
+<link rel="preload" href="../../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../herramientas/assets/tools.css">
+<script src="../assets/vendor/react-18.2.0.min.js"></script>
+<script src="../assets/vendor/react-dom-18.2.0.min.js"></script>
+<style>
+  /* La matriz trae sus propios estilos (React); acá se le ponen los colores y tipografías del sitio */
+  .app--matriz-de-acordes .chordmatrix{
+    --bg: var(--ink);
+    --panel: var(--ink-2);
+    --panel-alt: var(--ink-3);
+    --panel-nested: var(--ink-4);
+    --border: rgba(242,242,242,0.14);
+    --border-strong: rgba(242,242,242,0.24);
+    --text: var(--paper);
+    --text-dim: var(--soft);
+    --text-faint: rgba(242,242,242,0.52);
+    --accent: var(--rosa);
+    --accent-soft: rgba(217,120,122,0.16);
+    --accent-strong: var(--bordo-3);
+    --teal: #7CC4B0;
+    --teal-soft: rgba(124,196,176,0.16);
+    --brick: #EC6A61;
+    --brick-soft: rgba(236,106,97,0.16);
+    --led-ok: #8FD19E;
+    --led-avoid: rgba(242,242,242,0.4);
+    --radius-xl: 6px;
+    --radius-lg: 4px;
+    --radius-md: 4px;
+    --radius-sm: 3px;
+    --font-display: var(--body);
+    --font-sans: var(--body);
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+  .app--matriz-de-acordes .cm-controls,
+  .app--matriz-de-acordes .cm-panel{ box-shadow:none; }
+  .app--matriz-de-acordes .cm-panel h2{ font: 400 1.65rem/1 var(--display); letter-spacing:0.02em; margin-bottom:14px; }
+  .app--matriz-de-acordes .cm-note-btn.active,
+  .app--matriz-de-acordes .cm-checkbox input[type="checkbox"]:checked{ background: var(--bordo-2); }
+  .app--matriz-de-acordes .cm-btn{ border-radius:3px; font-size:13.5px; }
+  .app--matriz-de-acordes .cm-btn.primary{ background: var(--bordo); color: var(--paper); box-shadow:none; }
+  .app--matriz-de-acordes .cm-btn.primary:hover{ background: var(--bordo-2); filter:none; }
+  .app--matriz-de-acordes .cm-chip{ border-radius:99px; }
+  .app--matriz-de-acordes .cm-segment{ border-radius:4px; }
+  .app--matriz-de-acordes .cm-segment button{ border-radius:3px; }
+  .app--matriz-de-acordes .cm-toast{ border-radius:4px; background: var(--paper); color: var(--ink); border:0; }
+  .app--matriz-de-acordes .cm-input, .app--matriz-de-acordes .cm-textarea, .app--matriz-de-acordes .cm-select{ font-family: var(--body); }
+  .app--matriz-de-acordes .cm-field label{ font: 700 0.72rem/1.2 var(--body); letter-spacing:0.05em; text-transform:uppercase; color: var(--faint); }
+  .app--matriz-de-acordes .cm-input{ width:100%; }
+  .app--matriz-de-acordes .cm-select{ width:auto; max-width:100%; }
+  .app--matriz-de-acordes .chordmatrix{ min-width:0; overflow-wrap:anywhere; }
+  .app--matriz-de-acordes .cm-toolbar .cm-btn, .app--matriz-de-acordes .cm-add-section-row .cm-btn{ max-width:100%; }
+  .app--matriz-de-acordes{ overflow-x: clip; }
+  .app--matriz-de-acordes .cm-chord-tooltip{ visibility:hidden; }
+  .app--matriz-de-acordes .cm-chord-hover:hover .cm-chord-tooltip{ visibility:visible; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Matriz de acordes — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/matriz-de-acordes/", "description": "Matriz de acordes para componer: acordes de cada tonalidad y modo, sugerencias por sección, tensiones, dominantes secundarias, diagramas de guitarra y piano, letra y exportación. Gratis, de Claraboya Estudio.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "publisher": {"@id": "https://claraboyaestudio.netlify.app/#estudio", "@type": "LocalBusiness", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
+<link rel="manifest" href="../../manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../../herramientas/assets/pwa.js" defer></script>
+</head>
+<body class="tool" data-tool="matriz-de-acordes">
+<a class="skip" href="#app">Ir a la herramienta</a>
+<header class="tn">
+  <div class="tn__bar">
+    <a class="tn__logo" href="../../" aria-label="Claraboya Estudio, ir al inicio"><img src="../../img/logo.webp" alt="" width="120" height="128"></a>
+    <a class="tn__hub" href="../">Herramientas <span>de producción</span></a>
+    <a class="tn__studio" href="../../#servicios">El estudio</a>
+  </div>
+  <nav class="tn__tools" aria-label="Cambiar de herramienta">
+    <a href="../matriz-de-acordes/" aria-current="page"><b>01</b>Matriz de acordes</a>
+    <a href="../brujula-armonica/"><b>02</b>Brújula armónica</a>
+    <a href="../hoja-de-ruta/"><b>03</b>Hoja de ruta</a>
+    <a href="../rider-tecnico/"><b>04</b>Rider técnico</a>
+    <a href="../armador-de-setlists/"><b>05</b>Armador de setlists</a>
+    <a href="../calentamiento-vocal/"><b>06</b>Calentamiento vocal</a>
+    <a href="../afinador/"><b>07</b>Afinador</a>
+    <a href="../metronomo/"><b>08</b>Metrónomo</a>
+    <a href="../buscador-de-bpm/"><b>09</b>Buscador de BPM</a>
+  </nav>
+</header>
+<main class="app app--matriz-de-acordes" id="app">
+  <header class="tool-head">
+    <div>
+      <p class="tool-head__kicker"><b>01</b> · Componer</p>
+      <h1>Matriz de acordes</h1>
+      <p class="tool-head__sub">Elegí una tonalidad, armá cada parte de tu canción y dejá que te sugiera por dónde seguir: tensiones, dominantes secundarias, diagramas y letra.</p>
+    </div>
+    <div class="tool-head__aside"><span class="status-pill ok">guardado en este navegador</span></div>
+  </header>
+
+  <div id="root" class="matriz-root">
+    <p class="empty-note">Cargando la matriz…</p>
+  </div>
+  <noscript><p class="empty-note">La Matriz de acordes necesita JavaScript activado.</p></noscript>
+
+  <section class="next" aria-labelledby="next-t">
+    <h2 class="next__title" id="next-t">Seguí con</h2>
+    <div class="next__grid">
+    <a class="next__card" href="../brujula-armonica/">
+      <span class="next__why">¿Buscás otro clima?</span>
+      <span class="next__name">Brújula armónica</span>
+      <span class="next__desc">Progresiones por emoción para destrabar una parte.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../hoja-de-ruta/">
+      <span class="next__why">¿Ya está la canción?</span>
+      <span class="next__name">Hoja de ruta</span>
+      <span class="next__desc">Seguila tema por tema, de la producción al máster.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    </div>
+  </section>
+</main>
+<footer class="tf">
+  <div class="tf__band">
+    <div class="tf__cta">
+      <div>
+        <p class="tf__cta-title">¿Y cuando el tema esté listo?</p>
+        <p>Estas herramientas las usamos en Claraboya. Si querés grabar, producir, mezclar o masterizar, escribinos: te respondemos nosotros.</p>
+      </div>
+      <a class="btn big btn--wa" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20de%20la%20Matriz%20de%20acordes%20de%20Claraboya.%20Tengo%20un%20tema%20armado%20y%20quer%C3%ADa%20consultar%20para%20grabarlo." target="_blank" rel="noopener"><svg class="btn__icon" viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg>Escribinos por WhatsApp</a>
+    </div>
+  </div>
+  <div class="tf__data">
+    <span data-cb-storage-note>Lo que cargás se guarda <strong>solo en este navegador</strong>. Para pasarlo a otro dispositivo, descargá una copia y restaurala allá.</span>
+    <div class="tf__data-actions">
+      <button class="btn small ghost" type="button" data-cb-export>Descargar copia</button>
+      <button class="btn small ghost" type="button" data-cb-import>Restaurar copia</button>
+    </div>
+  </div>
+  <div class="tf__bottom">
+    <img src="../../img/logo.webp" alt="" width="40" height="43" loading="lazy">
+    <p>Claraboya Estudio · Vicente López, Buenos Aires · <span class="ver">v{{VERSION}}</span></p>
+    <nav class="tf__links" aria-label="Enlaces">
+      <a href="../../">Inicio</a>
+      <a href="https://www.instagram.com/claraboya.estudio" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://linktr.ee/claraboyaestudio" target="_blank" rel="noopener">Linktree</a>
+      <a href="https://cafecito.app/claraboyaestudio" target="_blank" rel="noopener">Invitanos un cafecito</a>
+    </nav>
+  </div>
+</footer>
+<div class="wa-dock" id="waDock">
+  <div class="wa-dock__bubble" id="waBubble">
+    <a class="wa-dock__text" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20de%20la%20Matriz%20de%20acordes%20de%20Claraboya.%20Tengo%20un%20tema%20armado%20y%20quer%C3%ADa%20consultar%20para%20grabarlo." target="_blank" rel="noopener">¿La canción ya tiene forma? Vení a grabarla a Claraboya.<span>Escribinos por WhatsApp</span></a>
+    <button class="wa-dock__close" type="button" id="waClose" aria-label="Ocultar este mensaje">×</button>
+  </div>
+  <a class="wa-dock__btn" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20de%20la%20Matriz%20de%20acordes%20de%20Claraboya.%20Tengo%20un%20tema%20armado%20y%20quer%C3%ADa%20consultar%20para%20grabarlo." target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg></a>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.16 0 0 7.16 0 16c0 2.82.74 5.47 2.03 7.77L0 32l8.44-2.21A15.9 15.9 0 0 0 16 31.7c8.84 0 16-7.16 16-16S24.84 0 16 0zm0 29.02c-2.4 0-4.66-.65-6.6-1.78l-.47-.28-5.01 1.31 1.34-4.88-.31-.5A13 13 0 1 1 16 29.02zm7.13-9.74c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.62-.2-.88.2-.26.39-1.01 1.26-1.24 1.52-.23.26-.46.29-.85.1-.39-.2-1.65-.61-3.14-1.94-1.16-1.04-1.94-2.32-2.17-2.71-.23-.39-.02-.6.17-.79.18-.18.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.88-2.12-1.2-2.9-.32-.77-.64-.66-.88-.67l-.75-.01c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26 0 1.92 1.4 3.78 1.6 4.04.2.26 2.76 4.22 6.7 5.91.94.41 1.67.65 2.24.83.94.3 1.79.26 2.47.16.75-.11 2.3-.94 2.62-1.85.32-.91.32-1.69.23-1.85-.1-.16-.36-.26-.75-.46z"/></symbol>
+</svg>
+<script src="../assets/tools.js"></script>
+<script>
+(function(){
+/* Compilado desde app.jsx con Babel (build). */
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+const {
+  useState,
+  useEffect,
+  useRef
+} = React;
+const iconProps = size => ({
+  width: size,
+  height: size,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round"
+});
+function Plus(_ref) {
+  let {
+    size = 24
+  } = _ref;
+  return React.createElement("svg", iconProps(size), React.createElement("line", {
+    x1: "12",
+    y1: "5",
+    x2: "12",
+    y2: "19"
+  }), React.createElement("line", {
+    x1: "5",
+    y1: "12",
+    x2: "19",
+    y2: "12"
+  }));
+}
+function X(_ref2) {
+  let {
+    size = 24
+  } = _ref2;
+  return React.createElement("svg", iconProps(size), React.createElement("line", {
+    x1: "18",
+    y1: "6",
+    x2: "6",
+    y2: "18"
+  }), React.createElement("line", {
+    x1: "6",
+    y1: "6",
+    x2: "18",
+    y2: "18"
+  }));
+}
+function ArrowUp(_ref3) {
+  let {
+    size = 24
+  } = _ref3;
+  return React.createElement("svg", iconProps(size), React.createElement("line", {
+    x1: "12",
+    y1: "19",
+    x2: "12",
+    y2: "5"
+  }), React.createElement("polyline", {
+    points: "5 12 12 5 19 12"
+  }));
+}
+function ArrowDown(_ref4) {
+  let {
+    size = 24
+  } = _ref4;
+  return React.createElement("svg", iconProps(size), React.createElement("line", {
+    x1: "12",
+    y1: "5",
+    x2: "12",
+    y2: "19"
+  }), React.createElement("polyline", {
+    points: "19 12 12 19 5 12"
+  }));
+}
+function ArrowLeft(_ref5) {
+  let {
+    size = 24
+  } = _ref5;
+  return React.createElement("svg", iconProps(size), React.createElement("line", {
+    x1: "19",
+    y1: "12",
+    x2: "5",
+    y2: "12"
+  }), React.createElement("polyline", {
+    points: "12 19 5 12 12 5"
+  }));
+}
+function ArrowRight(_ref6) {
+  let {
+    size = 24
+  } = _ref6;
+  return React.createElement("svg", iconProps(size), React.createElement("line", {
+    x1: "5",
+    y1: "12",
+    x2: "19",
+    y2: "12"
+  }), React.createElement("polyline", {
+    points: "12 5 19 12 12 19"
+  }));
+}
+function Save(_ref7) {
+  let {
+    size = 24
+  } = _ref7;
+  return React.createElement("svg", iconProps(size), React.createElement("path", {
+    d: "M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+  }), React.createElement("polyline", {
+    points: "17 21 17 13 7 13 7 21"
+  }), React.createElement("polyline", {
+    points: "7 3 7 8 15 8"
+  }));
+}
+function Trash2(_ref8) {
+  let {
+    size = 24
+  } = _ref8;
+  return React.createElement("svg", iconProps(size), React.createElement("polyline", {
+    points: "3 6 5 6 21 6"
+  }), React.createElement("path", {
+    d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+  }), React.createElement("line", {
+    x1: "10",
+    y1: "11",
+    x2: "10",
+    y2: "17"
+  }), React.createElement("line", {
+    x1: "14",
+    y1: "11",
+    x2: "14",
+    y2: "17"
+  }));
+}
+function Copy(_ref9) {
+  let {
+    size = 24
+  } = _ref9;
+  return React.createElement("svg", iconProps(size), React.createElement("rect", {
+    x: "9",
+    y: "9",
+    width: "13",
+    height: "13",
+    rx: "2",
+    ry: "2"
+  }), React.createElement("path", {
+    d: "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+  }));
+}
+function Check(_ref10) {
+  let {
+    size = 24
+  } = _ref10;
+  return React.createElement("svg", iconProps(size), React.createElement("polyline", {
+    points: "20 6 9 17 4 12"
+  }));
+}
+function RotateCcw(_ref11) {
+  let {
+    size = 24
+  } = _ref11;
+  return React.createElement("svg", iconProps(size), React.createElement("polyline", {
+    points: "1 4 1 10 7 10"
+  }), React.createElement("path", {
+    d: "M3.51 15a9 9 0 1 0 2.13-9.36L1 10"
+  }));
+}
+function Files(_ref12) {
+  let {
+    size = 24
+  } = _ref12;
+  return React.createElement("svg", iconProps(size), React.createElement("rect", {
+    x: "8",
+    y: "2",
+    width: "12",
+    height: "16",
+    rx: "2"
+  }), React.createElement("path", {
+    d: "M4 6v14a2 2 0 0 0 2 2h10"
+  }));
+}
+function FilePlus2(_ref13) {
+  let {
+    size = 24
+  } = _ref13;
+  return React.createElement("svg", iconProps(size), React.createElement("path", {
+    d: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+  }), React.createElement("polyline", {
+    points: "14 2 14 8 20 8"
+  }), React.createElement("line", {
+    x1: "12",
+    y1: "12",
+    x2: "12",
+    y2: "18"
+  }), React.createElement("line", {
+    x1: "9",
+    y1: "15",
+    x2: "15",
+    y2: "15"
+  }));
+}
+function ListMusic(_ref14) {
+  let {
+    size = 24
+  } = _ref14;
+  return React.createElement("svg", iconProps(size), React.createElement("line", {
+    x1: "3",
+    y1: "6",
+    x2: "14",
+    y2: "6"
+  }), React.createElement("line", {
+    x1: "3",
+    y1: "12",
+    x2: "14",
+    y2: "12"
+  }), React.createElement("line", {
+    x1: "3",
+    y1: "18",
+    x2: "10",
+    y2: "18"
+  }), React.createElement("circle", {
+    cx: "18",
+    cy: "18",
+    r: "3"
+  }), React.createElement("path", {
+    d: "M21 8v10"
+  }));
+}
+function Play(_ref15) {
+  let {
+    size = 24
+  } = _ref15;
+  return React.createElement("svg", _extends({}, iconProps(size), {
+    fill: "currentColor",
+    stroke: "none"
+  }), React.createElement("polygon", {
+    points: "6 3 20 12 6 21 6 3"
+  }));
+}
+function Square(_ref16) {
+  let {
+    size = 24
+  } = _ref16;
+  return React.createElement("svg", _extends({}, iconProps(size), {
+    fill: "currentColor",
+    stroke: "none"
+  }), React.createElement("rect", {
+    x: "4",
+    y: "4",
+    width: "16",
+    height: "16",
+    rx: "2"
+  }));
+}
+function Volume2(_ref17) {
+  let {
+    size = 24
+  } = _ref17;
+  return React.createElement("svg", iconProps(size), React.createElement("polygon", {
+    points: "11 5 6 9 2 9 2 15 6 15 11 19 11 5"
+  }), React.createElement("path", {
+    d: "M15.5 8.5a5 5 0 0 1 0 7"
+  }), React.createElement("path", {
+    d: "M18.5 5.5a9 9 0 0 1 0 13"
+  }));
+}
+function FileDown(_ref18) {
+  let {
+    size = 24
+  } = _ref18;
+  return React.createElement("svg", iconProps(size), React.createElement("path", {
+    d: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+  }), React.createElement("polyline", {
+    points: "14 2 14 8 20 8"
+  }), React.createElement("line", {
+    x1: "12",
+    y1: "11",
+    x2: "12",
+    y2: "17"
+  }), React.createElement("polyline", {
+    points: "9 14 12 17 15 14"
+  }));
+}
+const LS_PREFIX = "cb.matriz-de-acordes.";
+async function storageGet(key) {
+  try {
+    return window.localStorage.getItem(LS_PREFIX + key);
+  } catch (e) {
+    return null;
+  }
+}
+async function storageSet(key, jsonString) {
+  try {
+    window.localStorage.setItem(LS_PREFIX + key, jsonString);
+    return true;
+  } catch (e) {
+    if (window.CB) CB.toast("No hay más lugar para guardar en este navegador.", true);
+    return false;
+  }
+}
+function draftGet() {
+  try {
+    return JSON.parse(window.localStorage.getItem(LS_PREFIX + "draft.song") || "null");
+  } catch (e) {
+    return null;
+  }
+}
+function draftSet(value) {
+  try {
+    window.localStorage.setItem(LS_PREFIX + "draft.song", JSON.stringify(value));
+  } catch (e) {}
+}
+const BRUJULA_QUALITY = {
+  maj: "maj",
+  m: "min",
+  dim: "dim",
+  dim7: "dim7",
+  aug: "aug",
+  maj7: "maj7",
+  m7: "min7",
+  dom7: "dom7",
+  m7b5: "m7b5",
+  sus2: "maj",
+  sus4: "maj",
+  "6": "maj",
+  add9: "maj",
+  m9: "min9",
+  "9": "dom9",
+  "7sus4": "dom7",
+  madd9: "min",
+  min: "min",
+  min7: "min7"
+};
+const NOTES_SHARP = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const NOTES_FLAT = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+const MODE_INTERVALS = {
+  ionian: [0, 2, 4, 5, 7, 9, 11],
+  dorian: [0, 2, 3, 5, 7, 9, 10],
+  phrygian: [0, 1, 3, 5, 7, 8, 10],
+  lydian: [0, 2, 4, 6, 7, 9, 11],
+  mixolydian: [0, 2, 4, 5, 7, 9, 10],
+  aeolian: [0, 2, 3, 5, 7, 8, 10],
+  locrian: [0, 1, 3, 5, 6, 8, 10]
+};
+const MODES = [{
+  key: "ionian",
+  label: "Jónico (Mayor)"
+}, {
+  key: "dorian",
+  label: "Dórico"
+}, {
+  key: "phrygian",
+  label: "Frigio"
+}, {
+  key: "lydian",
+  label: "Lidio"
+}, {
+  key: "mixolydian",
+  label: "Mixolidio"
+}, {
+  key: "aeolian",
+  label: "Eólico (Menor)"
+}, {
+  key: "locrian",
+  label: "Locrio"
+}];
+const SUFFIX = {
+  maj: "",
+  min: "m",
+  dim: "dim",
+  aug: "aug",
+  maj7: "maj7",
+  dom7: "7",
+  min7: "m7",
+  minMaj7: "m(maj7)",
+  m7b5: "m7b5",
+  dim7: "dim7",
+  aug7: "aug7",
+  augMaj7: "aug(maj7)",
+  maj9: "maj9",
+  maj13: "maj13",
+  majSharp11: "maj7(#11)",
+  dom9: "9",
+  dom13: "13",
+  min9: "m9",
+  min11: "m11",
+  min13: "m13",
+  halfdim11: "m11b5",
+  halfdim13: "m13b5"
+};
+const PIANO_HARMONICS = [{
+  mult: 1,
+  gain: 1.0,
+  decay: 2.6
+}, {
+  mult: 2,
+  gain: 0.55,
+  decay: 2.0
+}, {
+  mult: 3,
+  gain: 0.32,
+  decay: 1.5
+}, {
+  mult: 4,
+  gain: 0.18,
+  decay: 1.1
+}, {
+  mult: 5,
+  gain: 0.11,
+  decay: 0.85
+}, {
+  mult: 6,
+  gain: 0.07,
+  decay: 0.65
+}];
+function createNoiseBuffer(ctx) {
+  let duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.05;
+  const size = Math.floor(ctx.sampleRate * duration);
+  const buffer = ctx.createBuffer(1, size, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < size; i++) data[i] = Math.random() * 2 - 1;
+  return buffer;
+}
+const CHORD_INTERVALS = {
+  maj: [0, 4, 7],
+  min: [0, 3, 7],
+  dim: [0, 3, 6],
+  aug: [0, 4, 8],
+  maj7: [0, 4, 7, 11],
+  dom7: [0, 4, 7, 10],
+  min7: [0, 3, 7, 10],
+  minMaj7: [0, 3, 7, 11],
+  m7b5: [0, 3, 6, 10],
+  dim7: [0, 3, 6, 9],
+  aug7: [0, 4, 8, 10],
+  augMaj7: [0, 4, 8, 11],
+  maj9: [0, 4, 7, 11, 14],
+  maj13: [0, 4, 7, 11, 14, 21],
+  majSharp11: [0, 4, 7, 11, 18],
+  dom9: [0, 4, 7, 10, 14],
+  dom13: [0, 4, 7, 10, 14, 21],
+  min9: [0, 3, 7, 10, 14],
+  min11: [0, 3, 7, 10, 14, 17],
+  min13: [0, 3, 7, 10, 14, 21],
+  halfdim11: [0, 3, 6, 10, 17],
+  halfdim13: [0, 3, 6, 10, 20]
+};
+const EXTENSION_ADD_MAP = {
+  maj7_9_9: "maj9",
+  maj7_13_13: "maj13",
+  "maj7_11_#11": "majSharp11",
+  dom7_9_9: "dom9",
+  dom7_13_13: "dom13",
+  min7_9_9: "min9",
+  min7_11_11: "min11",
+  min7_13_13: "min13",
+  m7b5_11_11: "halfdim11",
+  m7b5_13_b13: "halfdim13"
+};
+const DEGREE_FUNCTION = ["T", "S", "T", "S", "D", "T", "D"];
+function noteName(pitchClass, useFlats) {
+  return (useFlats ? NOTES_FLAT : NOTES_SHARP)[(pitchClass % 12 + 12) % 12];
+}
+const GUITAR_SHAPES = {
+  E: {
+    maj: {
+      offsets: [0, 2, 2, 1, 0, 0]
+    },
+    min: {
+      offsets: [0, 2, 2, 0, 0, 0]
+    },
+    dim: {
+      offsets: [0, 1, 2, 0, 2, null]
+    },
+    dom7: {
+      offsets: [0, 2, 0, 1, 0, 0]
+    },
+    maj7: {
+      offsets: [0, 2, 1, 1, 0, 0]
+    },
+    min7: {
+      offsets: [0, 2, 0, 0, 0, 0]
+    },
+    m7b5: {
+      offsets: [0, 1, 0, 0, 1, null]
+    },
+    maj9: {
+      offsets: [0, 0, 1, 1, 0, 2]
+    },
+    maj13: {
+      offsets: [0, 0, 1, 1, 2, 0]
+    },
+    majSharp11: {
+      offsets: [0, 1, 1, 1, 0, 0]
+    },
+    dom9: {
+      offsets: [0, 0, 0, 1, 0, 2]
+    },
+    dom13: {
+      offsets: [0, 0, 0, 1, 2, 0]
+    },
+    min9: {
+      offsets: [0, 0, 0, 0, 0, 2]
+    },
+    min11: {
+      offsets: [0, 0, 0, 0, 0, 0]
+    },
+    min13: {
+      offsets: [0, 0, 0, 0, 2, 0]
+    },
+    halfdim11: {
+      offsets: [0, 0, 0, 3, 0, 3]
+    },
+    halfdim13: {
+      offsets: [0, 1, 0, 0, 1, 0]
+    }
+  },
+  A: {
+    maj: {
+      offsets: [null, 0, 2, 2, 2, 0]
+    },
+    min: {
+      offsets: [null, 0, 2, 2, 1, 0]
+    },
+    dim: {
+      offsets: [null, 0, 1, 2, 1, null]
+    },
+    dom7: {
+      offsets: [null, 0, 2, 0, 2, 0]
+    },
+    maj7: {
+      offsets: [null, 0, 2, 1, 2, 0]
+    },
+    min7: {
+      offsets: [null, 0, 2, 0, 1, 0]
+    },
+    m7b5: {
+      offsets: [null, 0, 1, 0, 1, null]
+    },
+    maj9: {
+      offsets: [null, 0, 0, 4, 2, 4]
+    },
+    maj13: {
+      offsets: [null, 0, 0, 1, 2, 2]
+    },
+    majSharp11: {
+      offsets: [null, 0, 1, 1, 2, 0]
+    },
+    dom9: {
+      offsets: [null, 0, 0, 4, 2, 3]
+    },
+    dom13: {
+      offsets: [null, 0, 0, 0, 2, 2]
+    },
+    min9: {
+      offsets: [null, 0, 0, 4, 1, 3]
+    },
+    min11: {
+      offsets: [null, 0, 0, 0, 1, 0]
+    },
+    min13: {
+      offsets: [null, 0, 0, 0, 1, 2]
+    },
+    halfdim11: {
+      offsets: [null, 0, 0, 0, 1, 0],
+      approx: true
+    },
+    halfdim13: {
+      offsets: [null, 0, 1, 0, 1, 1]
+    }
+  }
+};
+const QUALITY_TO_SHAPE = {
+  maj: {
+    family: "maj",
+    approx: false
+  },
+  min: {
+    family: "min",
+    approx: false
+  },
+  dim: {
+    family: "dim",
+    approx: false
+  },
+  aug: {
+    family: "maj",
+    approx: true
+  },
+  maj7: {
+    family: "maj7",
+    approx: false
+  },
+  dom7: {
+    family: "dom7",
+    approx: false
+  },
+  min7: {
+    family: "min7",
+    approx: false
+  },
+  minMaj7: {
+    family: "min7",
+    approx: true
+  },
+  m7b5: {
+    family: "m7b5",
+    approx: false
+  },
+  dim7: {
+    family: "dim",
+    approx: true
+  },
+  aug7: {
+    family: "dom7",
+    approx: true
+  },
+  augMaj7: {
+    family: "maj7",
+    approx: true
+  },
+  maj9: {
+    family: "maj9",
+    approx: false
+  },
+  maj13: {
+    family: "maj13",
+    approx: false
+  },
+  majSharp11: {
+    family: "majSharp11",
+    approx: false
+  },
+  dom9: {
+    family: "dom9",
+    approx: false
+  },
+  dom13: {
+    family: "dom13",
+    approx: false
+  },
+  min9: {
+    family: "min9",
+    approx: false
+  },
+  min11: {
+    family: "min11",
+    approx: false
+  },
+  min13: {
+    family: "min13",
+    approx: false
+  },
+  halfdim11: {
+    family: "halfdim11",
+    approx: false
+  },
+  halfdim13: {
+    family: "halfdim13",
+    approx: false
+  }
+};
+function getGuitarShape(root, quality) {
+  const info = QUALITY_TO_SHAPE[quality] || QUALITY_TO_SHAPE.maj;
+  const fretE = (root - 4 + 12) % 12;
+  const fretA = (root - 9 + 12) % 12;
+  const useE = fretE <= fretA;
+  const base = useE ? "E" : "A";
+  const barre = useE ? fretE : fretA;
+  const shapeEntry = GUITAR_SHAPES[base][info.family];
+  const frets = shapeEntry.offsets.map(off => off === null ? null : barre + off);
+  return {
+    barre,
+    frets,
+    rootStringIndex: useE ? 0 : 1,
+    approx: info.approx || !!shapeEntry.approx
+  };
+}
+function GuitarDiagram(_ref19) {
+  let {
+    root,
+    quality,
+    sizeClass
+  } = _ref19;
+  const {
+    barre,
+    frets,
+    rootStringIndex
+  } = getGuitarShape(root, quality);
+  const numFrets = 5;
+  const W = 100;
+  const H = 120;
+  const marginX = 16;
+  const marginTop = barre === 0 ? 16 : 24;
+  const fretboardW = W - marginX * 2;
+  const fretboardH = H - marginTop - 14;
+  const stringGap = fretboardW / 5;
+  const fretGap = fretboardH / numFrets;
+  const stringX = i => marginX + i * stringGap;
+  const fretY = f => marginTop + f * fretGap;
+  const zeroStrings = frets.map((f, i) => f === barre ? i : null).filter(i => i !== null);
+  return React.createElement("svg", {
+    className: `cm-guitar-svg ${sizeClass}`,
+    viewBox: `0 0 ${W} ${H}`
+  }, barre === 0 ? React.createElement("rect", {
+    x: marginX - 2,
+    y: marginTop - 3,
+    width: fretboardW + 4,
+    height: 3.5,
+    fill: "var(--text)"
+  }) : React.createElement("text", {
+    x: marginX - 6,
+    y: marginTop + fretGap * 0.65,
+    fontSize: "10",
+    fill: "var(--text-dim)",
+    textAnchor: "end"
+  }, barre), Array.from({
+    length: numFrets + 1
+  }).map((_, f) => React.createElement("line", {
+    key: f,
+    x1: marginX,
+    y1: fretY(f),
+    x2: marginX + fretboardW,
+    y2: fretY(f),
+    stroke: "var(--border)",
+    strokeWidth: "1"
+  })), Array.from({
+    length: 6
+  }).map((_, i) => React.createElement("line", {
+    key: i,
+    x1: stringX(i),
+    y1: marginTop,
+    x2: stringX(i),
+    y2: marginTop + fretboardH,
+    stroke: "var(--border)",
+    strokeWidth: "1"
+  })), zeroStrings.length >= 2 && React.createElement("rect", {
+    x: stringX(Math.min(...zeroStrings)) - 5,
+    y: fretY(0) + fretGap / 2 - 4,
+    width: stringX(Math.max(...zeroStrings)) - stringX(Math.min(...zeroStrings)) + 10,
+    height: 8,
+    rx: 4,
+    fill: "var(--accent)",
+    opacity: "0.3"
+  }), frets.map((f, i) => f === null ? React.createElement("text", {
+    key: i,
+    x: stringX(i),
+    y: marginTop - 6,
+    fontSize: "10",
+    textAnchor: "middle",
+    fill: "var(--brick)"
+  }, "\xD7") : React.createElement("circle", {
+    key: i,
+    cx: stringX(i),
+    cy: fretY(f - barre) + fretGap / 2,
+    r: 5.5,
+    fill: i === rootStringIndex ? "var(--accent)" : "var(--teal)"
+  })));
+}
+function PianoDiagram(_ref20) {
+  let {
+    root,
+    quality,
+    useFlats,
+    sizeClass
+  } = _ref20;
+  const intervals = CHORD_INTERVALS[quality] || CHORD_INTERVALS.maj;
+  const maxInterval = Math.max(...intervals);
+  const octaves = Math.max(1, Math.ceil((maxInterval + 1) / 12));
+  const whiteOffsets = [0, 2, 4, 5, 7, 9, 11];
+  const blackAfterIdx = new Set([0, 1, 3, 4, 5]);
+  const whiteKeys = [];
+  const blackKeys = [];
+  for (let o = 0; o < octaves; o++) {
+    whiteOffsets.forEach((off, w) => whiteKeys.push({
+      semitone: o * 12 + off,
+      x: o * 7 + w
+    }));
+    whiteOffsets.forEach((off, w) => {
+      if (blackAfterIdx.has(w)) blackKeys.push({
+        semitone: o * 12 + off + 1,
+        x: o * 7 + w + 0.65
+      });
+    });
+  }
+  const WK_W = 16,
+    WK_H = 60,
+    BK_W = 10,
+    BK_H = 36;
+  const totalW = whiteKeys.length * WK_W;
+  const isHit = s => intervals.includes(s);
+  const hitColor = s => s === 0 ? "var(--accent)" : "var(--teal)";
+  return React.createElement("svg", {
+    className: `cm-piano-svg ${sizeClass}`,
+    viewBox: `0 0 ${totalW} ${WK_H}`
+  }, whiteKeys.map((k, i) => React.createElement("g", {
+    key: `w${i}`
+  }, React.createElement("rect", {
+    x: k.x * WK_W,
+    y: 0,
+    width: WK_W - 1,
+    height: WK_H,
+    rx: 2,
+    fill: isHit(k.semitone) ? hitColor(k.semitone) : "var(--panel-alt)",
+    stroke: "var(--border)"
+  }), isHit(k.semitone) && React.createElement("text", {
+    x: k.x * WK_W + (WK_W - 1) / 2,
+    y: WK_H - 6,
+    fontSize: "7",
+    textAnchor: "middle",
+    fill: "#fff",
+    fontWeight: "bold"
+  }, noteName((root + k.semitone) % 12, useFlats)))), blackKeys.map((k, i) => React.createElement("rect", {
+    key: `b${i}`,
+    x: k.x * WK_W - BK_W / 2,
+    y: 0,
+    width: BK_W,
+    height: BK_H,
+    rx: 1,
+    fill: isHit(k.semitone) ? hitColor(k.semitone) : "var(--bg)",
+    stroke: "var(--border)"
+  })));
+}
+function ChordDiagram(_ref21) {
+  let {
+    root,
+    quality,
+    useFlats,
+    size
+  } = _ref21;
+  const sizeClass = size || "small";
+  const {
+    approx
+  } = getGuitarShape(root, quality);
+  return React.createElement("div", {
+    className: `cm-chord-diagram ${sizeClass}`
+  }, React.createElement("div", {
+    className: "cm-diagram-col"
+  }, React.createElement("span", {
+    className: "cm-diagram-label"
+  }, "Guitarra"), React.createElement(GuitarDiagram, {
+    root: root,
+    quality: quality,
+    sizeClass: sizeClass
+  })), React.createElement("div", {
+    className: "cm-diagram-col"
+  }, React.createElement("span", {
+    className: "cm-diagram-label"
+  }, "Piano"), React.createElement(PianoDiagram, {
+    root: root,
+    quality: quality,
+    useFlats: useFlats,
+    sizeClass: sizeClass
+  })), approx && React.createElement("span", {
+    className: "cm-diagram-approx"
+  }, "forma de guitarra aproximada (sin esa tensi\xF3n)"));
+}
+function ChordHover(_ref22) {
+  let {
+    root,
+    quality,
+    useFlats,
+    children
+  } = _ref22;
+  return React.createElement("span", {
+    className: "cm-chord-hover"
+  }, children, React.createElement("span", {
+    className: "cm-chord-tooltip"
+  }, React.createElement(ChordDiagram, {
+    root: root,
+    quality: quality,
+    useFlats: useFlats,
+    size: "small"
+  })));
+}
+function triadQuality(third, fifth) {
+  if (third === 4 && fifth === 7) return "maj";
+  if (third === 3 && fifth === 7) return "min";
+  if (third === 3 && fifth === 6) return "dim";
+  if (third === 4 && fifth === 8) return "aug";
+  return "maj";
+}
+function seventhQuality(triad, seventh) {
+  if (triad === "maj") return seventh === 11 ? "maj7" : "dom7";
+  if (triad === "min") return seventh === 10 ? "min7" : "minMaj7";
+  if (triad === "dim") return seventh === 10 ? "m7b5" : "dim7";
+  if (triad === "aug") return seventh === 10 ? "aug7" : "augMaj7";
+  return "dom7";
+}
+function romanNumeral(degree, triadQ) {
+  const bases = ["I", "II", "III", "IV", "V", "VI", "VII"];
+  let base = bases[degree];
+  if (triadQ === "min" || triadQ === "dim") base = base.toLowerCase();
+  if (triadQ === "dim") base += "°";
+  if (triadQ === "aug") base += "+";
+  return base;
+}
+function chordLabel(root, quality, useFlats) {
+  return noteName(root, useFlats) + SUFFIX[quality];
+}
+function getDiatonicChords(rootIndex, modeKey, extension) {
+  const intervals = MODE_INTERVALS[modeKey];
+  return intervals.map((_, i) => {
+    const rootInt = intervals[i];
+    const third = (intervals[(i + 2) % 7] - rootInt + 12) % 12;
+    const fifth = (intervals[(i + 4) % 7] - rootInt + 12) % 12;
+    const seventh = (intervals[(i + 6) % 7] - rootInt + 12) % 12;
+    const tq = triadQuality(third, fifth);
+    const quality = extension === "seventh" ? seventhQuality(tq, seventh) : tq;
+    const root = (rootIndex + rootInt) % 12;
+    return {
+      degree: i,
+      root,
+      quality,
+      triadQuality: tq,
+      numeral: romanNumeral(i, tq),
+      fn: DEGREE_FUNCTION[i]
+    };
+  });
+}
+function getDiatonicFull(rootIndex, modeKey) {
+  const intervals = MODE_INTERVALS[modeKey];
+  const toneName = ["la fundamental", "la 3ra", "la 5ta", "la 7ma"];
+  return intervals.map((_, i) => {
+    const rootInt = intervals[i];
+    const third = (intervals[(i + 2) % 7] - rootInt + 12) % 12;
+    const fifth = (intervals[(i + 4) % 7] - rootInt + 12) % 12;
+    const seventh = (intervals[(i + 6) % 7] - rootInt + 12) % 12;
+    const ninth = (intervals[(i + 1) % 7] - rootInt + 12) % 12;
+    const eleventh = (intervals[(i + 3) % 7] - rootInt + 12) % 12;
+    const thirteenth = (intervals[(i + 5) % 7] - rootInt + 12) % 12;
+    const tq = triadQuality(third, fifth);
+    const sq = seventhQuality(tq, seventh);
+    const root = (rootIndex + rootInt) % 12;
+    const chordTones = [0, third, fifth, seventh];
+    function analyze(raw, kind) {
+      let label;
+      if (kind === "9") label = raw === 1 ? "b9" : raw === 3 ? "#9" : "9";else if (kind === "11") label = raw === 6 ? "#11" : "11";else label = raw === 8 ? "b13" : "13";
+      let reason = null;
+      for (let idx = 0; idx < chordTones.length; idx++) {
+        if ((raw - chordTones[idx] + 12) % 12 === 1) {
+          reason = toneName[idx];
+          break;
+        }
+      }
+      const avoid = reason !== null;
+      const addQuality = avoid ? null : EXTENSION_ADD_MAP[`${sq}_${kind}_${label}`] || null;
+      return {
+        kind,
+        label,
+        avoid,
+        reason,
+        addQuality
+      };
+    }
+    return {
+      degree: i,
+      root,
+      tq,
+      sq,
+      numeral: romanNumeral(i, tq),
+      tensions: [analyze(ninth, "9"), analyze(eleventh, "11"), analyze(thirteenth, "13")]
+    };
+  });
+}
+function getSecondaryDominants(diatonicTriads, extension) {
+  return [1, 2, 3, 4, 5].map(i => {
+    const target = diatonicTriads[i];
+    const root = (target.root + 7) % 12;
+    const quality = extension === "seventh" ? "dom7" : "maj";
+    return {
+      root,
+      quality,
+      label: `V/${target.numeral}`,
+      targetDegree: i
+    };
+  });
+}
+const TEMPLATE_BANK = [{
+  section: "intro",
+  rarity: "common",
+  degrees: [0, 3, 4, 0]
+}, {
+  section: "intro",
+  rarity: "common",
+  degrees: [0, 3]
+}, {
+  section: "intro",
+  rarity: "common",
+  degrees: [5, 3]
+}, {
+  section: "intro",
+  rarity: "unusual",
+  degrees: [0, 6, 0, 6]
+}, {
+  section: "intro",
+  rarity: "common",
+  degrees: [0, 4]
+}, {
+  section: "intro",
+  rarity: "unusual",
+  degrees: [5, 4]
+}, {
+  section: "intro",
+  rarity: "unusual",
+  degrees: [0, 5, 3, 4]
+}, {
+  section: "verso",
+  rarity: "common",
+  degrees: [0, 4, 3, 3]
+}, {
+  section: "verso",
+  rarity: "common",
+  degrees: [0, 5, 1, 4]
+}, {
+  section: "verso",
+  rarity: "unusual",
+  degrees: [2, 5, 1, 4]
+}, {
+  section: "verso",
+  rarity: "common",
+  degrees: [0, 3, 5, 4]
+}, {
+  section: "verso",
+  rarity: "unusual",
+  degrees: [0, 0, 3, 3]
+}, {
+  section: "verso",
+  rarity: "unusual",
+  degrees: [1, 3, 0, 4]
+}, {
+  section: "verso",
+  rarity: "unusual",
+  degrees: [0, 2, 5, 3]
+}, {
+  section: "preestribillo",
+  rarity: "common",
+  degrees: [3, 4, 5, 4]
+}, {
+  section: "preestribillo",
+  rarity: "common",
+  degrees: [1, 3, 4, 4]
+}, {
+  section: "preestribillo",
+  rarity: "unusual",
+  degrees: [5, 1, 4, 4]
+}, {
+  section: "preestribillo",
+  rarity: "unusual",
+  degrees: [3, 2, 1, 4]
+}, {
+  section: "preestribillo",
+  rarity: "unusual",
+  degrees: [1, {
+    sec: 4
+  }, 4, 4]
+}, {
+  section: "preestribillo",
+  rarity: "common",
+  degrees: [0, 1, 3, 4]
+}, {
+  section: "preestribillo",
+  rarity: "unusual",
+  degrees: [3, 4, 4, 4]
+}, {
+  section: "estribillo",
+  rarity: "common",
+  degrees: [0, 4, 5, 3]
+}, {
+  section: "estribillo",
+  rarity: "common",
+  degrees: [5, 3, 0, 0]
+}, {
+  section: "estribillo",
+  rarity: "common",
+  degrees: [0, 3, 1, 4]
+}, {
+  section: "estribillo",
+  rarity: "unusual",
+  degrees: [3, 0, 4, 5]
+}, {
+  section: "estribillo",
+  rarity: "common",
+  degrees: [1, 4, 0, 0]
+}, {
+  section: "estribillo",
+  rarity: "unusual",
+  degrees: [0, 5, 4, 3]
+}, {
+  section: "estribillo",
+  rarity: "unusual",
+  degrees: [0, 0, 4, 4]
+}, {
+  section: "puente",
+  rarity: "unusual",
+  degrees: [0, {
+    sec: 5
+  }, 5, 3]
+}, {
+  section: "puente",
+  rarity: "unusual",
+  degrees: [5, {
+    sec: 1
+  }, 1, 4]
+}, {
+  section: "puente",
+  rarity: "unusual",
+  degrees: [6, 2, 5, 1, 4, 0]
+}, {
+  section: "puente",
+  rarity: "unusual",
+  degrees: [0, {
+    sec: 5
+  }, 5, {
+    sec: 1
+  }, 1, 4, 0]
+}, {
+  section: "puente",
+  rarity: "common",
+  degrees: [2, 3]
+}, {
+  section: "puente",
+  rarity: "unusual",
+  degrees: [2, 0]
+}, {
+  section: "puente",
+  rarity: "unusual",
+  degrees: [5, 2, 3, 4]
+}, {
+  section: "outro",
+  rarity: "common",
+  degrees: [1, 4, 0]
+}, {
+  section: "outro",
+  rarity: "common",
+  degrees: [3, 0]
+}, {
+  section: "outro",
+  rarity: "common",
+  degrees: [0, 3, 0]
+}, {
+  section: "outro",
+  rarity: "unusual",
+  degrees: [5, 4, 0, 0]
+}, {
+  section: "outro",
+  rarity: "common",
+  degrees: [0, 4, 0]
+}, {
+  section: "outro",
+  rarity: "unusual",
+  degrees: [4, 3, 0]
+}, {
+  section: "outro",
+  rarity: "common",
+  degrees: [0, 0, 0]
+}];
+function templateLabel(template, diatonic) {
+  return template.degrees.map(entry => typeof entry === "number" ? diatonic[entry].numeral : `V/${diatonic[entry.sec].numeral}`).join(" – ");
+}
+function templateHasSecondary(template) {
+  return template.degrees.some(e => typeof e !== "number");
+}
+function templateFits(template, fromDegreeIdx) {
+  if (fromDegreeIdx == null || fromDegreeIdx < 0) return false;
+  const first = template.degrees[0];
+  if (typeof first !== "number") return false;
+  return (TRANSITIONS[fromDegreeIdx] || []).some(t => t.to === first);
+}
+function resolveTemplateEntry(entry, diatonic, secondary, applyTensions, autoTensionQuality) {
+  if (typeof entry === "number") {
+    const quality = applyTensions ? autoTensionQuality(entry) || diatonic[entry].quality : diatonic[entry].quality;
+    return {
+      root: diatonic[entry].root,
+      quality
+    };
+  }
+  const secChord = secondary.find(s => s.targetDegree === entry.sec);
+  return {
+    root: secChord.root,
+    quality: secChord.quality
+  };
+}
+const GENRE_BANK = [{
+  key: "rock",
+  label: "Rock",
+  progressions: [{
+    degrees: [0, 3, 4],
+    note: "El shuffle de rock and roll de toda la vida."
+  }, {
+    degrees: [0, 6, 3],
+    requiredMode: "mixolydian",
+    note: "El riff con bVII de rock clásico (tipo 'Sweet Home Alabama'). El VII de Mixolidio te da ese bVII sin sonar prestado."
+  }, {
+    degrees: [0, 3, 0, 4],
+    note: "Vamp simple para levantar un riff arriba."
+  }]
+}, {
+  key: "rock-argentino",
+  label: "Rock Argentino",
+  progressions: [{
+    degrees: [5, 3, 0, 4],
+    note: "Muy usada en baladas y himnos del rock nacional."
+  }, {
+    degrees: [0, 5, 1, 4],
+    note: "El círculo clásico que aparece en montones de clásicos locales."
+  }, {
+    degrees: [1, {
+      sec: 4
+    }, 4, 0],
+    note: "Un empujón extra antes de resolver, típico de arreglos más ambiciosos de los 80/90."
+  }]
+}, {
+  key: "rock-progresivo",
+  label: "Rock Progresivo",
+  progressions: [{
+    degrees: [0, 3, 6, 3],
+    requiredMode: "mixolydian",
+    note: "Movimiento modal, evita la resolución obvia."
+  }, {
+    degrees: [0, 2, 5, 1],
+    note: "Encadenado por terceras, se siente 'a través-compuesto' en vez de resolver."
+  }, {
+    degrees: [0, {
+      sec: 5
+    }, 5, {
+      sec: 1
+    }, 1, {
+      sec: 4
+    }, 4, 0],
+    note: "Cadena larga de dominantes secundarias para sostener tensión antes de resolver — típico de secciones instrumentales extensas."
+  }]
+}, {
+  key: "pop",
+  label: "Pop",
+  progressions: [{
+    degrees: [0, 4, 5, 3],
+    note: "La progresión pop más escuchada del planeta."
+  }, {
+    degrees: [5, 3, 0, 4],
+    note: "Su rotación más usada en estribillos."
+  }, {
+    degrees: [0, 5, 3, 4],
+    note: "La '50s progression', doo-wop de pura cepa."
+  }]
+}, {
+  key: "latino",
+  label: "Latino",
+  progressions: [{
+    degrees: [0, 3, 4, 0],
+    note: "Base de montuno salsero/tropical."
+  }, {
+    degrees: [0, 3, 4, 4],
+    note: "Con llamada y respuesta antes de resolver."
+  }, {
+    degrees: [0, 3, 4, 0],
+    requiredMode: "aeolian",
+    note: "Versión en menor, tipo bolero. Ojo: el bolero suele usar la menor armónica para un V mayor con más tensión, que este modo natural no reproduce — podés subir a mano la 3ra de ese acorde."
+  }]
+}, {
+  key: "pop-latino",
+  label: "Pop Latino",
+  progressions: [{
+    degrees: [0, 5, 2, 6],
+    requiredMode: "aeolian",
+    note: "El loop de acordes más usado en el pop latino urbano actual."
+  }, {
+    degrees: [0, 4, 5, 3],
+    note: "Versión más romántica/tradicional."
+  }, {
+    degrees: [0, 3, 4, 0],
+    requiredMode: "aeolian",
+    note: "Base en menor para baladas pop latinas."
+  }]
+}, {
+  key: "reggaeton",
+  label: "Reggaetón",
+  progressions: [{
+    degrees: [0, 5, 2, 6],
+    requiredMode: "aeolian",
+    note: "El loop de reggaetón por excelencia — lo escuchás en decenas de hits."
+  }, {
+    degrees: [0, 2, 6, 5],
+    requiredMode: "aeolian",
+    note: "Misma familia de acordes, otro orden."
+  }, {
+    degrees: [0, 6, 5, 2],
+    requiredMode: "aeolian",
+    note: "Otra rotación del mismo loop."
+  }]
+}, {
+  key: "trap-latino",
+  label: "Trap Latino",
+  progressions: [{
+    degrees: [0, 5],
+    requiredMode: "aeolian",
+    note: "Loop mínimo de 2 acordes, muy típico del trap."
+  }, {
+    degrees: [0, 3],
+    requiredMode: "aeolian",
+    note: "Otra variante de loop mínimo, más oscura."
+  }, {
+    degrees: [0, 5, 2, 6],
+    requiredMode: "aeolian",
+    note: "Cuando querés un poco más de movimiento sin salir del clima."
+  }]
+}, {
+  key: "cumbia",
+  label: "Cumbia",
+  progressions: [{
+    degrees: [0, 3, 4, 0],
+    note: "Esqueleto armónico de la cumbia clásica."
+  }, {
+    degrees: [0, 3, 4, 0],
+    requiredMode: "aeolian",
+    note: "Versión en menor, más cumbia villera/actual."
+  }, {
+    degrees: [0, 4, 0, 4],
+    note: "Vamp bailable de dos acordes."
+  }]
+}, {
+  key: "charly-garcia",
+  label: "Charly García",
+  progressions: [{
+    degrees: [1, 4, 0],
+    note: "Cadencia jazzera — probá cargarla con tensiones (9nas/maj7), es parte de lo que instaló en el pop-rock local."
+  }, {
+    degrees: [0, 2, 5, 3],
+    note: "Saltos por terceras que le dan ese aire más 'culto' a una vuelta simple."
+  }, {
+    degrees: [5, {
+      sec: 1
+    }, 1, 4],
+    note: "Dominante secundaria para un movimiento más sofisticado, con aire de formación jazzera."
+  }]
+}, {
+  key: "beatles",
+  label: "Beatles",
+  progressions: [{
+    degrees: [6, 3, 0],
+    requiredMode: "mixolydian",
+    note: "La 'cadencia plagal doble' (bVII-IV-I), marca registrada del pop-rock británico de los 60."
+  }, {
+    degrees: [0, 2, 3],
+    note: "El salto a la mediante (iii) le da ese aire agridulce típico de las baladas de esa época."
+  }, {
+    degrees: [0, 4, 5, 2, 3, 0, 3, 4],
+    note: "Ciclo largo típico de las baladas pop-rock británicas de los 60, va y vuelve sin resolver de una."
+  }]
+}, {
+  key: "britpop",
+  label: "Britpop",
+  progressions: [{
+    degrees: [5, 4, 0, 3],
+    note: "Giro muy noventoso, anthem britpop de manual."
+  }, {
+    degrees: [0, 4, 3, 4],
+    note: "Loop de estadio, simple y efectivo."
+  }, {
+    degrees: [1, 3, 0, 4],
+    note: "Con más movimiento antes de resolver."
+  }]
+}, {
+  key: "folklore-argentino",
+  label: "Folklore Argentino",
+  progressions: [{
+    degrees: [0, 3, 4, 0],
+    note: "Esqueleto típico de zamba/chacarera. Ojo: la identidad de estos géneros está más en el compás de 6/8 con hemiolas que en la armonía, que suele ser simple."
+  }, {
+    degrees: [5, 3, 0, 4],
+    note: "Variante con aire más melancólico, típica de zambas en tono menor relativo."
+  }, {
+    degrees: [0, 4, 0, 3],
+    note: "Vamp simple para acompañar copla."
+  }]
+}, {
+  key: "flamenco",
+  label: "Flamenco",
+  progressions: [{
+    degrees: [3, 2, 1, 0],
+    requiredMode: "phrygian",
+    note: "La cadencia andaluza clásica (iv-III-II-i). Muchos temas tocan el acorde final mayor (3ra sostenida a mano) para el cierre flamenco típico — el modo Frigio puro te da el i menor."
+  }, {
+    degrees: [0, 1, 0, 1],
+    requiredMode: "phrygian",
+    note: "Vaivén rasgueado típico entre el i y el II."
+  }, {
+    degrees: [0, 6, 0, 6],
+    requiredMode: "phrygian",
+    note: "Otro vaivén característico, entre el i y el VII."
+  }]
+}, {
+  key: "espanol",
+  label: "Español",
+  progressions: [{
+    degrees: [0, 4, 5, 3],
+    note: "Pop español de manual."
+  }, {
+    degrees: [5, 3, 0, 4],
+    note: "Otra rotación muy usada en baladas."
+  }, {
+    degrees: [3, 2, 1],
+    requiredMode: "phrygian",
+    note: "Fragmento con toque flamenco-pop, tendencia muy presente en el pop español/latino más reciente."
+  }]
+}, {
+  key: "rock-uruguayo",
+  label: "Rock Uruguayo",
+  progressions: [{
+    degrees: [5, 3, 4, 0],
+    note: "Giro melancólico bien de la escena rioplatense."
+  }, {
+    degrees: [0, 5, 3, 4],
+    note: "Otra variante muy usada en estribillos."
+  }, {
+    degrees: [1, 3, 4, 0],
+    note: "Con más preparación antes de resolver."
+  }]
+}, {
+  key: "murga-uruguaya",
+  label: "Murga Uruguaya",
+  progressions: [{
+    degrees: [0, 3, 4, 0],
+    note: "Base típica para sostener las voces del coro. La identidad de la murga está en lo coral y lo rítmico (el toque de bombo, platillo y redoblante), no tanto en la complejidad armónica."
+  }, {
+    degrees: [1, 4, 0],
+    note: "Cadencia más elaborada para cierres de cuplé."
+  }, {
+    degrees: [0, 4, 5, 3],
+    note: "Variante más 'pop', usada en murgas más modernas."
+  }]
+}, {
+  key: "tango",
+  label: "Tango",
+  progressions: [{
+    degrees: [0, 4, 0],
+    requiredMode: "aeolian",
+    note: "Base menor típica. Ojo: el tango suele usar la menor armónica para un V mayor con tensión fuerte, que este modo natural no reproduce — podés subir a mano la 3ra de ese acorde."
+  }, {
+    degrees: [0, 3, 4, 0],
+    requiredMode: "aeolian",
+    note: "Variante con subdominante antes de la vuelta."
+  }, {
+    degrees: [1, 4, 0],
+    requiredMode: "aeolian",
+    note: "El ii° funcionando como predominante, un color muy de tango de raíz más clásica."
+  }]
+}, {
+  key: "cuarteto",
+  label: "Cuarteto",
+  progressions: [{
+    degrees: [0, 3, 4, 0],
+    note: "Base bailable simple, para que el tunga-tunga lleve el peso."
+  }, {
+    degrees: [0, 4, 5, 3],
+    note: "Variante más pop dentro del género."
+  }, {
+    degrees: [0, 0, 3, 4],
+    note: "Vamp de dos acordes repetido, típico de secciones bailables."
+  }]
+}, {
+  key: "bossa-nova",
+  label: "Bossa Nova / MPB",
+  progressions: [{
+    degrees: [1, 4, 0],
+    note: "La base de todo — probá con tensiones (m9, maj9) para el color real de bossa."
+  }, {
+    degrees: [5, {
+      sec: 1
+    }, 1, 4, 0],
+    note: "Con dominante secundaria, movimiento armónico más rico."
+  }, {
+    degrees: [0, {
+      sec: 5
+    }, 5, {
+      sec: 1
+    }, 1, 4, 0],
+    note: "Cadena larga, muy representativa de la riqueza armónica del género."
+  }]
+}, {
+  key: "jazz",
+  label: "Jazz",
+  progressions: [{
+    degrees: [1, 4, 0],
+    note: "La base de todo standard. Con séptimas y tensiones activadas es donde realmente suena a jazz."
+  }, {
+    degrees: [2, 5, 1, 4, 0],
+    note: "Turnaround clásico (iii-vi-ii-V-I)."
+  }, {
+    degrees: [0, {
+      sec: 1
+    }, 1, 4, 0],
+    note: "Con dominante secundaria antes del ii-V-I."
+  }]
+}, {
+  key: "blues",
+  label: "Blues",
+  progressions: [{
+    degrees: [0, 0, 0, 0, 3, 3, 0, 0, 4, 3, 0, 0],
+    requiredMode: "mixolydian",
+    note: "El blues de 12 compases completo. Mixolidio te da bien el I como dominante (C7), pero el blues real toca también el IV y el V como dominante-7 — eso no es diatónico a un solo modo, así que después de cargar seguramente quieras ajustar esos dos a mano."
+  }, {
+    degrees: [0, 3, 0, 4],
+    note: "Vuelta corta de referencia rápida."
+  }]
+}];
+const TRANSITIONS = {
+  0: [{
+    to: 3,
+    text: "Subdominante — abre el paisaje armónico, un respiro antes de tensionar."
+  }, {
+    to: 4,
+    text: "Dominante — genera tensión que pide volver a la tónica."
+  }, {
+    to: 5,
+    text: "Relativa — cambia el color sin salir de la tonalidad."
+  }, {
+    to: 1,
+    text: "Arranca un ii–V de vuelta a la tónica."
+  }],
+  1: [{
+    to: 4,
+    text: "ii→V, la preparación de dominante más fuerte que hay."
+  }, {
+    to: 3,
+    text: "Se queda en zona de subdominante antes de tensionar."
+  }, {
+    to: 6,
+    text: "El vii° sustituye a la dominante con el mismo tirón hacia la tónica."
+  }],
+  2: [{
+    to: 5,
+    text: "Conecta por terceras hacia la relativa."
+  }, {
+    to: 3,
+    text: "De la mediante a la subdominante, prepara terreno."
+  }],
+  3: [{
+    to: 4,
+    text: "Prepara la dominante — el movimiento más común desde acá."
+  }, {
+    to: 0,
+    text: "Cadencia plagal (IV→I), resolución suave tipo 'amén'."
+  }, {
+    to: 1,
+    text: "Sigue en subdominante antes de tensionar."
+  }],
+  4: [{
+    to: 0,
+    text: "Resolución perfecta — el cierre más fuerte de la tonalidad."
+  }, {
+    to: 5,
+    text: "Cadencia rota: la tensión no resuelve donde se espera, sorprende."
+  }, {
+    to: 3,
+    text: "Se relaja hacia la subdominante en vez de resolver."
+  }],
+  5: [{
+    to: 1,
+    text: "Sigue el ciclo de quintas."
+  }, {
+    to: 3,
+    text: "Va hacia la subdominante."
+  }, {
+    to: 4,
+    text: "Prepara otra vuelta hacia la dominante."
+  }],
+  6: [{
+    to: 0,
+    text: "Resuelve de forma natural en la tónica."
+  }, {
+    to: 2,
+    text: "Movimiento menos común, conecta por terceras con la mediante."
+  }]
+};
+const SECTION_TYPES = [{
+  key: "intro",
+  label: "Intro"
+}, {
+  key: "verso",
+  label: "Verso"
+}, {
+  key: "preestribillo",
+  label: "Preestribillo"
+}, {
+  key: "estribillo",
+  label: "Estribillo"
+}, {
+  key: "puente",
+  label: "Puente"
+}, {
+  key: "outro",
+  label: "Outro"
+}];
+function sectionTypeLabel(key) {
+  return SECTION_TYPES.find(t => t.key === key)?.label ?? key;
+}
+const SECTION_PROFILES = {
+  intro: {
+    preferred: [0, 3, 5],
+    note: "Conviene instalar el clima sin apurar la resolución."
+  },
+  verso: {
+    preferred: [1, 3, 5],
+    note: "Conviene quedarte en movimiento, sin resolver del todo, para que pueda repetirse en loop."
+  },
+  preestribillo: {
+    preferred: [4, 1, 3],
+    note: "Conviene ir sumando tensión hacia la dominante."
+  },
+  estribillo: {
+    preferred: [0, 4],
+    note: "Conviene resolver fuerte y volver rápido a la tónica, así queda memorable."
+  },
+  puente: {
+    preferred: [5, 2, 4],
+    note: "Conviene buscar contraste: la relativa, la mediante o una dominante secundaria."
+  },
+  outro: {
+    preferred: [0, 3],
+    note: "Conviene ir cerrando hacia la tónica."
+  }
+};
+const STARTER_TEXT = {
+  0: "Punto de partida más estable, ancla la tonalidad desde el arranque.",
+  1: "Arranca ya en modo predominante, va derecho hacia una resolución.",
+  2: "Color de mediante, menos común para arrancar pero interesante.",
+  3: "Abre con la subdominante, un arranque más suave que la tónica.",
+  4: "Arranca tensionando directo, buen recurso si querés enganchar rápido.",
+  5: "Arranca por la relativa, le da un aire más introspectivo desde el vamos.",
+  6: "Arranque inestable, poco común salvo que busques ese efecto de suspenso."
+};
+function sectionDisplayName(sections, idx) {
+  const type = sections[idx].type;
+  const total = sections.filter(s => s.type === type).length;
+  if (total <= 1) return sectionTypeLabel(type);
+  const position = sections.slice(0, idx + 1).filter(s => s.type === type).length;
+  return `${sectionTypeLabel(type)} ${position}`;
+}
+const STORAGE_KEY = "saved-songs";
+function ChordMatrix() {
+  const [rootIndex, setRootIndex] = useState(0);
+  const [modeKey, setModeKey] = useState("ionian");
+  const [useFlats, setUseFlats] = useState(false);
+  const [extension, setExtension] = useState("triad");
+  const [showSecondary, setShowSecondary] = useState(false);
+  const [showTensions, setShowTensions] = useState(true);
+  const [showDiagrams, setShowDiagrams] = useState(false);
+  const [songName, setSongName] = useState("");
+  const [sections, setSections] = useState([{
+    id: "s1",
+    type: "verso",
+    chords: [],
+    lyrics: ""
+  }]);
+  const [activeSectionId, setActiveSectionId] = useState("s1");
+  const [newSectionType, setNewSectionType] = useState("estribillo");
+  const [applyTensions, setApplyTensions] = useState(false);
+  const [selectedGenre, setSelectedGenre] = useState("");
+  const [showSummary, setShowSummary] = useState(false);
+  const [editingSummaryChord, setEditingSummaryChord] = useState(null);
+  const [bpm, setBpm] = useState(96);
+  const [playingId, setPlayingId] = useState(null);
+  const audioCtxRef = useRef(null);
+  const noiseBufferRef = useRef(null);
+  const playbackTimers = useRef([]);
+  const [savedSongs, setSavedSongs] = useState([]);
+  const [toast, setToast] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [confirmNewSong, setConfirmNewSong] = useState(false);
+  const idCounter = useRef(0);
+  const toastTimer = useRef(null);
+  const confirmTimer = useRef(null);
+  const nextId = () => {
+    idCounter.current += 1;
+    return `c${idCounter.current}`;
+  };
+  const showToast = msg => {
+    setToast(msg);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(""), 2400);
+  };
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const value = await storageGet(STORAGE_KEY);
+        if (!cancelled && value) {
+          setSavedSongs(JSON.parse(value));
+        }
+        if (!cancelled) restoreOnLoad();
+      } catch (e) {}
+    })();
+    return () => {
+      cancelled = true;
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+      if (confirmTimer.current) clearTimeout(confirmTimer.current);
+      playbackTimers.current.forEach(t => clearTimeout(t));
+      if (audioCtxRef.current) {
+        try {
+          audioCtxRef.current.close();
+        } catch (e) {}
+      }
+    };
+  }, []);
+  const diatonic = getDiatonicChords(rootIndex, modeKey, extension);
+  const fullDiatonic = getDiatonicFull(rootIndex, modeKey);
+  const secondary = getSecondaryDominants(diatonic, extension);
+  const keyLabel = `${noteName(rootIndex, useFlats)} ${MODES.find(m => m.key === modeKey).label}`;
+  const activeIndex = sections.findIndex(s => s.id === activeSectionId);
+  const activeSection = sections[activeIndex];
+  const activeChords = activeSection.chords;
+  const profile = SECTION_PROFILES[activeSection.type];
+  function autoTensionQuality(degree) {
+    const tensions = fullDiatonic[degree].tensions;
+    for (const kind of ["9", "13", "11"]) {
+      const t = tensions.find(x => x.kind === kind);
+      if (t && !t.avoid && t.addQuality) return t.addQuality;
+    }
+    return null;
+  }
+  let contextFromChord = null;
+  let contextPrevLabel = null;
+  let contextIsCrossSection = false;
+  if (activeChords.length) {
+    contextFromChord = activeChords[activeChords.length - 1];
+  } else {
+    for (let i = activeIndex - 1; i >= 0; i--) {
+      if (sections[i].chords.length) {
+        contextFromChord = sections[i].chords[sections[i].chords.length - 1];
+        contextPrevLabel = sectionDisplayName(sections, i);
+        contextIsCrossSection = true;
+        break;
+      }
+    }
+  }
+  const contextFromDegreeIdx = contextFromChord ? diatonic.findIndex(d => d.root === contextFromChord.root) : -1;
+  function suggestFromChord(fromChord) {
+    const fromIdx = diatonic.findIndex(d => d.root === fromChord.root);
+    if (fromIdx >= 0) {
+      const base = (TRANSITIONS[fromIdx] || []).map(t => ({
+        chord: diatonic[t.to],
+        text: t.text,
+        to: t.to
+      }));
+      const preferred = profile.preferred;
+      const sorted = [...base].sort((a, b) => {
+        const ai = preferred.indexOf(a.to);
+        const bi = preferred.indexOf(b.to);
+        return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+      });
+      return {
+        type: "diatonic",
+        fromLabel: `${diatonic[fromIdx].numeral} ${chordLabel(diatonic[fromIdx].root, diatonic[fromIdx].quality, useFlats)}`,
+        options: sorted
+      };
+    }
+    const resolveRoot = (fromChord.root + 5) % 12;
+    const targetIdx = diatonic.findIndex(d => d.root === resolveRoot);
+    const fromLabel = chordLabel(fromChord.root, fromChord.quality, useFlats);
+    if (targetIdx >= 0) {
+      return {
+        type: "resolve",
+        fromLabel,
+        options: [{
+          chord: diatonic[targetIdx],
+          text: "Resolución natural de esta dominante — baja una 5ta y afloja la tensión.",
+          to: targetIdx
+        }]
+      };
+    }
+    return {
+      type: "foreign",
+      fromLabel,
+      options: [{
+        chord: diatonic[0],
+        text: "Está fuera de la tonalidad actual — volver a la tónica es la opción más segura.",
+        to: 0
+      }]
+    };
+  }
+  let suggestions;
+  let suggestionContext;
+  if (!contextIsCrossSection && contextFromChord) {
+    suggestions = suggestFromChord(contextFromChord);
+    suggestionContext = "continuing";
+  } else if (contextFromChord) {
+    suggestions = suggestFromChord(contextFromChord);
+    suggestions.prevLabel = contextPrevLabel;
+    suggestionContext = "crossSection";
+  } else {
+    const degreesToShow = [0, ...profile.preferred.filter(d => d !== 0)].slice(0, 3);
+    suggestions = {
+      type: "starter",
+      options: degreesToShow.map(d => ({
+        chord: diatonic[d],
+        text: STARTER_TEXT[d] || "Opción diatónica para arrancar.",
+        to: d
+      }))
+    };
+    suggestionContext = "fresh";
+  }
+  if (activeSection.type === "puente") {
+    const colorOption = secondary[4];
+    const already = suggestions.options.some(o => o.chord.root === colorOption.root && o.chord.quality === colorOption.quality);
+    if (!already) {
+      suggestions = {
+        ...suggestions,
+        options: [...suggestions.options, {
+          chord: colorOption,
+          text: `${colorOption.label} — tensioná hacia la relativa antes de resolver, recurso típico de puente.`,
+          special: true
+        }]
+      };
+    }
+  }
+  function updateActiveChords(updater) {
+    setSections(prev => prev.map(s => s.id === activeSectionId ? {
+      ...s,
+      chords: updater(s.chords)
+    } : s));
+  }
+  function moveChordInSection(sectionId, chordId, dir) {
+    setSections(prev => prev.map(s => {
+      if (s.id !== sectionId) return s;
+      const idx = s.chords.findIndex(c => c.id === chordId);
+      const target = idx + dir;
+      if (idx === -1 || target < 0 || target >= s.chords.length) return s;
+      const chords = [...s.chords];
+      [chords[idx], chords[target]] = [chords[target], chords[idx]];
+      return {
+        ...s,
+        chords
+      };
+    }));
+  }
+  function removeChordFromSection(sectionId, chordId) {
+    setSections(prev => prev.map(s => s.id === sectionId ? {
+      ...s,
+      chords: s.chords.filter(c => c.id !== chordId)
+    } : s));
+    setEditingSummaryChord(prev => prev && prev.sectionId === sectionId && prev.chordId === chordId ? null : prev);
+  }
+  function handleSummaryChordClick(sectionId, chordId) {
+    setEditingSummaryChord(prev => prev && prev.sectionId === sectionId && prev.chordId === chordId ? null : {
+      sectionId,
+      chordId
+    });
+    setActiveSectionId(sectionId);
+  }
+  function addChord(chord) {
+    updateActiveChords(chords => [...chords, {
+      id: nextId(),
+      root: chord.root,
+      quality: chord.quality
+    }]);
+  }
+  function addExtended(root, quality) {
+    if (!quality) return;
+    addChord({
+      root,
+      quality
+    });
+    showToast(`Agregado ${chordLabel(root, quality, useFlats)}`);
+  }
+  function removeChord(id) {
+    removeChordFromSection(activeSectionId, id);
+  }
+  function moveChord(id, dir) {
+    moveChordInSection(activeSectionId, id, dir);
+  }
+  function clearSection() {
+    updateActiveChords(() => []);
+  }
+  function loadTemplate(template) {
+    updateActiveChords(() => template.degrees.map(entry => {
+      const resolved = resolveTemplateEntry(entry, diatonic, secondary, applyTensions, autoTensionQuality);
+      return {
+        id: nextId(),
+        root: resolved.root,
+        quality: resolved.quality
+      };
+    }));
+    showToast(`Progresión cargada: ${templateLabel(template, diatonic)}`);
+  }
+  function loadGenreProgression(genre, prog) {
+    const effectiveMode = prog.requiredMode || modeKey;
+    const modeChanged = effectiveMode !== modeKey;
+    const dia = modeChanged ? getDiatonicChords(rootIndex, effectiveMode, extension) : diatonic;
+    const sec = modeChanged ? getSecondaryDominants(dia, extension) : secondary;
+    const fullDia = applyTensions ? modeChanged ? getDiatonicFull(rootIndex, effectiveMode) : fullDiatonic : null;
+    const autoFn = d => {
+      if (!fullDia) return null;
+      const tensions = fullDia[d].tensions;
+      for (const kind of ["9", "13", "11"]) {
+        const t = tensions.find(x => x.kind === kind);
+        if (t && !t.avoid && t.addQuality) return t.addQuality;
+      }
+      return null;
+    };
+    if (modeChanged) setModeKey(effectiveMode);
+    updateActiveChords(() => prog.degrees.map(entry => {
+      const resolved = resolveTemplateEntry(entry, dia, sec, applyTensions, autoFn);
+      return {
+        id: nextId(),
+        root: resolved.root,
+        quality: resolved.quality
+      };
+    }));
+    showToast(modeChanged ? `Cambié el modo a ${MODES.find(m => m.key === effectiveMode).label} para este color de ${genre.label}` : `Progresión de ${genre.label} cargada`);
+  }
+  function transpose(delta) {
+    setRootIndex(prev => (prev + delta + 12) % 12);
+    setSections(prev => prev.map(s => ({
+      ...s,
+      chords: s.chords.map(c => ({
+        ...c,
+        root: (c.root + delta + 12) % 12
+      }))
+    })));
+  }
+  function addSection() {
+    const newSec = {
+      id: nextId(),
+      type: newSectionType,
+      chords: [],
+      lyrics: ""
+    };
+    setSections(prev => [...prev, newSec]);
+    setActiveSectionId(newSec.id);
+  }
+  function removeSection() {
+    if (sections.length <= 1) return;
+    const filtered = sections.filter(s => s.id !== activeSectionId);
+    const newActive = filtered[Math.max(0, activeIndex - 1)];
+    setSections(filtered);
+    setActiveSectionId(newActive.id);
+  }
+  function duplicateSection() {
+    const dup = {
+      id: nextId(),
+      type: activeSection.type,
+      chords: activeSection.chords.map(c => ({
+        ...c,
+        id: nextId()
+      })),
+      lyrics: activeSection.lyrics || ""
+    };
+    setSections(prev => {
+      const copy = [...prev];
+      copy.splice(activeIndex + 1, 0, dup);
+      return copy;
+    });
+    setActiveSectionId(dup.id);
+  }
+  function moveSection(dir) {
+    setSections(prev => {
+      const idx = prev.findIndex(s => s.id === activeSectionId);
+      const target = idx + dir;
+      if (target < 0 || target >= prev.length) return prev;
+      const next = [...prev];
+      [next[idx], next[target]] = [next[target], next[idx]];
+      return next;
+    });
+  }
+  function changeSectionType(id, type) {
+    setSections(prev => prev.map(s => s.id === id ? {
+      ...s,
+      type
+    } : s));
+  }
+  function setSectionLyrics(sectionId, text) {
+    setSections(prev => prev.map(s => s.id === sectionId ? {
+      ...s,
+      lyrics: text
+    } : s));
+  }
+  async function saveSong() {
+    if (!songName.trim()) {
+      showToast("Ponele un nombre a la canción antes de guardar");
+      return;
+    }
+    if (!sections.some(s => s.chords.length > 0)) {
+      showToast("Agregá al menos un acorde en alguna sección");
+      return;
+    }
+    const entry = {
+      id: `song${Date.now()}`,
+      name: songName.trim(),
+      rootIndex,
+      modeKey,
+      useFlats,
+      extension,
+      sections: sections.map(s => ({
+        type: s.type,
+        chords: s.chords.map(_ref23 => {
+          let {
+            root,
+            quality
+          } = _ref23;
+          return {
+            root,
+            quality
+          };
+        }),
+        lyrics: s.lyrics || ""
+      }))
+    };
+    const next = [entry, ...savedSongs];
+    try {
+      await storageSet(STORAGE_KEY, JSON.stringify(next));
+      setSavedSongs(next);
+      showToast("Canción guardada");
+    } catch (e) {
+      showToast("No se pudo guardar");
+    }
+  }
+  function loadSong(entry) {
+    setRootIndex(entry.rootIndex);
+    setModeKey(entry.modeKey);
+    setUseFlats(entry.useFlats);
+    setExtension(entry.extension);
+    const newSections = entry.sections.map(s => ({
+      id: nextId(),
+      type: s.type,
+      chords: s.chords.map(c => ({
+        id: nextId(),
+        ...c
+      })),
+      lyrics: s.lyrics || ""
+    }));
+    setSections(newSections);
+    setActiveSectionId(newSections[0].id);
+    setSongName(entry.name);
+    showToast(`Cargaste "${entry.name}"`);
+  }
+  async function deleteSong(id) {
+    const next = savedSongs.filter(s => s.id !== id);
+    try {
+      await storageSet(STORAGE_KEY, JSON.stringify(next));
+      setSavedSongs(next);
+    } catch (e) {
+      showToast("No se pudo eliminar");
+    }
+  }
+  function getAudioContext() {
+    if (!audioCtxRef.current) {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return null;
+      audioCtxRef.current = new Ctx();
+    }
+    if (audioCtxRef.current.state === "suspended") {
+      audioCtxRef.current.resume();
+    }
+    return audioCtxRef.current;
+  }
+  function getNoiseBuffer(ctx) {
+    if (!noiseBufferRef.current) noiseBufferRef.current = createNoiseBuffer(ctx);
+    return noiseBufferRef.current;
+  }
+  function playChordSound(root, quality) {
+    const ctx = getAudioContext();
+    if (!ctx) {
+      showToast("Tu navegador no permite reproducir sonido acá");
+      return;
+    }
+    const intervals = CHORD_INTERVALS[quality] || CHORD_INTERVALS.maj;
+    const now = ctx.currentTime;
+    const noiseBuffer = getNoiseBuffer(ctx);
+    const master = ctx.createGain();
+    master.gain.value = 0.22;
+    master.connect(ctx.destination);
+    intervals.forEach(interval => {
+      const midi = 60 + root + interval;
+      const freq = 440 * Math.pow(2, (midi - 69) / 12);
+      PIANO_HARMONICS.forEach(h => {
+        const osc = ctx.createOscillator();
+        osc.type = "sine";
+        osc.frequency.value = freq * h.mult;
+        const g = ctx.createGain();
+        const peak = h.gain * 0.5;
+        g.gain.setValueAtTime(0, now);
+        g.gain.linearRampToValueAtTime(peak, now + 0.006);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + h.decay);
+        osc.connect(g);
+        g.connect(master);
+        osc.start(now);
+        osc.stop(now + h.decay + 0.05);
+      });
+      const noiseSrc = ctx.createBufferSource();
+      noiseSrc.buffer = noiseBuffer;
+      const bp = ctx.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.frequency.value = freq * 2.2;
+      bp.Q.value = 1.1;
+      const ng = ctx.createGain();
+      ng.gain.setValueAtTime(0.35, now);
+      ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+      noiseSrc.connect(bp);
+      bp.connect(ng);
+      ng.connect(master);
+      noiseSrc.start(now);
+      noiseSrc.stop(now + 0.05);
+    });
+    setTimeout(() => {
+      try {
+        master.disconnect();
+      } catch (e) {}
+    }, 2900);
+  }
+  function stopPlayback() {
+    playbackTimers.current.forEach(t => clearTimeout(t));
+    playbackTimers.current = [];
+    setPlayingId(null);
+  }
+  function playSequence(id, chords) {
+    if (playingId) {
+      stopPlayback();
+      if (playingId === id) return;
+    }
+    if (!chords.length) return;
+    setPlayingId(id);
+    const stepMs = 60 / bpm * 4 * 1000;
+    chords.forEach((c, i) => {
+      const t = setTimeout(() => playChordSound(c.root, c.quality), i * stepMs);
+      playbackTimers.current.push(t);
+    });
+    const endT = setTimeout(() => setPlayingId(null), chords.length * stepMs);
+    playbackTimers.current.push(endT);
+  }
+  function playSingleChord(id, root, quality) {
+    if (playingId) stopPlayback();
+    setPlayingId(id);
+    playChordSound(root, quality);
+    const endT = setTimeout(() => setPlayingId(null), 2600);
+    playbackTimers.current.push(endT);
+  }
+  function restoreOnLoad() {
+    const params = new URLSearchParams(window.location.search);
+    const prog = params.get("prog");
+    if (prog) {
+      const chords = prog.split(",").map(part => {
+        const [r, q] = part.split(":");
+        const root = (parseInt(r, 10) % 12 + 12) % 12;
+        const quality = BRUJULA_QUALITY[q] || (CHORD_INTERVALS[q] ? q : "maj");
+        return Number.isNaN(root) ? null : {
+          id: nextId(),
+          root,
+          quality
+        };
+      }).filter(Boolean).slice(0, 16);
+      if (chords.length) {
+        const tono = parseInt(params.get("tono"), 10);
+        if (!Number.isNaN(tono)) setRootIndex((tono % 12 + 12) % 12);
+        const modo = params.get("modo");
+        if (MODE_INTERVALS[modo]) setModeKey(modo);
+        const seventh = chords.some(c => CHORD_INTERVALS[c.quality].length > 3);
+        setExtension(seventh ? "seventh" : "triad");
+        const secId = nextId();
+        setSections([{
+          id: secId,
+          type: "verso",
+          chords,
+          lyrics: ""
+        }]);
+        setActiveSectionId(secId);
+        setSongName((params.get("nombre") || "").slice(0, 60));
+        showToast("Progresión traída de la Brújula armónica: ahora armá el resto de la canción");
+        if (window.history && window.history.replaceState) window.history.replaceState(null, "", window.location.pathname);
+        return;
+      }
+    }
+    const d = draftGet();
+    if (d && d.sections && d.sections.length) {
+      setRootIndex(d.rootIndex || 0);
+      setModeKey(MODE_INTERVALS[d.modeKey] ? d.modeKey : "ionian");
+      setUseFlats(!!d.useFlats);
+      setExtension(d.extension === "seventh" ? "seventh" : "triad");
+      if (d.bpm) setBpm(d.bpm);
+      const restored = d.sections.map(sec => ({
+        id: nextId(),
+        type: sec.type,
+        chords: (sec.chords || []).map(c => ({
+          id: nextId(),
+          root: c.root,
+          quality: c.quality
+        })),
+        lyrics: sec.lyrics || ""
+      }));
+      setSections(restored);
+      setActiveSectionId(restored[Math.min(d.activeIndex || 0, restored.length - 1)].id);
+      setSongName(d.songName || "");
+    }
+    draftReady.current = true;
+  }
+  const draftReady = useRef(false);
+  useEffect(() => {
+    if (!draftReady.current) {
+      draftReady.current = true;
+      return;
+    }
+    draftSet({
+      songName,
+      rootIndex,
+      modeKey,
+      useFlats,
+      extension,
+      bpm,
+      activeIndex: Math.max(0, sections.findIndex(s => s.id === activeSectionId)),
+      sections: sections.map(s => ({
+        type: s.type,
+        chords: s.chords.map(_ref24 => {
+          let {
+            root,
+            quality
+          } = _ref24;
+          return {
+            root,
+            quality
+          };
+        }),
+        lyrics: s.lyrics || ""
+      }))
+    });
+  }, [songName, sections, rootIndex, modeKey, useFlats, extension, bpm, activeSectionId]);
+  function handleNewSong() {
+    if (!confirmNewSong) {
+      setConfirmNewSong(true);
+      if (confirmTimer.current) clearTimeout(confirmTimer.current);
+      confirmTimer.current = setTimeout(() => setConfirmNewSong(false), 3000);
+      return;
+    }
+    setConfirmNewSong(false);
+    if (confirmTimer.current) clearTimeout(confirmTimer.current);
+    const freshId = nextId();
+    setSongName("");
+    setSections([{
+      id: freshId,
+      type: "verso",
+      chords: [],
+      lyrics: ""
+    }]);
+    setActiveSectionId(freshId);
+    setRootIndex(0);
+    setModeKey("ionian");
+    setUseFlats(false);
+    setExtension("triad");
+    showToast("Empezaste una canción nueva");
+  }
+  async function copySection() {
+    const text = activeChords.map(c => chordLabel(c.root, c.quality, useFlats)).join(" - ");
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (e) {
+      showToast("No se pudo copiar");
+    }
+  }
+  async function copySong() {
+    const text = sections.map((s, i) => `${sectionDisplayName(sections, i)}: ${s.chords.length ? s.chords.map(c => chordLabel(c.root, c.quality, useFlats)).join(" - ") : "(vacía)"}`).join("\n");
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast("Canción completa copiada");
+    } catch (e) {
+      showToast("No se pudo copiar");
+    }
+  }
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, c => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[c]);
+  }
+  async function exportSongHtml() {
+    const sectionsHtml = sections.map((s, i) => {
+      const label = escapeHtml(sectionDisplayName(sections, i));
+      const chordsText = s.chords.length ? escapeHtml(s.chords.map(c => chordLabel(c.root, c.quality, useFlats)).join(" - ")) : "";
+      const lyricsHtml = s.lyrics && s.lyrics.trim() ? `<p class="lyrics">${escapeHtml(s.lyrics).replace(/\n/g, "<br>")}</p>` : "";
+      return `<div class="section">
+          <div class="section-label">${label}</div>
+          <div class="section-content">
+            ${chordsText ? `<p class="chords">${chordsText}</p>` : '<p class="empty">(sección vacía)</p>'}
+            ${lyricsHtml}
+          </div>
+        </div>`;
+    }).join("\n");
+    const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>${escapeHtml(songName || "Canción")}</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 760px; margin: 40px auto; padding: 0 24px; color: #111; }
+  h1 { font-size: 26px; margin: 0 0 2px 0; display: inline; }
+  .bpm { font-family: Arial, sans-serif; font-size: 13px; color: #666; margin-left: 10px; vertical-align: middle; }
+  .meta { color: #555; font-size: 13px; margin: 4px 0 28px 0; font-family: Arial, sans-serif; }
+  .section { display: flex; gap: 18px; margin-bottom: 14px; page-break-inside: avoid; }
+  .section-label {
+    flex: 0 0 84px; text-align: right; font-family: Arial, sans-serif; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.05em; color: #999; padding-top: 3px;
+  }
+  .section-content { flex: 1; min-width: 0; }
+  .chords { font-weight: bold; font-size: 16px; margin: 0; }
+  .lyrics { white-space: pre-wrap; font-size: 14px; line-height: 1.6; font-family: Arial, sans-serif; color: #222; margin: 4px 0 0 0; }
+  .empty { color: #888; font-style: italic; font-size: 13px; margin: 0; }
+  @media print { body { margin: 0; padding: 24px; } }
+</style>
+</head>
+<body>
+  <h1>${escapeHtml(songName || "Canción sin título")}</h1><span class="bpm">${bpm} BPM</span>
+  <p class="meta">${escapeHtml(keyLabel)}</p>
+  ${sectionsHtml}
+</body>
+</html>`;
+    const safeName = (songName || "cancion").replace(/[^a-z0-9áéíóúñ \-_]/gi, "").trim() || "cancion";
+    const filename = `${safeName}.html`;
+    try {
+      await CB.saveFile(new Blob([html], {
+        type: "text/html"
+      }), filename);
+      showToast("Descargado: abrilo y usá Imprimir → Guardar como PDF");
+    } catch (e) {
+      showToast("No se pudo descargar el archivo");
+    }
+  }
+  const sectionTemplates = [...TEMPLATE_BANK].filter(t => t.section === activeSection.type).sort((a, b) => Number(templateFits(b, contextFromDegreeIdx)) - Number(templateFits(a, contextFromDegreeIdx)));
+  const activeGenre = GENRE_BANK.find(g => g.key === selectedGenre) || null;
+  const allNoteButtons = Array.from({
+    length: 12
+  }, (_, i) => i);
+  return React.createElement("div", {
+    className: "chordmatrix"
+  }, React.createElement("style", null, `
+        .chordmatrix {
+          --bg: #0b0b0d;
+          --panel: #1c1c1e;
+          --panel-alt: #2c2c2e;
+          --panel-nested: #3a3a3c;
+          --border: rgba(255,255,255,0.09);
+          --border-strong: rgba(255,255,255,0.16);
+          --text: #f5f5f7;
+          --text-dim: #9a9aa0;
+          --text-faint: #6e6e73;
+          --accent: #b3223f;
+          --accent-soft: rgba(179,34,63,0.2);
+          --accent-strong: #d42c4f;
+          --teal: #5ac8fa;
+          --teal-soft: rgba(90,200,250,0.18);
+          --brick: #ff453a;
+          --brick-soft: rgba(255,69,58,0.18);
+          --led-ok: #30d158;
+          --led-avoid: #6e6e73;
+          --radius-xl: 22px;
+          --radius-lg: 18px;
+          --radius-md: 14px;
+          --radius-sm: 10px;
+          --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+          --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+          --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+
+          background: var(--bg);
+          color: var(--text);
+          font-family: var(--font-sans);
+          border-radius: var(--radius-xl);
+          padding: 22px;
+          box-sizing: border-box;
+          width: 100%;
+          -webkit-font-smoothing: antialiased;
+        }
+        .chordmatrix *, .chordmatrix *::before, .chordmatrix *::after { box-sizing: border-box; }
+
+        .cm-header { margin-bottom: 20px; }
+        .cm-title { font-family: var(--font-display); font-weight: 800; font-size: 28px; margin: 0 0 4px 0; letter-spacing: -0.02em; }
+        .cm-subtitle { font-size: 14px; color: var(--text-dim); margin: 0; line-height: 1.4; }
+
+        .cm-brandbar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+        .cm-brandmark { width: 9px; height: 9px; border-radius: 2px; background: var(--accent); transform: rotate(45deg); flex-shrink: 0; }
+        .cm-brandname { font-family: var(--font-display); font-weight: 800; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-faint); }
+
+        .cm-footer { margin-top: 32px; padding-top: 22px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+        .cm-footer-brand { display: flex; align-items: center; gap: 10px; }
+        .cm-footer-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .cm-footer-mark span { transform: rotate(45deg); width: 10px; height: 10px; background: #fff; border-radius: 2px; display: block; }
+        .cm-footer-brand-text strong { display: block; font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; font-size: 14px; color: var(--text); }
+        .cm-footer-brand-text span { font-size: 12px; color: var(--text-faint); }
+        .cm-footer-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+        .cm-footer-link { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: var(--radius-sm); background: var(--panel-alt); color: var(--text); text-decoration: none; font-size: 13px; font-weight: 600; transition: background 0.15s; }
+        .cm-footer-link:hover { background: var(--panel-nested); }
+        .cm-footer-link.coffee { background: var(--accent); color: #fff; }
+        .cm-footer-link.coffee:hover { background: var(--accent-strong); }
+
+        .cm-controls {
+          display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;
+          background: var(--panel); border: none; border-radius: var(--radius-lg);
+          padding: 18px; margin-bottom: 16px;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .cm-field { display: flex; flex-direction: column; gap: 8px; }
+        .cm-field label { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+        .cm-note-row { display: flex; flex-wrap: wrap; gap: 6px; max-width: 320px; }
+        .cm-note-btn {
+          font-family: var(--font-mono); font-size: 13px; font-weight: 600; padding: 8px 11px;
+          background: var(--panel-alt); border: none; color: var(--text);
+          border-radius: var(--radius-sm); cursor: pointer; transition: background .15s, color .15s, transform .1s;
+        }
+        .cm-note-btn:hover { background: var(--panel-nested); }
+        .cm-note-btn:active { transform: scale(0.94); }
+        .cm-note-btn.active { background: var(--accent); color: #fff; font-weight: 700; }
+
+        .cm-select {
+          font-family: var(--font-sans); font-size: 14px; font-weight: 500; padding: 9px 12px;
+          background: var(--panel-alt); border: none; color: var(--text);
+          border-radius: var(--radius-sm); cursor: pointer;
+        }
+
+        .cm-segment { display: flex; background: rgba(255,255,255,0.07); padding: 3px; border-radius: 11px; gap: 2px; }
+        .cm-segment button {
+          font-size: 13px; font-weight: 600; padding: 7px 13px; background: transparent; color: var(--text-dim);
+          border: none; cursor: pointer; font-family: var(--font-sans); border-radius: 8px; transition: background .15s, color .15s;
+        }
+        .cm-segment button.active { background: var(--panel-nested); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+        .cm-checkbox { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--text); cursor: pointer; }
+        .cm-checkbox input[type="checkbox"] {
+          appearance: none; -webkit-appearance: none; width: 44px; height: 27px; background: rgba(255,255,255,0.18);
+          border-radius: 999px; position: relative; cursor: pointer; flex-shrink: 0; transition: background .2s; outline: none; margin: 0;
+        }
+        .cm-checkbox input[type="checkbox"]::after {
+          content: ""; position: absolute; top: 2px; left: 2px; width: 23px; height: 23px; border-radius: 50%;
+          background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.35); transition: transform .2s cubic-bezier(.2,.8,.3,1.2);
+        }
+        .cm-checkbox input[type="checkbox"]:checked { background: var(--accent); }
+        .cm-checkbox input[type="checkbox"]:checked::after { transform: translateX(17px); }
+
+        .cm-song-panel { margin-bottom: 16px; }
+        .cm-section-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+        .cm-section-tab {
+          display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+          padding: 10px 14px; background: var(--panel-alt); border: none;
+          border-radius: var(--radius-md); cursor: pointer; font-family: var(--font-sans); color: var(--text);
+          min-width: 92px; transition: background .15s, transform .1s;
+        }
+        .cm-section-tab:hover { background: var(--panel-nested); }
+        .cm-section-tab:active { transform: scale(0.97); }
+        .cm-section-tab.active { background: var(--accent-soft); box-shadow: inset 0 0 0 1.5px var(--accent); }
+        .cm-section-tab-type { font-size: 14px; font-weight: 700; }
+        .cm-section-tab-count { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); }
+
+        .cm-section-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+        .cm-add-section-row {
+          display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+          padding-top: 14px; border-top: 1px solid var(--border);
+        }
+        .cm-summary { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; }
+        .cm-summary-row { display: flex; flex-direction: column; gap: 6px; }
+        .cm-summary-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); font-family: var(--font-sans); }
+        .cm-summary-chords { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+        .cm-summary-chord {
+          font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--text);
+          background: transparent; border: none; border-radius: var(--radius-sm); padding: 4px 8px;
+          cursor: pointer; transition: background .15s;
+        }
+        .cm-summary-chord:hover { background: var(--panel-alt); }
+        .cm-summary-chord.editing { background: var(--accent-soft); color: var(--accent); cursor: default; }
+        .cm-summary-chord-edit {
+          display: inline-flex; align-items: center; gap: 3px; background: var(--panel-alt);
+          border-radius: var(--radius-sm); padding: 3px 4px; box-shadow: inset 0 0 0 1.5px var(--accent);
+        }
+        .cm-summary-empty { font-size: 13px; color: var(--text-dim); font-style: italic; }
+        .cm-summary-lyrics { margin-top: 6px; font-size: 13px; }
+
+        .cm-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; align-items: start; }
+        .cm-layout > div { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+        @media (max-width: 780px) { .cm-layout { grid-template-columns: 1fr; } }
+
+        .cm-panel { background: var(--panel); border: none; border-radius: var(--radius-lg); padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.3); min-width: 0; }
+        .cm-panel h2 { font-family: var(--font-display); font-size: 17px; font-weight: 700; margin: 0 0 14px 0; letter-spacing: -0.01em; }
+        .cm-hint { font-size: 13px; color: var(--text-dim); margin: -8px 0 14px 0; line-height: 1.4; }
+
+        .cm-grid {
+          display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px;
+        }
+        .cm-chord-card {
+          background: var(--panel-alt); border: none; border-top: 3px solid transparent;
+          border-radius: var(--radius-md); padding: 12px 8px 10px; text-align: center;
+          display: flex; flex-direction: column; gap: 8px; align-items: center;
+          transition: background .15s;
+        }
+        .cm-chord-card:hover { background: var(--panel-nested); }
+        .cm-chord-card.fn-T { border-top-color: var(--accent); }
+        .cm-chord-card.fn-S { border-top-color: var(--teal); }
+        .cm-chord-card.fn-D { border-top-color: var(--brick); }
+        .cm-chord-main {
+          background: transparent; border: none; padding: 0; cursor: pointer; color: var(--text);
+          display: flex; flex-direction: column; gap: 4px; align-items: center; width: 100%;
+          font-family: inherit; transition: transform .1s;
+        }
+        .cm-chord-main:active { transform: scale(0.94); }
+        .cm-numeral { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--text-dim); }
+        .cm-chordname { font-family: var(--font-display); font-size: 17px; font-weight: 700; }
+        .cm-tension-row { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+        .cm-tension {
+          font-family: var(--font-mono); font-size: 10px; font-weight: 600; padding: 3px 6px; border-radius: 999px;
+          border: none; background: rgba(255,255,255,0.08); line-height: 1.4;
+        }
+        .cm-tension.ok { color: #08210f; background: var(--led-ok); cursor: pointer; }
+        .cm-tension.ok:hover { filter: brightness(1.1); }
+        .cm-tension.avoid { color: var(--text-faint); background: rgba(255,255,255,0.05); text-decoration: line-through; cursor: help; }
+
+        .cm-suggestion-list { display: flex; flex-direction: column; gap: 8px; }
+        .cm-suggestion {
+          display: flex; align-items: center; gap: 14px; text-align: left; width: 100%;
+          background: var(--panel-alt); border: none; border-radius: var(--radius-md);
+          padding: 12px 14px; cursor: pointer; font-family: var(--font-sans); color: var(--text);
+          transition: background .15s, transform .1s;
+        }
+        .cm-suggestion:hover { background: var(--panel-nested); }
+        .cm-suggestion:active { transform: scale(0.99); }
+        .cm-suggestion.special { box-shadow: inset 0 0 0 1.5px var(--teal); }
+        .cm-suggestion.special .cm-suggestion-chord { color: var(--teal); }
+        .cm-suggestion-chord {
+          font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--accent);
+          flex-shrink: 0; min-width: 64px;
+        }
+        .cm-suggestion-text { font-size: 13px; color: var(--text-dim); line-height: 1.4; }
+        .cm-suggestion-note { font-size: 13px; color: var(--text-dim); margin: -8px 0 12px 0; font-style: italic; }
+
+        .cm-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 14px; font-size: 12px; color: var(--text-dim); }
+        .cm-legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+        .cm-chip-row { display: flex; flex-wrap: wrap; gap: 9px; }
+        .cm-chip {
+          font-size: 13px; font-weight: 600; padding: 9px 14px; background: var(--panel-alt); border: none;
+          color: var(--text); border-radius: 999px; cursor: pointer; font-family: var(--font-sans);
+          transition: background .15s, transform .1s;
+        }
+        .cm-chip:hover { background: var(--panel-nested); }
+        .cm-chip:active { transform: scale(0.96); }
+        .cm-chip.secondary { font-family: var(--font-mono); }
+
+        .cm-progression-row { display: flex; flex-wrap: wrap; gap: 12px; min-height: 88px; }
+        .cm-empty { color: var(--text-dim); font-size: 14px; padding: 22px 4px; }
+        .cm-prog-card {
+          background: var(--panel-alt); border: none; box-shadow: inset 0 0 0 1.5px var(--accent);
+          border-radius: var(--radius-md); padding: 10px 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 76px;
+        }
+        .cm-prog-index { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+        .cm-prog-name { font-family: var(--font-display); font-size: 17px; font-weight: 700; }
+        .cm-prog-actions { display: flex; gap: 2px; }
+        .cm-icon-btn {
+          background: transparent; border: none; color: var(--text-dim); cursor: pointer; padding: 5px;
+          border-radius: 999px; display: flex; align-items: center; justify-content: center; transition: background .15s, color .15s;
+        }
+        .cm-icon-btn:hover { color: var(--text); background: rgba(255,255,255,0.1); }
+        .cm-icon-btn.danger:hover { color: var(--brick); background: var(--brick-soft); }
+        .cm-icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .cm-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+        .cm-btn {
+          font-size: 14px; font-weight: 600; padding: 10px 16px; border-radius: var(--radius-md); border: none;
+          background: var(--panel-alt); color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 7px;
+          font-family: var(--font-sans); transition: background .15s, transform .1s;
+        }
+        .cm-btn:hover { background: var(--panel-nested); }
+        .cm-btn:active { transform: scale(0.97); }
+        .cm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .cm-btn.primary { background: var(--accent); color: #fff; font-weight: 700; box-shadow: 0 2px 10px rgba(179,34,63,0.4); }
+        .cm-btn.primary:hover { filter: brightness(1.06); }
+        .cm-key-display { font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--text-dim); padding: 0 6px; }
+        .cm-bpm-field { display: flex; align-items: center; gap: 8px; }
+        .cm-bpm-field label { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+        .cm-bpm-field input { width: 66px; text-align: center; flex: none; }
+
+        .cm-save-row { display: flex; gap: 10px; margin-top: 16px; }
+        .cm-input {
+          flex: 1; font-size: 14px; padding: 10px 12px; background: var(--panel-alt); border: none;
+          color: var(--text); border-radius: var(--radius-sm); font-family: var(--font-sans);
+        }
+        .cm-input::placeholder { color: var(--text-dim); }
+        .cm-textarea {
+          width: 100%; font-size: 14px; padding: 12px; background: var(--panel-alt); border: none;
+          color: var(--text); border-radius: var(--radius-sm); font-family: var(--font-sans); resize: vertical;
+        }
+        .cm-textarea::placeholder { color: var(--text-dim); }
+
+        .cm-saved-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+        .cm-saved-item {
+          background: var(--panel-alt); border: none; border-radius: var(--radius-md); padding: 12px 14px;
+          display: flex; justify-content: space-between; align-items: center; gap: 12px;
+        }
+        .cm-saved-info { min-width: 0; }
+        .cm-saved-name { font-weight: 700; font-size: 14px; }
+        .cm-saved-meta { font-size: 12px; color: var(--text-dim); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cm-saved-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+        .cm-toast {
+          position: sticky; bottom: 10px; margin-top: 16px;
+          background: rgba(28,28,30,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+          color: var(--text); border: 0.5px solid rgba(255,255,255,0.12);
+          font-size: 14px; font-weight: 600; padding: 12px 18px; border-radius: 999px; text-align: center;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .cm-template-list { display: flex; flex-direction: column; gap: 8px; }
+        .cm-template-card {
+          display: flex; flex-direction: column; gap: 6px; align-items: flex-start; text-align: left; width: 100%;
+          background: var(--panel-alt); border: none; border-radius: var(--radius-md);
+          padding: 12px 14px; cursor: pointer; font-family: var(--font-sans); color: var(--text);
+          transition: background .15s, transform .1s;
+        }
+        .cm-template-card:hover { background: var(--panel-nested); }
+        .cm-template-card:active { transform: scale(0.99); }
+        .cm-template-card.unusual { box-shadow: inset 3px 0 0 var(--accent); }
+        .cm-template-label { font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
+        .cm-template-meta { display: flex; flex-wrap: wrap; gap: 7px; }
+        .cm-badge {
+          font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 999px;
+          background: rgba(255,255,255,0.08); color: var(--text-dim); font-family: var(--font-sans);
+        }
+        .cm-badge.secondary { color: var(--teal); background: var(--teal-soft); }
+        .cm-badge.fit { color: var(--led-ok); background: rgba(48,209,88,0.16); }
+        .cm-badge.mode { color: var(--accent); background: var(--accent-soft); }
+
+        .cm-chord-hover { position: relative; display: inline-block; }
+        .cm-chord-tooltip {
+          position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-8px);
+          opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s;
+          background: rgba(44,44,46,0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+          border: none; border-radius: var(--radius-md); padding: 10px;
+          box-shadow: 0 12px 30px rgba(0,0,0,0.5); z-index: 40; white-space: normal;
+        }
+        .cm-chord-hover:hover .cm-chord-tooltip { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(-12px); }
+        .cm-chord-diagram { display: flex; gap: 12px; align-items: flex-start; }
+        .cm-chord-diagram.large { gap: 20px; }
+        .cm-diagram-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .cm-diagram-label { font-size: 9px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+        .cm-guitar-svg.small { width: 52px; height: 62px; }
+        .cm-guitar-svg.large { width: 96px; height: 115px; }
+        .cm-piano-svg.small { width: 96px; height: 34px; }
+        .cm-piano-svg.large { width: 168px; height: 58px; }
+        .cm-diagram-approx { font-size: 9px; color: var(--text-dim); font-style: italic; display: block; margin-top: 4px; max-width: 170px; flex-basis: 100%; }
+
+        .cm-diagram-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+        .cm-diagram-card {
+          background: var(--panel-alt); border: none; border-radius: var(--radius-md);
+          padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .cm-diagram-card-title { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
+        .cm-diagram-tensions { display: flex; flex-direction: column; gap: 10px; width: 100%; padding-top: 10px; border-top: 1px solid var(--border); }
+        .cm-diagram-tension-row { display: flex; align-items: center; gap: 10px; }
+        .cm-diagram-tension-label { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--led-ok); min-width: 46px; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .chordmatrix * { transition: none !important; }
+        }
+
+        .cm-print-view { display: none; }
+        @media print {
+          .chordmatrix { background: #fff !important; padding: 0 !important; border-radius: 0 !important; }
+          .chordmatrix .cm-app-content { display: none !important; }
+          .chordmatrix .cm-print-view { display: block !important; color: #111 !important; font-family: -apple-system, Arial, sans-serif; }
+          .cm-print-view h1 { font-family: Georgia, serif; font-size: 24px; margin: 0 0 2px 0; color: #111; }
+          .cm-print-meta { color: #555; font-size: 12px; margin: 0 0 20px 0; }
+          .cm-print-section { page-break-inside: avoid; margin-bottom: 22px; }
+          .cm-print-section h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #333; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin: 0 0 10px 0; }
+          .cm-print-chords-only { font-family: Georgia, serif; font-weight: bold; font-size: 15px; color: #111; }
+          .cm-print-empty { color: #888; font-style: italic; font-size: 12px; }
+          .cm-print-lyrics { white-space: pre-wrap; font-size: 13px; color: #222; margin-top: 6px; line-height: 1.5; }
+        }
+      `), React.createElement("div", {
+    className: "cm-app-content"
+  }, React.createElement("div", {
+    className: "cm-controls"
+  }, React.createElement("div", {
+    className: "cm-field"
+  }, React.createElement("label", null, "Tonalidad"), React.createElement("div", {
+    className: "cm-note-row"
+  }, allNoteButtons.map(pc => React.createElement("button", {
+    key: pc,
+    className: `cm-note-btn${pc === rootIndex ? " active" : ""}`,
+    onClick: () => setRootIndex(pc)
+  }, noteName(pc, useFlats))))), React.createElement("div", {
+    className: "cm-field"
+  }, React.createElement("label", null, "Modo"), React.createElement("select", {
+    className: "cm-select",
+    value: modeKey,
+    onChange: e => setModeKey(e.target.value)
+  }, MODES.map(m => React.createElement("option", {
+    key: m.key,
+    value: m.key
+  }, m.label)))), React.createElement("div", {
+    className: "cm-field"
+  }, React.createElement("label", null, "Acordes"), React.createElement("div", {
+    className: "cm-segment"
+  }, React.createElement("button", {
+    className: extension === "triad" ? "active" : "",
+    onClick: () => setExtension("triad")
+  }, "Tr\xEDadas"), React.createElement("button", {
+    className: extension === "seventh" ? "active" : "",
+    onClick: () => setExtension("seventh")
+  }, "S\xE9ptimas"))), React.createElement("label", {
+    className: "cm-checkbox"
+  }, React.createElement("input", {
+    type: "checkbox",
+    checked: useFlats,
+    onChange: e => setUseFlats(e.target.checked)
+  }), "Usar bemoles (\u266D)"), React.createElement("label", {
+    className: "cm-checkbox"
+  }, React.createElement("input", {
+    type: "checkbox",
+    checked: showSecondary,
+    onChange: e => setShowSecondary(e.target.checked)
+  }), "Dominantes secundarios"), React.createElement("label", {
+    className: "cm-checkbox"
+  }, React.createElement("input", {
+    type: "checkbox",
+    checked: showTensions,
+    onChange: e => setShowTensions(e.target.checked)
+  }), "Tensiones (9-11-13)"), React.createElement("label", {
+    className: "cm-checkbox"
+  }, React.createElement("input", {
+    type: "checkbox",
+    checked: showDiagrams,
+    onChange: e => setShowDiagrams(e.target.checked)
+  }), "Diagramas de guitarra/piano")), React.createElement("div", {
+    className: "cm-panel cm-song-panel"
+  }, React.createElement("h2", null, "Tu canci\xF3n"), React.createElement("input", {
+    className: "cm-input",
+    style: {
+      marginBottom: 12
+    },
+    placeholder: "Nombre de la canci\xF3n (ej. Tema nuevo)",
+    value: songName,
+    onChange: e => setSongName(e.target.value)
+  }), React.createElement("div", {
+    className: "cm-toolbar",
+    style: {
+      marginTop: 0,
+      marginBottom: 12
+    }
+  }, React.createElement("button", {
+    className: "cm-btn",
+    onClick: handleNewSong,
+    style: confirmNewSong ? {
+      borderColor: "var(--brick)",
+      color: "var(--brick)"
+    } : undefined
+  }, React.createElement(FilePlus2, {
+    size: 14
+  }), " ", confirmNewSong ? "¿Seguro? Tocá de nuevo" : "Nueva canción")), React.createElement("div", {
+    className: "cm-section-tabs"
+  }, sections.map((s, i) => React.createElement("button", {
+    key: s.id,
+    className: `cm-section-tab${s.id === activeSectionId ? " active" : ""}`,
+    onClick: () => setActiveSectionId(s.id)
+  }, React.createElement("span", {
+    className: "cm-section-tab-type"
+  }, sectionDisplayName(sections, i)), React.createElement("span", {
+    className: "cm-section-tab-count"
+  }, s.chords.length ? `${s.chords.length} acorde${s.chords.length === 1 ? "" : "s"}` : "vacía")))), React.createElement("div", {
+    className: "cm-section-toolbar"
+  }, React.createElement("select", {
+    className: "cm-select",
+    value: activeSection.type,
+    onChange: e => changeSectionType(activeSectionId, e.target.value)
+  }, SECTION_TYPES.map(t => React.createElement("option", {
+    key: t.key,
+    value: t.key
+  }, t.label))), React.createElement("button", {
+    className: "cm-btn",
+    onClick: () => moveSection(-1),
+    disabled: activeIndex === 0,
+    "aria-label": "Mover secci\xF3n antes"
+  }, React.createElement(ArrowLeft, {
+    size: 14
+  })), React.createElement("button", {
+    className: "cm-btn",
+    onClick: () => moveSection(1),
+    disabled: activeIndex === sections.length - 1,
+    "aria-label": "Mover secci\xF3n despu\xE9s"
+  }, React.createElement(ArrowRight, {
+    size: 14
+  })), React.createElement("button", {
+    className: "cm-btn",
+    onClick: duplicateSection
+  }, React.createElement(Files, {
+    size: 14
+  }), " Duplicar"), React.createElement("button", {
+    className: "cm-btn",
+    onClick: removeSection,
+    disabled: sections.length <= 1
+  }, React.createElement(Trash2, {
+    size: 14
+  }), " Eliminar secci\xF3n")), React.createElement("div", {
+    className: "cm-add-section-row"
+  }, React.createElement("select", {
+    className: "cm-select",
+    value: newSectionType,
+    onChange: e => setNewSectionType(e.target.value)
+  }, SECTION_TYPES.map(t => React.createElement("option", {
+    key: t.key,
+    value: t.key
+  }, t.label))), React.createElement("button", {
+    className: "cm-btn primary",
+    onClick: addSection
+  }, React.createElement(Plus, {
+    size: 14
+  }), " Agregar secci\xF3n"), React.createElement("button", {
+    className: "cm-btn",
+    onClick: copySong
+  }, React.createElement(Copy, {
+    size: 14
+  }), " Copiar canci\xF3n completa"), React.createElement("button", {
+    className: "cm-btn",
+    onClick: () => setShowSummary(v => !v)
+  }, React.createElement(ListMusic, {
+    size: 14
+  }), " ", showSummary ? "Ocultar canción completa" : "Ver canción completa"), React.createElement("button", {
+    className: "cm-btn",
+    onClick: exportSongHtml
+  }, React.createElement(FileDown, {
+    size: 14
+  }), " Descargar canci\xF3n (HTML \u2192 PDF)")), showSummary && React.createElement("div", {
+    className: "cm-summary"
+  }, React.createElement("div", {
+    className: "cm-toolbar",
+    style: {
+      marginTop: 0
+    }
+  }, React.createElement("button", {
+    className: "cm-btn primary",
+    onClick: () => playSequence("song", sections.flatMap(s => s.chords)),
+    disabled: sections.every(s => s.chords.length === 0)
+  }, playingId === "song" ? React.createElement(Square, {
+    size: 14
+  }) : React.createElement(Play, {
+    size: 14
+  }), " ", playingId === "song" ? "Detener" : "Reproducir canción completa"), React.createElement("div", {
+    className: "cm-bpm-field"
+  }, React.createElement("label", {
+    htmlFor: "cm-bpm-song"
+  }, "BPM"), React.createElement("input", {
+    id: "cm-bpm-song",
+    type: "number",
+    className: "cm-input",
+    min: 40,
+    max: 220,
+    value: bpm,
+    onChange: e => {
+      const v = parseInt(e.target.value, 10);
+      if (!Number.isNaN(v)) setBpm(Math.min(220, Math.max(40, v)));
+    }
+  }))), React.createElement("p", {
+    className: "cm-hint",
+    style: {
+      margin: 0
+    }
+  }, "Toc\xE1 un acorde para moverlo o quitarlo r\xE1pido, sin salir de esta vista."), sections.every(s => s.chords.length === 0) ? React.createElement("p", {
+    className: "cm-empty"
+  }, "Todav\xEDa no hay acordes cargados en ninguna secci\xF3n.") : sections.map((s, i) => React.createElement("div", {
+    key: s.id,
+    className: "cm-summary-row"
+  }, React.createElement("span", {
+    className: "cm-summary-label"
+  }, sectionDisplayName(sections, i)), React.createElement("span", {
+    className: "cm-summary-chords"
+  }, s.chords.length === 0 ? React.createElement("span", {
+    className: "cm-summary-empty"
+  }, "\u2014 vac\xEDa \u2014") : s.chords.map((c, j) => {
+    const isEditing = editingSummaryChord && editingSummaryChord.sectionId === s.id && editingSummaryChord.chordId === c.id;
+    if (isEditing) {
+      return React.createElement("span", {
+        key: c.id,
+        className: "cm-summary-chord-edit"
+      }, React.createElement("span", {
+        className: "cm-summary-chord editing"
+      }, chordLabel(c.root, c.quality, useFlats)), React.createElement("button", {
+        className: "cm-icon-btn",
+        "aria-label": "Mover antes",
+        disabled: j === 0,
+        onClick: () => moveChordInSection(s.id, c.id, -1)
+      }, React.createElement(ArrowLeft, {
+        size: 12
+      })), React.createElement("button", {
+        className: "cm-icon-btn",
+        "aria-label": "Mover despu\xE9s",
+        disabled: j === s.chords.length - 1,
+        onClick: () => moveChordInSection(s.id, c.id, 1)
+      }, React.createElement(ArrowRight, {
+        size: 12
+      })), React.createElement("button", {
+        className: "cm-icon-btn danger",
+        "aria-label": "Quitar acorde",
+        onClick: () => removeChordFromSection(s.id, c.id)
+      }, React.createElement(X, {
+        size: 12
+      })));
+    }
+    return React.createElement("button", {
+      key: c.id,
+      className: "cm-summary-chord",
+      onClick: () => handleSummaryChordClick(s.id, c.id)
+    }, React.createElement(ChordHover, {
+      root: c.root,
+      quality: c.quality,
+      useFlats: useFlats
+    }, chordLabel(c.root, c.quality, useFlats)));
+  })), React.createElement("textarea", {
+    className: "cm-textarea cm-summary-lyrics",
+    placeholder: `Letra de ${sectionDisplayName(sections, i)}...`,
+    value: s.lyrics || "",
+    onChange: e => setSectionLyrics(s.id, e.target.value),
+    rows: 3
+  }))))), React.createElement("div", {
+    className: "cm-layout"
+  }, React.createElement("div", null, React.createElement("div", {
+    className: "cm-panel"
+  }, React.createElement("h2", null, "Acordes de ", keyLabel), React.createElement("div", {
+    className: "cm-grid"
+  }, diatonic.map((c, i) => {
+    const full = fullDiatonic[i];
+    return React.createElement("div", {
+      key: c.degree,
+      className: `cm-chord-card fn-${c.fn}`
+    }, React.createElement("button", {
+      className: "cm-chord-main",
+      onClick: () => addChord(c),
+      title: `Agregar ${chordLabel(c.root, c.quality, useFlats)} a ${sectionDisplayName(sections, activeIndex)}`
+    }, React.createElement("span", {
+      className: "cm-numeral"
+    }, c.numeral), React.createElement("span", {
+      className: "cm-chordname"
+    }, React.createElement(ChordHover, {
+      root: c.root,
+      quality: c.quality,
+      useFlats: useFlats
+    }, chordLabel(c.root, c.quality, useFlats)))), showTensions && React.createElement("div", {
+      className: "cm-tension-row"
+    }, full.tensions.map(t => t.avoid ? React.createElement("span", {
+      key: t.kind,
+      className: "cm-tension avoid",
+      title: `Choca con ${t.reason} (medio tono) — evitala salvo que busques ese color a propósito`
+    }, t.label) : React.createElement("button", {
+      key: t.kind,
+      className: "cm-tension ok",
+      disabled: !t.addQuality,
+      onClick: () => addExtended(c.root, t.addQuality),
+      title: t.addQuality ? `Agregar ${chordLabel(c.root, t.addQuality, useFlats)}` : `${t.label} funciona sobre este acorde`
+    }, t.label))));
+  })), React.createElement("div", {
+    className: "cm-legend"
+  }, React.createElement("span", null, React.createElement("span", {
+    className: "cm-legend-dot",
+    style: {
+      background: "var(--accent)"
+    }
+  }), "T\xF3nica"), React.createElement("span", null, React.createElement("span", {
+    className: "cm-legend-dot",
+    style: {
+      background: "var(--teal)"
+    }
+  }), "Subdominante"), React.createElement("span", null, React.createElement("span", {
+    className: "cm-legend-dot",
+    style: {
+      background: "var(--brick)"
+    }
+  }), "Dominante")), showTensions && React.createElement("p", {
+    className: "cm-hint",
+    style: {
+      marginTop: 10
+    }
+  }, "Verde = funciona, tocala para agregar el acorde extendido. Tachada = choca a medio tono con una nota del acorde (fundamental, 3ra, 5ta o 7ma) \u2014 evitarla salvo que busques ese color a prop\xF3sito. Las tensiones asumen el acorde con s\xE9ptima."), showSecondary && React.createElement(React.Fragment, null, React.createElement("h2", {
+    style: {
+      marginTop: 18
+    }
+  }, "Dominantes secundarios"), React.createElement("p", {
+    className: "cm-hint"
+  }, "Tensionan hacia el acorde que indican, \xFAtiles para darle m\xE1s movimiento a una vuelta."), React.createElement("div", {
+    className: "cm-chip-row"
+  }, secondary.map((s, i) => React.createElement("button", {
+    key: i,
+    className: "cm-chip secondary",
+    onClick: () => addChord(s)
+  }, s.label, " \u2192 ", chordLabel(s.root, s.quality, useFlats)))))), showDiagrams && React.createElement("div", {
+    className: "cm-panel"
+  }, React.createElement("h2", null, "C\xF3mo tocar los acordes de ", keyLabel), React.createElement("p", {
+    className: "cm-hint"
+  }, "Formas movibles de guitarra (acorde con cejilla) y las teclas exactas en piano, incluyendo las tensiones que le funcionan a cada uno."), React.createElement("div", {
+    className: "cm-diagram-grid"
+  }, diatonic.map((c, i) => {
+    const availableTensions = fullDiatonic[i].tensions.filter(t => !t.avoid && t.addQuality);
+    return React.createElement("div", {
+      key: c.degree,
+      className: "cm-diagram-card"
+    }, React.createElement("span", {
+      className: "cm-diagram-card-title"
+    }, c.numeral, " \xB7 ", chordLabel(c.root, c.quality, useFlats)), React.createElement(ChordDiagram, {
+      root: c.root,
+      quality: c.quality,
+      useFlats: useFlats,
+      size: "large"
+    }), availableTensions.length > 0 && React.createElement("div", {
+      className: "cm-diagram-tensions"
+    }, availableTensions.map(t => React.createElement("div", {
+      key: t.kind,
+      className: "cm-diagram-tension-row"
+    }, React.createElement("span", {
+      className: "cm-diagram-tension-label"
+    }, chordLabel(c.root, t.addQuality, useFlats)), React.createElement(ChordDiagram, {
+      root: c.root,
+      quality: t.addQuality,
+      useFlats: useFlats,
+      size: "small"
+    })))));
+  }))), React.createElement("div", {
+    className: "cm-panel"
+  }, React.createElement("h2", null, "Plantillas para ", sectionDisplayName(sections, activeIndex)), React.createElement("p", {
+    className: "cm-hint"
+  }, "Exclusivas de esta parte \u2014 no son las mismas que ver\xEDas en otra secci\xF3n.", contextFromDegreeIdx >= 0 && " Las que encajan mejor con tu último acorde aparecen primero."), React.createElement("label", {
+    className: "cm-checkbox",
+    style: {
+      marginBottom: 12
+    }
+  }, React.createElement("input", {
+    type: "checkbox",
+    checked: applyTensions,
+    onChange: e => setApplyTensions(e.target.checked)
+  }), "Cargar con tensiones lindas cuando haya (9-13)"), React.createElement("div", {
+    className: "cm-template-list"
+  }, sectionTemplates.map((t, i) => {
+    const fits = templateFits(t, contextFromDegreeIdx);
+    const hasSec = templateHasSecondary(t);
+    return React.createElement("button", {
+      key: i,
+      className: `cm-template-card${t.rarity === "unusual" ? " unusual" : ""}`,
+      onClick: () => loadTemplate(t)
+    }, React.createElement("span", {
+      className: "cm-template-label"
+    }, templateLabel(t, diatonic)), React.createElement("span", {
+      className: "cm-template-meta"
+    }, t.rarity === "unusual" && React.createElement("span", {
+      className: "cm-badge"
+    }, "poco com\xFAn"), hasSec && React.createElement("span", {
+      className: "cm-badge secondary"
+    }, "dominante secundaria"), fits && React.createElement("span", {
+      className: "cm-badge fit"
+    }, "encaja despu\xE9s de tu \xFAltimo acorde")));
+  }))), React.createElement("div", {
+    className: "cm-panel"
+  }, React.createElement("h2", null, "Progresiones por g\xE9nero"), React.createElement("p", {
+    className: "cm-hint"
+  }, "Para ir viendo qu\xE9 se usa com\xFAnmente en cada estilo, m\xE1s all\xE1 de la secci\xF3n en la que est\xE9s."), React.createElement("select", {
+    className: "cm-select",
+    style: {
+      width: "100%",
+      marginBottom: 12
+    },
+    value: selectedGenre,
+    onChange: e => setSelectedGenre(e.target.value)
+  }, React.createElement("option", {
+    value: ""
+  }, "Eleg\xED un g\xE9nero\u2026"), GENRE_BANK.map(g => React.createElement("option", {
+    key: g.key,
+    value: g.key
+  }, g.label))), activeGenre && React.createElement(React.Fragment, null, React.createElement("label", {
+    className: "cm-checkbox",
+    style: {
+      marginBottom: 12
+    }
+  }, React.createElement("input", {
+    type: "checkbox",
+    checked: applyTensions,
+    onChange: e => setApplyTensions(e.target.checked)
+  }), "Cargar con tensiones lindas cuando haya (9-13)"), React.createElement("div", {
+    className: "cm-template-list"
+  }, activeGenre.progressions.map((prog, i) => {
+    const effectiveMode = prog.requiredMode || modeKey;
+    const dia = prog.requiredMode && prog.requiredMode !== modeKey ? getDiatonicChords(rootIndex, effectiveMode, extension) : diatonic;
+    const hasSec = templateHasSecondary(prog);
+    return React.createElement("button", {
+      key: i,
+      className: "cm-template-card",
+      onClick: () => loadGenreProgression(activeGenre, prog)
+    }, React.createElement("span", {
+      className: "cm-template-label"
+    }, templateLabel(prog, dia)), React.createElement("span", {
+      className: "cm-template-meta"
+    }, prog.requiredMode && prog.requiredMode !== modeKey && React.createElement("span", {
+      className: "cm-badge mode"
+    }, "cambia el modo a ", MODES.find(m => m.key === prog.requiredMode).label), hasSec && React.createElement("span", {
+      className: "cm-badge secondary"
+    }, "dominante secundaria")), React.createElement("span", {
+      className: "cm-suggestion-text"
+    }, prog.note));
+  }))))), React.createElement("div", null, React.createElement("div", {
+    className: "cm-panel"
+  }, React.createElement("h2", null, sectionDisplayName(sections, activeIndex), " \u2014 progresi\xF3n"), activeChords.length === 0 ? React.createElement("p", {
+    className: "cm-empty"
+  }, "Todav\xEDa no agregaste acordes ac\xE1. Toc\xE1 cualquiera de la matriz para empezar esta secci\xF3n.") : React.createElement("div", {
+    className: "cm-progression-row"
+  }, activeChords.map((c, i) => React.createElement("div", {
+    key: c.id,
+    className: "cm-prog-card"
+  }, React.createElement("span", {
+    className: "cm-prog-index"
+  }, i + 1), React.createElement("span", {
+    className: "cm-prog-name"
+  }, React.createElement(ChordHover, {
+    root: c.root,
+    quality: c.quality,
+    useFlats: useFlats
+  }, chordLabel(c.root, c.quality, useFlats))), React.createElement("div", {
+    className: "cm-prog-actions"
+  }, React.createElement("button", {
+    className: "cm-icon-btn",
+    "aria-label": "Escuchar este acorde",
+    onClick: () => playSingleChord(c.id, c.root, c.quality)
+  }, playingId === c.id ? React.createElement(Square, {
+    size: 13
+  }) : React.createElement(Volume2, {
+    size: 13
+  })), React.createElement("button", {
+    className: "cm-icon-btn",
+    "aria-label": "Mover antes",
+    disabled: i === 0,
+    onClick: () => moveChord(c.id, -1)
+  }, React.createElement(ArrowUp, {
+    size: 13
+  })), React.createElement("button", {
+    className: "cm-icon-btn",
+    "aria-label": "Mover despu\xE9s",
+    disabled: i === activeChords.length - 1,
+    onClick: () => moveChord(c.id, 1)
+  }, React.createElement(ArrowDown, {
+    size: 13
+  })), React.createElement("button", {
+    className: "cm-icon-btn danger",
+    "aria-label": "Quitar acorde",
+    onClick: () => removeChord(c.id)
+  }, React.createElement(X, {
+    size: 13
+  })))))), React.createElement("div", {
+    className: "cm-toolbar"
+  }, React.createElement("button", {
+    className: "cm-btn primary",
+    onClick: () => playSequence("section", activeChords),
+    disabled: activeChords.length === 0
+  }, playingId === "section" ? React.createElement(Square, {
+    size: 14
+  }) : React.createElement(Play, {
+    size: 14
+  }), " ", playingId === "section" ? "Detener" : "Reproducir sección"), React.createElement("div", {
+    className: "cm-bpm-field"
+  }, React.createElement("label", {
+    htmlFor: "cm-bpm-section"
+  }, "BPM"), React.createElement("input", {
+    id: "cm-bpm-section",
+    type: "number",
+    className: "cm-input",
+    min: 40,
+    max: 220,
+    value: bpm,
+    onChange: e => {
+      const v = parseInt(e.target.value, 10);
+      if (!Number.isNaN(v)) setBpm(Math.min(220, Math.max(40, v)));
+    }
+  }))), React.createElement("div", {
+    className: "cm-toolbar"
+  }, React.createElement("button", {
+    className: "cm-btn",
+    onClick: () => transpose(-1),
+    "aria-label": "Transportar toda la canci\xF3n medio tono abajo"
+  }, "-\xBD"), React.createElement("span", {
+    className: "cm-key-display"
+  }, keyLabel), React.createElement("button", {
+    className: "cm-btn",
+    onClick: () => transpose(1),
+    "aria-label": "Transportar toda la canci\xF3n medio tono arriba"
+  }, "+\xBD"), React.createElement("button", {
+    className: "cm-btn",
+    onClick: copySection,
+    disabled: activeChords.length === 0
+  }, copied ? React.createElement(Check, {
+    size: 14
+  }) : React.createElement(Copy, {
+    size: 14
+  }), " Copiar secci\xF3n"), React.createElement("button", {
+    className: "cm-btn",
+    onClick: clearSection,
+    disabled: activeChords.length === 0
+  }, React.createElement(RotateCcw, {
+    size: 14
+  }), " Limpiar secci\xF3n")), React.createElement("div", {
+    className: "cm-save-row"
+  }, React.createElement("button", {
+    className: "cm-btn primary",
+    onClick: saveSong,
+    style: {
+      flex: 1,
+      justifyContent: "center"
+    }
+  }, React.createElement(Save, {
+    size: 14
+  }), " Guardar canci\xF3n completa"))), React.createElement("div", {
+    className: "cm-panel"
+  }, React.createElement("h2", null, "\xBFA d\xF3nde puedo ir?"), React.createElement("p", {
+    className: "cm-hint"
+  }, suggestionContext === "continuing" && React.createElement(React.Fragment, null, "Despu\xE9s de ", React.createElement("strong", null, suggestions.fromLabel), suggestions.type === "resolve" && " (dominante secundaria)", suggestions.type === "foreign" && " (acorde fuera de la tonalidad)", ":"), suggestionContext === "crossSection" && React.createElement(React.Fragment, null, "Viniendo de ", suggestions.prevLabel, " (", React.createElement("strong", null, suggestions.fromLabel), "), para entrar en ", sectionDisplayName(sections, activeIndex), ":"), suggestionContext === "fresh" && React.createElement(React.Fragment, null, "Para arrancar ", sectionDisplayName(sections, activeIndex), ":")), React.createElement("p", {
+    className: "cm-suggestion-note"
+  }, profile.note), React.createElement("div", {
+    className: "cm-suggestion-list"
+  }, suggestions.options.map((opt, i) => React.createElement("button", {
+    key: i,
+    className: `cm-suggestion${opt.special ? " special" : ""}`,
+    onClick: () => addChord(opt.chord)
+  }, React.createElement("span", {
+    className: "cm-suggestion-chord"
+  }, opt.chord.numeral ?? opt.chord.label, " ", chordLabel(opt.chord.root, opt.chord.quality, useFlats)), React.createElement("span", {
+    className: "cm-suggestion-text"
+  }, opt.text))))), React.createElement("div", {
+    className: "cm-panel"
+  }, React.createElement("h2", null, "Canciones guardadas"), savedSongs.length === 0 ? React.createElement("p", {
+    className: "cm-empty"
+  }, "No ten\xE9s canciones guardadas todav\xEDa.") : React.createElement("div", {
+    className: "cm-saved-list"
+  }, savedSongs.map(s => {
+    const preview = s.sections.map((sec, i) => `${sectionTypeLabel(sec.type)}: ${sec.chords.map(c => chordLabel(c.root, c.quality, s.useFlats)).join("-") || "—"}`).join(" · ");
+    const modeLabel = MODES.find(m => m.key === s.modeKey)?.label ?? s.modeKey;
+    return React.createElement("div", {
+      key: s.id,
+      className: "cm-saved-item"
+    }, React.createElement("div", {
+      className: "cm-saved-info"
+    }, React.createElement("div", {
+      className: "cm-saved-name"
+    }, s.name), React.createElement("div", {
+      className: "cm-saved-meta"
+    }, noteName(s.rootIndex, s.useFlats), " ", modeLabel, " \xB7 ", preview)), React.createElement("div", {
+      className: "cm-saved-actions"
+    }, React.createElement("button", {
+      className: "cm-btn",
+      onClick: () => loadSong(s)
+    }, "Cargar"), React.createElement("button", {
+      className: "cm-icon-btn danger",
+      "aria-label": "Eliminar canci\xF3n",
+      onClick: () => deleteSong(s.id)
+    }, React.createElement(Trash2, {
+      size: 14
+    }))));
+  }))))), toast && React.createElement("div", {
+    className: "cm-toast"
+  }, toast)), React.createElement("div", {
+    className: "cm-print-view"
+  }, React.createElement("h1", null, songName || "Canción sin título"), React.createElement("p", {
+    className: "cm-print-meta"
+  }, keyLabel), sections.map((s, i) => React.createElement("div", {
+    key: s.id,
+    className: "cm-print-section"
+  }, React.createElement("h2", null, sectionDisplayName(sections, i)), s.chords.length === 0 ? React.createElement("p", {
+    className: "cm-print-empty"
+  }, "(secci\xF3n vac\xEDa)") : React.createElement("p", {
+    className: "cm-print-chords-only"
+  }, s.chords.map(c => chordLabel(c.root, c.quality, useFlats)).join(" - ")), s.lyrics && s.lyrics.trim() && React.createElement("p", {
+    className: "cm-print-lyrics"
+  }, s.lyrics)))));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(ChordMatrix));
+})();
+</script>
+</body>
+</html>

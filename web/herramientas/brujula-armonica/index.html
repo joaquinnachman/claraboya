@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brújula armónica · Herramientas de producción | Claraboya Estudio</title>
+<meta name="description" content="Generador de progresiones de acordes por clima emocional: épico, melancólico, lofi, bossa, funk y más. Escuchalas, probá tensiones y copialas. Gratis, de Claraboya Estudio.">
+<link rel="canonical" href="https://claraboyaestudio.netlify.app/herramientas/brujula-armonica/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1F2426">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Claraboya Estudio">
+<meta property="og:title" content="Brújula armónica · Herramientas de producción | Claraboya Estudio">
+<meta property="og:description" content="Generador de progresiones de acordes por clima emocional: épico, melancólico, lofi, bossa, funk y más. Escuchalas, probá tensiones y copialas. Gratis, de Claraboya Estudio.">
+<meta property="og:url" content="https://claraboyaestudio.netlify.app/herramientas/brujula-armonica/">
+<meta property="og:image" content="https://claraboyaestudio.netlify.app/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/icon-32.png">
+<link rel="apple-touch-icon" href="../../img/app-180.png">
+<link rel="preload" href="../../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../herramientas/assets/tools.css">
+
+<style>
+  /* ---------- controles (en la cabecera) ---------- */
+  .bru-controls{ display:flex; gap:14px 18px; flex-wrap:wrap; align-items:flex-end; }
+  .bru-control{ display:flex; flex-direction:column; }
+  .bru-control .field-label{ margin-bottom:6px; }
+  .bru-control select{ width:auto; min-width:84px; font-weight:700; }
+  .bpm-row{ display:flex; align-items:center; gap:10px; background:var(--ink-3); border-radius:3px; padding:9px 12px; }
+  input[type=range]{ accent-color: var(--rosa); width:120px; }
+  .bpm-val{ font-family:var(--font-mono); font-size:13px; color:var(--text-dim); min-width:58px; }
+
+  /* ---------- climas ---------- */
+  .clima-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:8px; }
+  .clima-tab{
+    text-align:left; background:var(--ink-2);
+    border:0; border-radius:4px; padding:12px 13px;
+    cursor:pointer; display:flex; flex-direction:column; gap:5px;
+    box-shadow: inset 0 0 0 1.5px transparent;
+    transition: box-shadow .12s ease, background .12s ease;
+  }
+  .clima-tab:hover{ background: var(--ink-3); }
+  .clima-tab.active{ background:var(--ink-3); box-shadow: inset 0 0 0 1.5px var(--tab-color, var(--rosa)); }
+  .clima-tab .name-row{ display:flex; align-items:center; gap:8px; }
+  .clima-tab .dot{ width:8px; height:8px; border-radius:50%; flex:none; background:var(--tab-color, var(--rosa)); }
+  .clima-tab .name{ font: 400 1.3rem/1 var(--display); letter-spacing:0.02em; color:var(--paper); }
+  .clima-tab .tag{ font-size:11.5px; color:var(--text-faint); line-height:1.35; }
+
+  .bru-main{ display:flex; flex-direction:column; gap:16px; }
+
+  /* ---------- intro del clima ---------- */
+  .clima-intro{ background:var(--ink-2); border-radius:4px; padding:20px 22px; display:flex; gap:18px; }
+  .clima-intro .bar{ width:4px; align-self:stretch; border-radius:2px; background:var(--tab-color, var(--rosa)); flex:none; transform:skewX(-8deg); }
+  .clima-intro .ref{ font-size:12px; font-weight:700; letter-spacing:0.03em; color:var(--tab-color, var(--rosa)); margin-bottom:6px; }
+  .clima-intro h2{ font: 400 clamp(2rem, 4vw, 2.6rem)/0.95 var(--display); margin:0 0 8px; }
+  .clima-intro p{ margin:0; color:var(--text-dim); font-size:14.5px; line-height:1.6; max-width:66ch; }
+
+  /* ---------- títulos de sección ---------- */
+  .section-heading{ display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; margin: 10px 0 0; }
+  .section-heading h2{ font: 400 1.7rem/1 var(--display); letter-spacing:0.02em; margin:0; }
+  .section-heading p{ margin:0; font-size:12.5px; color:var(--text-faint); }
+
+  /* ---------- tarjetas de progresión ---------- */
+  .progressions{ display:flex; flex-direction:column; gap:10px; }
+  .prog-card{ background:var(--ink-2); border-radius:4px; padding:18px 20px 20px; }
+  .prog-card.generated{ box-shadow: inset 0 0 0 1.5px var(--tab-color, var(--rosa)); }
+  .prog-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:14px; }
+  .prog-title{ display:flex; flex-direction:column; gap:4px; }
+  .prog-title h4{ font: 400 1.55rem/1 var(--display); letter-spacing:0.02em; margin:0; }
+  .prog-ref{ font-size:12.5px; color:var(--text-faint); font-style:italic; }
+  .prog-actions{ display:flex; gap:8px; flex:none; flex-wrap:wrap; }
+  .btn.copied{ background:var(--teal); color:#0d2a23; }
+
+  .chord-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chord-tile{
+    background:var(--ink-3); border:0; border-radius:3px;
+    padding:11px 12px 9px; min-width:76px; text-align:center; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:5px;
+    box-shadow: inset 0 0 0 1.5px transparent;
+    transition: box-shadow .12s ease, background .12s ease, transform .08s ease;
+  }
+  .chord-tile:hover{ background:var(--ink-4); }
+  .chord-tile.playing{ box-shadow: inset 0 0 0 1.5px var(--tab-color, var(--rosa)); background:var(--ink-4); transform:translateY(-2px); }
+  /* acordes en Montserrat: Bebas no tiene minúsculas y "Am" se leería "AM" */
+  .chord-name{ font-weight:700; font-size:16px; color:var(--paper); }
+  .chord-roman{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-faint); letter-spacing:0.02em; }
+  .chord-tension-dot{ width:5px; height:5px; border-radius:50%; background:var(--tab-color, var(--rosa)); margin-top:-2px; }
+  .chord-tension-spacer{ width:5px; height:5px; margin-top:-2px; }
+
+  .prog-string{ margin-top:14px; font-family:var(--font-mono); font-size:12.5px; color:var(--text-dim); }
+  .prog-string b{ color:var(--paper); font-weight:700; }
+  .prog-card .hint{ font-size:11.5px; margin-top:9px; }
+  .bru-note{ margin:4px 0 0; color:var(--text-dim); font-size:13.5px; line-height:1.6; max-width:80ch; }
+
+  @media (max-width: 620px){
+    .bru-controls{ width:100%; }
+    .bpm-row input[type=range]{ flex:1; }
+  }
+  @media (max-width: 620px){
+    .clima-grid{ grid-template-columns: 1fr 1fr; }
+    .clima-tab .tag{ display:none; }
+    .prog-actions{ flex:1 1 100%; }
+    .prog-actions .btn{ flex:1; }
+    .chord-tile{ min-width:64px; padding:10px 8px 8px; }
+  }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Brújula armónica — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/brujula-armonica/", "description": "Generador de progresiones de acordes por clima emocional: épico, melancólico, lofi, bossa, funk y más. Escuchalas, probá tensiones y copialas. Gratis, de Claraboya Estudio.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "publisher": {"@id": "https://claraboyaestudio.netlify.app/#estudio", "@type": "LocalBusiness", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
+<link rel="manifest" href="../../manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../../herramientas/assets/pwa.js" defer></script>
+</head>
+<body class="tool" data-tool="brujula-armonica">
+<a class="skip" href="#app">Ir a la herramienta</a>
+<header class="tn">
+  <div class="tn__bar">
+    <a class="tn__logo" href="../../" aria-label="Claraboya Estudio, ir al inicio"><img src="../../img/logo.webp" alt="" width="120" height="128"></a>
+    <a class="tn__hub" href="../">Herramientas <span>de producción</span></a>
+    <a class="tn__studio" href="../../#servicios">El estudio</a>
+  </div>
+  <nav class="tn__tools" aria-label="Cambiar de herramienta">
+    <a href="../matriz-de-acordes/"><b>01</b>Matriz de acordes</a>
+    <a href="../brujula-armonica/" aria-current="page"><b>02</b>Brújula armónica</a>
+    <a href="../hoja-de-ruta/"><b>03</b>Hoja de ruta</a>
+    <a href="../rider-tecnico/"><b>04</b>Rider técnico</a>
+    <a href="../armador-de-setlists/"><b>05</b>Armador de setlists</a>
+    <a href="../calentamiento-vocal/"><b>06</b>Calentamiento vocal</a>
+    <a href="../afinador/"><b>07</b>Afinador</a>
+    <a href="../metronomo/"><b>08</b>Metrónomo</a>
+    <a href="../buscador-de-bpm/"><b>09</b>Buscador de BPM</a>
+  </nav>
+</header>
+<main class="app app--brujula-armonica" id="app">
+  <header class="tool-head">
+    <div>
+      <p class="tool-head__kicker"><b>02</b> · Componer</p>
+      <h1>Brújula armónica</h1>
+      <p class="tool-head__sub">Progresiones de acordes por clima emocional, con referencias de canciones reales y un generador que arma variantes nuevas cada vez que lo tocás.</p>
+    </div>
+    <div class="tool-head__aside"><div class="bru-controls">
+          <label class="bru-control"><span class="field-label">Tonalidad</span><select id="rootSelect"></select></label>
+          <div class="bru-control"><span class="field-label" id="bpmLabel">Tempo</span>
+            <div class="bpm-row"><input type="range" id="bpmRange" min="50" max="160" step="1" value="84" aria-labelledby="bpmLabel"><span class="bpm-val" id="bpmVal">84 BPM</span></div>
+          </div>
+        </div></div>
+  </header>
+
+  <nav class="clima-grid" id="climaGrid" aria-label="Climas"></nav>
+
+  <div class="bru-main">
+    <section class="clima-intro" id="climaIntro" aria-live="polite"></section>
+
+    <div class="section-heading">
+      <h2>Progresiones de referencia</h2>
+      <p>De canciones y compositores reales</p>
+    </div>
+    <div class="progressions" id="referenceList"></div>
+
+    <div class="section-heading">
+      <h2>Generador infinito</h2>
+      <p>Nueva variante en cada clic</p>
+    </div>
+    <div class="progressions" id="generatedList"></div>
+
+    <p class="bru-note">Cada acorde muestra su función (el número romano no cambia) y el acorde real en tu tonalidad. Tocalo para pasar por sus variantes con tensión: 7, 9, add9, sus. Cuando algo te convenza, tocá <strong>Llevar a la Matriz</strong> y seguí armando la canción sección por sección, o copiala para tu sesión.</p>
+  </div>
+
+  <section class="next" aria-labelledby="next-t">
+    <h2 class="next__title" id="next-t">Seguí con</h2>
+    <div class="next__grid">
+    <a class="next__card" href="../matriz-de-acordes/">
+      <span class="next__why">¿Te gustó una progresión?</span>
+      <span class="next__name">Matriz de acordes</span>
+      <span class="next__desc">Llevala a la Matriz y armá el resto de la canción por secciones.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../hoja-de-ruta/">
+      <span class="next__why">¿Ya tenés la canción?</span>
+      <span class="next__name">Hoja de ruta</span>
+      <span class="next__desc">Seguila tema por tema, de la producción al máster.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    </div>
+  </section>
+</main>
+<footer class="tf">
+  <div class="tf__band">
+    <div class="tf__cta">
+      <div>
+        <p class="tf__cta-title">¿Y cuando el tema esté listo?</p>
+        <p>Estas herramientas las usamos en Claraboya. Si querés grabar, producir, mezclar o masterizar, escribinos: te respondemos nosotros.</p>
+      </div>
+      <a class="btn big btn--wa" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20de%20la%20Br%C3%BAjula%20arm%C3%B3nica%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20producir%20un%20tema." target="_blank" rel="noopener"><svg class="btn__icon" viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg>Escribinos por WhatsApp</a>
+    </div>
+  </div>
+  <div class="tf__bottom">
+    <img src="../../img/logo.webp" alt="" width="40" height="43" loading="lazy">
+    <p>Claraboya Estudio · Vicente López, Buenos Aires · <span class="ver">v{{VERSION}}</span></p>
+    <nav class="tf__links" aria-label="Enlaces">
+      <a href="../../">Inicio</a>
+      <a href="https://www.instagram.com/claraboya.estudio" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://linktr.ee/claraboyaestudio" target="_blank" rel="noopener">Linktree</a>
+      <a href="https://cafecito.app/claraboyaestudio" target="_blank" rel="noopener">Invitanos un cafecito</a>
+    </nav>
+  </div>
+</footer>
+<div class="wa-dock" id="waDock">
+  <div class="wa-dock__bubble" id="waBubble">
+    <a class="wa-dock__text" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20de%20la%20Br%C3%BAjula%20arm%C3%B3nica%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20producir%20un%20tema." target="_blank" rel="noopener">¿Encontraste el clima? Te ayudamos a producir el tema completo.<span>Escribinos por WhatsApp</span></a>
+    <button class="wa-dock__close" type="button" id="waClose" aria-label="Ocultar este mensaje">×</button>
+  </div>
+  <a class="wa-dock__btn" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20de%20la%20Br%C3%BAjula%20arm%C3%B3nica%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20producir%20un%20tema." target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg></a>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.16 0 0 7.16 0 16c0 2.82.74 5.47 2.03 7.77L0 32l8.44-2.21A15.9 15.9 0 0 0 16 31.7c8.84 0 16-7.16 16-16S24.84 0 16 0zm0 29.02c-2.4 0-4.66-.65-6.6-1.78l-.47-.28-5.01 1.31 1.34-4.88-.31-.5A13 13 0 1 1 16 29.02zm7.13-9.74c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.62-.2-.88.2-.26.39-1.01 1.26-1.24 1.52-.23.26-.46.29-.85.1-.39-.2-1.65-.61-3.14-1.94-1.16-1.04-1.94-2.32-2.17-2.71-.23-.39-.02-.6.17-.79.18-.18.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.88-2.12-1.2-2.9-.32-.77-.64-.66-.88-.67l-.75-.01c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26 0 1.92 1.4 3.78 1.6 4.04.2.26 2.76 4.22 6.7 5.91.94.41 1.67.65 2.24.83.94.3 1.79.26 2.47.16.75-.11 2.3-.94 2.62-1.85.32-.91.32-1.69.23-1.85-.1-.16-.36-.26-.75-.46z"/></symbol>
+</svg>
+<script src="../assets/tools.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var NOTES = ['C','Db','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
+
+  var MODE_INTERVALS = {
+    ionian:[0,2,4,5,7,9,11], dorian:[0,2,3,5,7,9,10], phrygian:[0,1,3,5,7,8,10],
+    lydian:[0,2,4,6,7,9,11], mixolydian:[0,2,4,5,7,9,10], aeolian:[0,2,3,5,7,8,10],
+    locrian:[0,1,3,5,6,8,10]
+  };
+
+  var INTERVALS = {
+    maj:[0,4,7], m:[0,3,7], dim:[0,3,6], dim7:[0,3,6,9], aug:[0,4,8],
+    maj7:[0,4,7,11], m7:[0,3,7,10], dom7:[0,4,7,10], m7b5:[0,3,6,10],
+    sus2:[0,2,7], sus4:[0,5,7], '6':[0,4,7,9], add9:[0,4,7,14],
+    m9:[0,3,7,10,14], '9':[0,4,7,10,14], '7sus4':[0,5,7,10], 'madd9':[0,3,7,14]
+  };
+  var SUFFIX = {
+    maj:'', m:'m', dim:'°', dim7:'°7', aug:'+', maj7:'maj7', m7:'m7',
+    dom7:'7', m7b5:'ø7', sus2:'sus2', sus4:'sus4', '6':'6', add9:'add9',
+    m9:'m9', '9':'9', '7sus4':'7sus4', 'madd9':'m(add9)'
+  };
+  var CYCLES = {
+    maj:['maj','maj7','6','add9'], m:['m','m7','m9'], dom7:['dom7','9','7sus4'],
+    dim:['dim','m7b5'], dim7:['dim7','m7b5'], maj7:['maj7','maj','6','add9'],
+    m7:['m7','m','m9'], add9:['add9','maj','maj7'], sus2:['sus2','m','maj'],
+    sus4:['sus4','maj','dom7'], madd9:['madd9','m','m7']
+  };
+
+  /* generic scale-degree function transitions, reused across every diatonic clima */
+  var TRANSITIONS = {
+    0: [[3,3],[4,3],[5,2],[1,1]],
+    1: [[4,4],[3,2],[6,1]],
+    2: [[5,3],[3,2]],
+    3: [[4,3],[0,3],[1,2]],
+    4: [[0,5],[5,2],[3,1]],
+    5: [[1,3],[3,2],[4,2]],
+    6: [[0,4],[2,1]]
+  };
+
+  function triadQuality(third, fifth){
+    if (third===4 && fifth===7) return 'maj';
+    if (third===3 && fifth===7) return 'm';
+    if (third===3 && fifth===6) return 'dim';
+    if (third===4 && fifth===8) return 'aug';
+    return 'maj';
+  }
+  function romanNumeral(degree, q){
+    var bases = ['I','II','III','IV','V','VI','VII'];
+    var base = bases[degree];
+    if (q==='m' || q==='dim') base = base.toLowerCase();
+    if (q==='dim') base += '°';
+    if (q==='aug') base += '+';
+    return base;
+  }
+  function computeDiatonic(modeKey){
+    var intervals = MODE_INTERVALS[modeKey];
+    return intervals.map(function(rootInt, i){
+      var third = (intervals[(i+2)%7] - rootInt + 12) % 12;
+      var fifth = (intervals[(i+4)%7] - rootInt + 12) % 12;
+      var q = triadQuality(third, fifth);
+      return { degree:i, semitone: rootInt, quality:q, roman: romanNumeral(i,q) };
+    });
+  }
+  function weightedPick(options){
+    var total = options.reduce(function(s,o){ return s+o[1]; }, 0);
+    var r = Math.random()*total;
+    for (var i=0;i<options.length;i++){ r -= options[i][1]; if (r<=0) return options[i][0]; }
+    return options[options.length-1][0];
+  }
+  function randInt(min,max){ return min + Math.floor(Math.random()*(max-min+1)); }
+
+  /* ---------- 10 climas ---------- */
+  var CLIMAS = [
+    { id:'epico', name:'Épico', color:'#D9787A', tag:'Cine · Hans Zimmer, Klaus Badelt',
+      desc:'Progresiones menores "chordy": pocos acordes, mucho peso. Zimmer construye tensión con repetición y textura antes que con armonía compleja, sobre la ambigüedad entre Eólico y Dórico.',
+      mode:'aeolian', lengthRange:[4,8], forceResolve:false,
+      extend:function(q,deg){ return (deg===1 && Math.random()<0.35) ? 'dim7' : q; },
+      refs:[
+        { name:'Origen', ref:'Inspirada en "Time" — Hans Zimmer (Inception)',
+          chords:[[0,'m','i'],[7,'m','v'],[10,'maj','VII'],[5,'maj','IV'],[0,'m','i'],[2,'dim7','ii°7'],[10,'maj','VII'],[5,'maj','IV']] },
+        { name:'Honor', ref:'Inspirada en "Honor Him" — Hans Zimmer (Gladiator)',
+          chords:[[0,'m','i'],[5,'m','iv'],[10,'maj','VII'],[0,'m','i'],[10,'maj','VII'],[8,'maj','VI'],[5,'m','iv'],[7,'m','v'],[0,'m','i']] }
+      ]
+    },
+    { id:'melancolico', name:'Melancólico', color:'#7c8fc4', tag:'Balada · rock sinfónico introspectivo',
+      desc:'Menor natural sin prisa por resolver. El VI y el III mayores aportan calidez dentro de un centro menor — el sonido de la introspección y el rock progresivo más lírico.',
+      mode:'aeolian', lengthRange:[4,6], forceResolve:true, extend:function(q){ return q; },
+      refs:[
+        { name:'El Lamento', ref:'Progresión menor clásica de balada rock (i–VI–III–VII)',
+          chords:[[0,'m','i'],[8,'maj','VI'],[3,'maj','III'],[10,'maj','VII']] },
+        { name:'Cadencia Andaluza', ref:'Cadencia andaluza con dominante — flamenco, rock, bandas sonoras',
+          chords:[[0,'m','i'],[10,'maj','VII'],[8,'maj','VI'],[7,'dom7','V7']] }
+      ]
+    },
+    { id:'tenso', name:'Tenso / Oscuro', color:'#ff453a', tag:'Trap, drill · Metro Boomin, Southside',
+      desc:'Menor casi sin excepción, dos o tres acordes en loop, mucho espacio para el 808. La tensión viene del vacío armónico, no de la cantidad de acordes.',
+      mode:'aeolian', lengthRange:[2,4], forceResolve:false, allowedDegrees:[0,3,4,5,6],
+      extend:function(q,deg){ return (deg===4 && Math.random()<0.5) ? 'dom7' : q; },
+      refs:[
+        { name:'Loop Oscuro', ref:'i–VI–VII — el loop trap más usado', chords:[[0,'m','i'],[8,'maj','VI'],[10,'maj','VII']] },
+        { name:'Piso Bajo', ref:'Variante drill/trap melódico (estilo "Grey Skies")', chords:[[0,'m','i'],[8,'maj','VI'],[5,'m','iv'],[10,'maj','VII']] }
+      ]
+    },
+    { id:'esperanzador', name:'Esperanzador', color:'#e8c14a', tag:'Pop actual · la progresión de los 4 acordes',
+      desc:'Mayor, luminoso, circular. El vi le da un matiz agridulce a la brillantez del I, V y IV — la fórmula detrás de gran parte del pop de las últimas dos décadas.',
+      mode:'ionian', lengthRange:[4,6], forceResolve:true, extend:function(q){ return q; },
+      refs:[
+        { name:'Eje Pop', ref:'I–V–vi–IV, la "axis progression"', chords:[[0,'maj','I'],[7,'maj','V'],[9,'m','vi'],[5,'maj','IV']] },
+        { name:'Camino Simple', ref:'I–IV–V, cadencia auténtica — folk, country-pop, himnos', chords:[[0,'maj','I'],[5,'maj','IV'],[7,'maj','V']] }
+      ]
+    },
+    { id:'nostalgico', name:'Nostálgico / Cálido', color:'#c98bb0', tag:'Lofi, bedroom pop, neo-soul',
+      desc:'La misma armonía de siempre, vestida con séptimas y novenas. El color viene de la extensión del acorde, no de acordes nuevos — jazz relajado hasta el tempo de estudiar.',
+      mode:'ionian', lengthRange:[4,6], forceResolve:false, secondaryDominantChance:0.15,
+      extend:function(q){ return q==='maj'?'maj7': q==='m'?'m7': q==='dim'?'m7b5':q; },
+      refs:[
+        { name:'Camino Real', ref:'"Royal Road" — IVmaj7–V–iii7–vi7', chords:[[5,'maj7','IVmaj7'],[7,'maj','V'],[4,'m7','iii7'],[9,'m7','vi7']] },
+        { name:'Giro Jazz', ref:'ii7–V7–Imaj7, el turnaround que heredó el lofi', chords:[[2,'m7','ii7'],[7,'dom7','V7'],[0,'maj7','Imaj7']] }
+      ]
+    },
+    { id:'onirico', name:'Onírico / Suspendido', color:'#5ac8fa', tag:'Dream pop, ambient, modal',
+      desc:'Modo Dórico: menor pero con un sexto grado que no termina de resolver a lo triste. Acordes suspendidos evitan la tercera, dejando todo en el aire.',
+      mode:'dorian', lengthRange:[3,5], forceResolve:false,
+      extend:function(q,deg){ if(deg===0 && Math.random()<0.4) return 'madd9'; if(deg===3 && Math.random()<0.4) return 'maj7'; return q; },
+      refs:[
+        { name:'Vamp Dorio', ref:'i(add9)–IVmaj7 en loop, típico de dream pop y ambient', chords:[[0,'madd9','i'],[5,'maj7','IVmaj7'],[0,'madd9','i'],[5,'maj7','IVmaj7']] },
+        { name:'Media Luz', ref:'i–III–IV–i, movimiento característico del modo Dórico', chords:[[0,'m','i'],[3,'maj','III'],[5,'maj','IV'],[0,'m','i']] }
+      ]
+    },
+    { id:'heroico', name:'Heroico / Triunfal', color:'#d98a3d', tag:'Anthem · Beatles, Britpop, rock sinfónico mayor',
+      desc:'Modo Mixolidio: mayor, pero con un séptimo grado que baja. La cadencia plagal bVII–IV–I es la marca registrada del pop-rock británico y de los estribillos de estadio.',
+      mode:'mixolydian', lengthRange:[3,6], forceResolve:true,
+      transitionOverride:{0:[[6,4],[3,3],[4,1]], 6:[[3,3],[0,2]], 3:[[0,4],[6,2]]},
+      extend:function(q){ return q; },
+      refs:[
+        { name:'Antema', ref:'bVII–IV–I, cadencia plagal doble — Beatles, Britpop', chords:[[10,'maj','VII'],[5,'maj','IV'],[0,'maj','I']] },
+        { name:'Elevación', ref:'I–bVII–IV–I en loop, estribillo de estadio', chords:[[0,'maj','I'],[10,'maj','VII'],[5,'maj','IV'],[0,'maj','I']] }
+      ]
+    },
+    { id:'sofisticado', name:'Sofisticado', color:'#8fae7a', tag:'Jazz, bossa nova, MPB',
+      desc:'Mayor con séptimas por default y dominantes secundarias que dan un empujón extra antes de resolver — el lenguaje de los standards y la bossa nova.',
+      mode:'ionian', lengthRange:[4,8], forceResolve:true, secondaryDominantChance:0.35,
+      extend:function(q){ return q==='maj'?'maj7': q==='m'?'m7': q==='dim'?'m7b5':q; },
+      refs:[
+        { name:'Estándar', ref:'I–vi–ii–V, el turnaround de jazz por excelencia', chords:[[0,'maj7','Imaj7'],[9,'m7','vi7'],[2,'m7','ii7'],[7,'dom7','V7']] },
+        { name:'Bossa Base', ref:'ii–V–I con séptimas, la base de todo standard de bossa', chords:[[2,'m7','ii7'],[7,'dom7','V7'],[0,'maj7','Imaj7']] }
+      ]
+    },
+    { id:'sensual', name:'Sensual / Groove', color:'#e0793d', tag:'Funk, soul, R&B',
+      desc:'Modo Mixolidio con el propio I convertido en dominante — el funk no necesita resolver la tensión, la deja sonando y groovea sobre ella.',
+      mode:'mixolydian', lengthRange:[2,4], forceResolve:false,
+      extend:function(q,deg){ return (deg===0) ? 'dom7' : q; },
+      refs:[
+        { name:'Vamp Funk', ref:'I7–IV7 en loop, groove de dos acordes', chords:[[0,'dom7','I7'],[5,'maj','IV7']] },
+        { name:'Groove Base', ref:'I7–bVII–IV–I7, vamp de cuatro con vuelta al dominante', chords:[[0,'dom7','I7'],[10,'maj','VII'],[5,'maj','IV'],[0,'dom7','I7']] }
+      ]
+    },
+    { id:'caos', name:'Caos / Inestable', color:'#9a6bd6', tag:'Electrónica experimental · cercano a JCN',
+      desc:'Sin centro tonal fijo: saltos por terceras menores y tritonos, acordes disminuidos y aumentados. Un clima pensado para el lado más experimental de tu trabajo.',
+      mode:null, chromaticSpecial:true, lengthRange:[4,6],
+      refs:[
+        { name:'Deriva', ref:'Salto inicial por tritono — un punto de partida, no una cadencia', chords:[[0,'m','i'],[6,'dim7','+6'],[3,'aug','+3'],[9,'m7b5','+9']] },
+        { name:'Fractura', ref:'Movimiento por terceras menores, sin resolución', chords:[[0,'dim7','i°7'],[3,'aug','+3'],[7,'m7b5','+7'],[10,'dim','+10']] }
+      ]
+    }
+  ];
+
+  var state = { root: 9, climaId:'epico', bpm:84, overrides:{}, generated:{} };
+  var audioCtx = null;
+  var playToken = 0;
+
+  function noteName(pc){ return NOTES[((pc%12)+12)%12]; }
+  function getClima(){ var c=null; CLIMAS.forEach(function(x){ if(x.id===state.climaId) c=x; }); return c; }
+
+  /* ---------- generator ---------- */
+  function generateProgression(clima){
+    if (clima.chromaticSpecial) return generateChromatic(clima);
+
+    var diatonic = computeDiatonic(clima.mode);
+    var trans = clima.transitionOverride ? Object.assign({}, TRANSITIONS, clima.transitionOverride) : TRANSITIONS;
+    var length = randInt(clima.lengthRange[0], clima.lengthRange[1]);
+    var seq = [0];
+    var guard = 0;
+    while (seq.length < length && guard < 60){
+      guard++;
+      var last = seq[seq.length-1];
+      var options = trans[last] || [[0,1]];
+      if (clima.allowedDegrees){
+        options = options.filter(function(o){ return clima.allowedDegrees.indexOf(o[0]) !== -1; });
+        if (!options.length) options = [[0,1]];
+      }
+      seq.push(weightedPick(options));
+    }
+    if (clima.forceResolve && seq[seq.length-1] !== 0 && Math.random() < 0.65) seq[seq.length-1] = 0;
+
+    var chords = [];
+    seq.forEach(function(deg, i){
+      var d = diatonic[deg];
+      if (clima.secondaryDominantChance && i > 0 && deg !== 0 && Math.random() < clima.secondaryDominantChance){
+        var secRoot = (d.semitone + 7) % 12;
+        chords.push([secRoot, 'dom7', 'V/' + d.roman]);
+      }
+      var extQ = clima.extend(d.quality, deg);
+      chords.push([d.semitone, extQ, d.roman]);
+    });
+    return chords;
+  }
+
+  function generateChromatic(clima){
+    var length = randInt(clima.lengthRange[0], clima.lengthRange[1]);
+    var palette = ['m','dim','aug','dim7','m7b5','maj'];
+    var jumps = [[1,2],[3,4],[6,5],[8,3],[11,2]];
+    var chords = [[0,'m','i']];
+    var pos = 0;
+    for (var i=1;i<length;i++){
+      var jump = weightedPick(jumps);
+      var sign = Math.random() < 0.5 ? -1 : 1;
+      pos = ((pos + jump*sign) % 12 + 12) % 12;
+      var q = palette[randInt(0,palette.length-1)];
+      var dist = pos <= 6 ? '+'+pos : '−'+(12-pos);
+      chords.push([pos, q, dist]);
+    }
+    return chords;
+  }
+
+  function overrideKey(instanceId, chordIdx){ return instanceId + '|' + chordIdx; }
+  function currentQuality(instanceId, chordIdx, baseQ){
+    var k = overrideKey(instanceId, chordIdx);
+    return state.overrides.hasOwnProperty(k) ? state.overrides[k] : baseQ;
+  }
+  function cycleQuality(instanceId, chordIdx, baseQ){
+    var k = overrideKey(instanceId, chordIdx);
+    var q = currentQuality(instanceId, chordIdx, baseQ);
+    var cyc = CYCLES[baseQ] || [baseQ];
+    var idx = cyc.indexOf(q);
+    var next = cyc[(idx+1) % cyc.length];
+    if (next === baseQ) delete state.overrides[k]; else state.overrides[k] = next;
+  }
+  function clearOverridesForId(instanceId){
+    Object.keys(state.overrides).forEach(function(k){
+      if (k.indexOf(instanceId + '|') === 0) delete state.overrides[k];
+    });
+  }
+  function chordDisplayName(deg, q){ return noteName((state.root+deg)%12) + SUFFIX[q]; }
+
+  /* ---------- controls ---------- */
+  function initControls(){
+    var rootSelect = document.getElementById('rootSelect');
+    NOTES.forEach(function(n,i){ var o=document.createElement('option'); o.value=i; o.textContent=n; rootSelect.appendChild(o); });
+    rootSelect.value = state.root;
+    rootSelect.addEventListener('change', function(){ state.root = parseInt(rootSelect.value,10); renderMain(); });
+
+    var bpmRange = document.getElementById('bpmRange');
+    var bpmVal = document.getElementById('bpmVal');
+    bpmRange.value = state.bpm; bpmVal.textContent = state.bpm + ' BPM';
+    bpmRange.addEventListener('input', function(){ state.bpm = parseInt(bpmRange.value,10); bpmVal.textContent = state.bpm + ' BPM'; });
+
+    var grid = document.getElementById('climaGrid');
+    CLIMAS.forEach(function(c){
+      var btn = document.createElement('button');
+      btn.className = 'clima-tab';
+      btn.style.setProperty('--tab-color', c.color);
+      btn.dataset.climaId = c.id;
+      btn.innerHTML =
+        '<div class="name-row"><span class="dot" style="background:'+c.color+'"></span><span class="name">'+c.name+'</span></div>' +
+        '<div class="tag">'+c.tag+'</div>';
+      btn.addEventListener('click', function(){ state.climaId = c.id; renderMain(); });
+      grid.appendChild(btn);
+    });
+  }
+
+  /* ---------- rendering ---------- */
+  function renderProgCard(container, prog, instanceId, clima, isGenerated){
+    var card = document.createElement('div');
+    card.className = 'prog-card' + (isGenerated ? ' generated' : '');
+
+    var head = document.createElement('div');
+    head.className = 'prog-head';
+    head.innerHTML = '<div class="prog-title"><h4>'+prog.name+'</h4><div class="prog-ref">'+prog.ref+'</div></div>';
+
+    var actions = document.createElement('div');
+    actions.className = 'prog-actions';
+
+    if (isGenerated){
+      var rollBtn = document.createElement('button');
+      rollBtn.className = 'btn';
+      rollBtn.textContent = '🎲 Generar otra';
+      rollBtn.addEventListener('click', function(){
+        clearOverridesForId(instanceId);
+        state.generated[clima.id] = generateProgression(clima);
+        renderMain();
+      });
+      actions.appendChild(rollBtn);
+    }
+
+    var playBtn = document.createElement('button');
+    playBtn.className = 'btn primary';
+    playBtn.textContent = '▶ Reproducir';
+    actions.appendChild(playBtn);
+
+    var copyBtn = document.createElement('button');
+    copyBtn.className = 'btn';
+    copyBtn.textContent = 'Copiar';
+    actions.appendChild(copyBtn);
+
+    var toMatriz = document.createElement('a');
+    toMatriz.className = 'btn';
+    toMatriz.href = CB.toolUrl('matriz-de-acordes');
+    toMatriz.textContent = 'Llevar a la Matriz →';
+    toMatriz.title = 'Abrir esta progresión en la Matriz de acordes para armar el resto de la canción';
+    toMatriz.addEventListener('click', function(e){
+      e.preventDefault();
+      var chords = prog.chords.map(function(chordDef, chordIdx){
+        return ((state.root + chordDef[0]) % 12) + ':' + currentQuality(instanceId, chordIdx, chordDef[1]);
+      }).join(',');
+      window.location.href = CB.toolUrl('matriz-de-acordes', {
+        prog: chords, tono: state.root, modo: clima.mode || 'aeolian',
+        nombre: clima.name + ' · ' + prog.name
+      });
+    });
+    actions.appendChild(toMatriz);
+
+    head.appendChild(actions);
+    card.appendChild(head);
+
+    var row = document.createElement('div');
+    row.className = 'chord-row';
+    var tiles = [];
+
+    prog.chords.forEach(function(chordDef, chordIdx){
+      var deg = chordDef[0], baseQ = chordDef[1], roman = chordDef[2];
+      var tile = document.createElement('button');
+      tile.className = 'chord-tile';
+      tile.style.setProperty('--tab-color', clima.color);
+      tiles.push(tile);
+
+      function paint(){
+        var q = currentQuality(instanceId, chordIdx, baseQ);
+        var modified = q !== baseQ;
+        tile.innerHTML =
+          '<span class="chord-name">'+chordDisplayName(deg,q)+'</span>' +
+          '<span class="chord-roman">'+roman+'</span>' +
+          (modified ? '<span class="chord-tension-dot"></span>' : '<span class="chord-tension-spacer"></span>');
+      }
+      paint();
+      tile.addEventListener('click', function(){ cycleQuality(instanceId, chordIdx, baseQ); paint(); updateProgString(); });
+      row.appendChild(tile);
+    });
+    card.appendChild(row);
+
+    var progString = document.createElement('div');
+    progString.className = 'prog-string';
+    card.appendChild(progString);
+
+    function updateProgString(){
+      var names = prog.chords.map(function(chordDef, chordIdx){
+        return chordDisplayName(chordDef[0], currentQuality(instanceId, chordIdx, chordDef[1]));
+      });
+      progString.innerHTML = '<b>'+names.join(' – ')+'</b> · tonalidad '+noteName(state.root);
+    }
+    updateProgString();
+
+    var hint = document.createElement('div');
+    hint.className = 'hint';
+    hint.textContent = 'Tocá un acorde para probar variantes con tensión (7, 9, add9, sus).';
+    card.appendChild(hint);
+
+    copyBtn.addEventListener('click', function(){
+      var names = prog.chords.map(function(chordDef, chordIdx){
+        return chordDisplayName(chordDef[0], currentQuality(instanceId, chordIdx, chordDef[1]));
+      });
+      var text = prog.name+': '+names.join(' – ')+' (tonalidad '+noteName(state.root)+', clima '+clima.name+')';
+      var done = function(){
+        var old = copyBtn.textContent;
+        copyBtn.classList.add('copied'); copyBtn.textContent = 'Copiado ✓';
+        setTimeout(function(){ copyBtn.classList.remove('copied'); copyBtn.textContent = old; }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text, done); });
+      } else fallbackCopy(text, done);
+    });
+
+    playBtn.addEventListener('click', function(){
+      playProgression(prog, instanceId, clima, tiles, playBtn);
+    });
+
+    container.appendChild(card);
+  }
+
+  function fallbackCopy(text, done){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch(e){}
+    document.body.removeChild(ta); done();
+  }
+
+  function renderMain(){
+    var clima = getClima();
+    document.querySelectorAll('.clima-tab').forEach(function(btn){
+      btn.classList.toggle('active', btn.dataset.climaId === clima.id);
+    });
+
+    var intro = document.getElementById('climaIntro');
+    intro.style.setProperty('--tab-color', clima.color);
+    intro.innerHTML =
+      '<div class="bar" style="background:'+clima.color+'"></div>' +
+      '<div><div class="ref" style="color:'+clima.color+'">'+clima.tag+'</div>' +
+      '<h2>'+clima.name+'</h2><p>'+clima.desc+'</p></div>';
+
+    var refList = document.getElementById('referenceList');
+    refList.innerHTML = '';
+    clima.refs.forEach(function(prog, idx){
+      renderProgCard(refList, prog, clima.id+'-ref'+idx, clima, false);
+    });
+
+    if (!state.generated[clima.id]) state.generated[clima.id] = generateProgression(clima);
+    var genList = document.getElementById('generatedList');
+    genList.innerHTML = '';
+    renderProgCard(genList, { name: 'Progresión generada', ref: 'Armada dentro del lenguaje armónico de '+clima.name+' — nunca se agota', chords: state.generated[clima.id] }, clima.id+'-gen', clima, true);
+  }
+
+  /* ---------- audio ---------- */
+  function ensureAudio(){
+    if (!audioCtx){ var Ctx = window.AudioContext || window.webkitAudioContext; audioCtx = new Ctx(); }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function midiToFreq(m){ return 440 * Math.pow(2,(m-69)/12); }
+  function buildNotes(deg, quality){
+    var rootMidi = 48 + ((state.root + deg) % 12);
+    var intervals = INTERVALS[quality] || INTERVALS.maj;
+    var notes = intervals.map(function(iv){ return rootMidi + iv; });
+    notes.push(rootMidi - 12);
+    return notes;
+  }
+  function scheduleChord(ctx, master, notes, startTime, duration){
+    notes.forEach(function(n){
+      var osc = ctx.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.value = midiToFreq(n);
+      var g = ctx.createGain();
+      var peak = 0.22 / Math.sqrt(notes.length);
+      g.gain.setValueAtTime(0.0001, startTime);
+      g.gain.linearRampToValueAtTime(peak, startTime+0.03);
+      g.gain.setValueAtTime(peak, Math.max(startTime+0.03, startTime+duration-0.14));
+      g.gain.linearRampToValueAtTime(0.0001, startTime+duration-0.02);
+      osc.connect(g); g.connect(master);
+      osc.start(startTime); osc.stop(startTime+duration+0.05);
+    });
+  }
+  function playProgression(prog, instanceId, clima, tiles, btn){
+    var ctx = ensureAudio();
+    var master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination);
+    var myToken = ++playToken;
+    var barSeconds = (60/state.bpm) * 4;
+    var startBase = ctx.currentTime + 0.05;
+    btn.textContent = '■ Detener';
+
+    prog.chords.forEach(function(chordDef, chordIdx){
+      var q = currentQuality(instanceId, chordIdx, chordDef[1]);
+      var notes = buildNotes(chordDef[0], q);
+      var startTime = startBase + chordIdx * barSeconds;
+      scheduleChord(ctx, master, notes, startTime, barSeconds);
+      var delayMs = Math.max(0, (startTime - ctx.currentTime) * 1000);
+      setTimeout(function(){
+        if (playToken !== myToken) return;
+        tiles.forEach(function(t){ t.classList.remove('playing'); });
+        tiles[chordIdx].classList.add('playing');
+      }, delayMs);
+    });
+
+    var totalMs = (startBase - ctx.currentTime + prog.chords.length * barSeconds) * 1000;
+    setTimeout(function(){
+      if (playToken !== myToken) return;
+      tiles.forEach(function(t){ t.classList.remove('playing'); });
+      btn.textContent = '▶ Reproducir';
+    }, totalMs);
+
+    btn.onclick = function(){
+      playToken++;
+      tiles.forEach(function(t){ t.classList.remove('playing'); });
+      btn.textContent = '▶ Reproducir';
+      btn.onclick = function(){ playProgression(prog, instanceId, clima, tiles, btn); };
+    };
+  }
+
+  /* recordar tonalidad, tempo y clima entre visitas (y aceptar ?clima= desde otro lado) */
+  var PREFS_KEY = 'cb.brujula-armonica.prefs';
+  function loadPrefs(){
+    try {
+      var p = JSON.parse(localStorage.getItem(PREFS_KEY) || 'null');
+      if (p){
+        if (typeof p.root === 'number') state.root = p.root;
+        if (typeof p.bpm === 'number') state.bpm = p.bpm;
+        if (p.climaId && CLIMAS.some(function(c){ return c.id === p.climaId; })) state.climaId = p.climaId;
+      }
+    } catch(e){}
+    var q = window.CB && CB.params.get('clima');
+    if (q && CLIMAS.some(function(c){ return c.id === q; })) state.climaId = q;
+  }
+  function savePrefs(){
+    try { localStorage.setItem(PREFS_KEY, JSON.stringify({ root: state.root, bpm: state.bpm, climaId: state.climaId })); } catch(e){}
+  }
+  var _renderMain = renderMain;
+  renderMain = function(){ _renderMain(); savePrefs(); };
+  document.getElementById('bpmRange').addEventListener('change', savePrefs);
+
+  loadPrefs();
+  initControls();
+  renderMain();
+})();
+</script>
+</body>
+</html>

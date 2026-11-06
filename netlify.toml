@@ -1,0 +1,8 @@
+# Netlify publica solo cada vez que se sube algo a la rama main de este repo.
+# Encabezados y redirecciones están en web/_headers y web/_redirects.
+[build]
+  command = "node scripts/build.mjs && node scripts/check.mjs"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Afinador online · Herramientas de producción | Claraboya Estudio</title>
+<meta name="description" content="Afinador online gratis para guitarra, bajo, ukelele, charango, violín y más, con afinaciones alternativas y modo cromático. Usa el micrófono y no graba nada. También como app para Android.">
+<link rel="canonical" href="https://claraboyaestudio.netlify.app/herramientas/afinador/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1F2426">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Claraboya Estudio">
+<meta property="og:title" content="Afinador online · Herramientas de producción | Claraboya Estudio">
+<meta property="og:description" content="Afinador online gratis para guitarra, bajo, ukelele, charango, violín y más, con afinaciones alternativas y modo cromático. Usa el micrófono y no graba nada. También como app para Android.">
+<meta property="og:url" content="https://claraboyaestudio.netlify.app/herramientas/afinador/">
+<meta property="og:image" content="https://claraboyaestudio.netlify.app/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/icon-32.png">
+<link rel="apple-touch-icon" href="../../img/app-180.png">
+<link rel="preload" href="../../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../herramientas/assets/tools.css">
+<style>
+  .tuner{ border-radius:8px; overflow:hidden; background:#121516; box-shadow: 0 0 0 1px var(--line); }
+  .tuner__frame{ display:block; width:100%; height:clamp(560px, calc(100svh - 190px), 760px); border:0; }
+  .tuner__bar{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px 20px; margin-top:-8px; }
+  .tuner__privacy{ margin:0; font-size:.82rem; color:var(--faint); max-width:62ch; }
+  .feats{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .feats div{ background:var(--ink-2); border-radius:4px; padding:14px 16px; display:grid; gap:6px; align-content:start; }
+  .feats b{ font:400 1.35rem/1 var(--display); letter-spacing:.02em; }
+  .feats span{ font-size:.84rem; color:var(--soft); line-height:1.5; }
+  @media (max-width: 900px){ .feats{ grid-template-columns:1fr 1fr; } }
+  @media (max-width: 520px){ .feats{ grid-template-columns:1fr; } .tuner__frame{ height:calc(100svh - 150px); min-height:560px; } }
+
+  /* bloque de descarga de app (afinador) */
+  .dl{ display:grid; grid-template-columns: 1.2fr 1fr; gap:18px 36px; align-items:start; background:var(--bordo); border-radius:6px; padding:clamp(20px,3vw,32px); }
+  .dl__kicker{ margin:0 0 6px; font:700 .78rem/1.2 var(--body); color:rgba(242,242,242,.75); }
+  .dl__title{ margin:0 0 10px; font:400 clamp(2rem,4vw,2.8rem)/.92 var(--display); }
+  .dl__text p{ margin:0; color:rgba(242,242,242,.88); max-width:52ch; }
+  .dl__text .dl__meta{ margin-top:12px; font-size:.82rem; color:rgba(242,242,242,.7); }
+  .dl__side{ display:grid; gap:12px; justify-items:start; }
+  .dl .btn.primary{ background:var(--paper); color:var(--bordo); }
+  .dl .btn.primary:hover{ background:#fff; }
+  .dl__how{ font-size:.86rem; color:rgba(242,242,242,.88); }
+  .dl__how summary{ cursor:pointer; font-weight:700; text-decoration:underline; text-underline-offset:4px; }
+  .dl__how ol{ margin:10px 0 8px; padding-left:20px; display:grid; gap:4px; }
+  .dl__how p{ margin:0; color:rgba(242,242,242,.7); font-size:.8rem; }
+  @media (max-width: 700px){ .dl{ grid-template-columns:1fr; } }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Afinador — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/afinador/", "description": "Afinador online gratis para guitarra, bajo, ukelele, charango, violín y más, con afinaciones alternativas y modo cromático. Usa el micrófono y no graba nada. También como app para Android.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "publisher": {"@id": "https://claraboyaestudio.netlify.app/#estudio", "@type": "LocalBusiness", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
+<link rel="manifest" href="../../manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../../herramientas/assets/pwa.js" defer></script>
+</head>
+<body class="tool" data-tool="afinador">
+<a class="skip" href="#app">Ir a la herramienta</a>
+<header class="tn">
+  <div class="tn__bar">
+    <a class="tn__logo" href="../../" aria-label="Claraboya Estudio, ir al inicio"><img src="../../img/logo.webp" alt="" width="120" height="128"></a>
+    <a class="tn__hub" href="../">Herramientas <span>de producción</span></a>
+    <a class="tn__studio" href="../../#servicios">El estudio</a>
+  </div>
+  <nav class="tn__tools" aria-label="Cambiar de herramienta">
+    <a href="../matriz-de-acordes/"><b>01</b>Matriz de acordes</a>
+    <a href="../brujula-armonica/"><b>02</b>Brújula armónica</a>
+    <a href="../hoja-de-ruta/"><b>03</b>Hoja de ruta</a>
+    <a href="../rider-tecnico/"><b>04</b>Rider técnico</a>
+    <a href="../armador-de-setlists/"><b>05</b>Armador de setlists</a>
+    <a href="../calentamiento-vocal/"><b>06</b>Calentamiento vocal</a>
+    <a href="../afinador/" aria-current="page"><b>07</b>Afinador</a>
+    <a href="../metronomo/"><b>08</b>Metrónomo</a>
+    <a href="../buscador-de-bpm/"><b>09</b>Buscador de BPM</a>
+  </nav>
+</header>
+<main class="app app--afinador" id="app">
+  <header class="tool-head">
+    <div>
+      <p class="tool-head__kicker"><b>07</b> · Para todos los días</p>
+      <h1>Afinador</h1>
+      <p class="tool-head__sub">El afinador que usamos en el estudio. Activá el micrófono, tocá una cuerda y seguí la aguja. Funciona en el celular y en la compu.</p>
+    </div>
+  </header>
+
+  <section class="tuner" aria-label="Afinador">
+    <iframe class="tuner__frame" src="app/" title="Afinador de Claraboya" allow="microphone; autoplay"></iframe>
+  </section>
+  <div class="tuner__bar">
+    <p class="tuner__privacy">Usa el micrófono de tu dispositivo. El sonido se analiza ahí mismo: no se graba ni se manda a ningún lado.</p>
+    <a class="btn ghost small" href="app/">Abrir en pantalla completa</a>
+  </div>
+
+  <section class="dl" id="descargar" aria-labelledby="dl-t">
+    <div class="dl__text">
+      <p class="dl__kicker">App para Android</p>
+      <h2 class="dl__title" id="dl-t">Llevalo en el celular, sin internet</h2>
+      <p>El mismo afinador como app, para tenerlo a mano en la sala o en el escenario aunque no haya señal.</p>
+      <p class="dl__meta">Versión 1.0 · Android 5.1 o superior · 4,3 MB · Gratis</p>
+    </div>
+    <div class="dl__side">
+      <a class="btn primary big" href="../../descargas/claraboya-afinador.apk" download>
+        <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+        Descargar el .apk
+      </a>
+      <details class="dl__how">
+        <summary>Cómo instalarlo</summary>
+        <ol>
+          <li>Descargá el archivo desde el celular o la tablet.</li>
+          <li>Abrilo. Android te va a pedir permiso para instalar apps desde tu navegador: aceptalo.</li>
+          <li>Tocá Instalar y abrí el afinador.</li>
+        </ol>
+        <p>No está en Google Play: por eso Android avisa antes de instalarlo. En iPhone usá la versión online de esta página.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="feats" aria-label="Qué trae">
+    <div><b>14 instrumentos</b><span>Guitarra de 6 y 7 cuerdas, bajos de 4, 5 y 6, ukelele, charango, violín, viola, chelo, contrabajo, mandolina, banjo y cavaquinho. También modo cromático.</span></div>
+    <div><b>Afinaciones alternativas</b><span>Drop D, medio tono abajo, abiertas y más. Podés armar y guardar las tuyas.</span></div>
+    <div><b>Para cada sala</b><span>La de referencia de 432 a 444 Hz, cejilla, notación Do Re Mi o C D E y sensibilidad del micrófono.</span></div>
+    <div><b>Tono de referencia</b><span>Tocás una cuerda en pantalla y suena la nota, para afinar de oído.</span></div>
+  </section>
+
+  <section class="next" aria-labelledby="next-t">
+    <h2 class="next__title" id="next-t">Seguí con</h2>
+    <div class="next__grid">
+    <a class="next__card" href="../metronomo/">
+      <span class="next__why">Afinado</span>
+      <span class="next__name">Metrónomo</span>
+      <span class="next__desc">Practicá a tempo, con compás, subdivisiones y acentos.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../buscador-de-bpm/">
+      <span class="next__why">¿A qué velocidad va?</span>
+      <span class="next__name">Buscador de BPM</span>
+      <span class="next__desc">Buscá una canción y sacá su tempo.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    </div>
+  </section>
+
+</main>
+<footer class="tf">
+  <div class="tf__band">
+    <div class="tf__cta">
+      <div>
+        <p class="tf__cta-title">¿Y cuando el tema esté listo?</p>
+        <p>Estas herramientas las usamos en Claraboya. Si querés grabar, producir, mezclar o masterizar, escribinos: te respondemos nosotros.</p>
+      </div>
+      <a class="btn big btn--wa" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Afinador%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener"><svg class="btn__icon" viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg>Escribinos por WhatsApp</a>
+    </div>
+  </div>
+  <div class="tf__bottom">
+    <img src="../../img/logo.webp" alt="" width="40" height="43" loading="lazy">
+    <p>Claraboya Estudio · Vicente López, Buenos Aires · <span class="ver">v{{VERSION}}</span></p>
+    <nav class="tf__links" aria-label="Enlaces">
+      <a href="../../">Inicio</a>
+      <a href="https://www.instagram.com/claraboya.estudio" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://linktr.ee/claraboyaestudio" target="_blank" rel="noopener">Linktree</a>
+      <a href="https://cafecito.app/claraboyaestudio" target="_blank" rel="noopener">Invitanos un cafecito</a>
+    </nav>
+  </div>
+</footer>
+<div class="wa-dock" id="waDock">
+  <div class="wa-dock__bubble" id="waBubble">
+    <a class="wa-dock__text" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Afinador%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener">¿Ya está afinado? Vení a grabar a Claraboya.<span>Escribinos por WhatsApp</span></a>
+    <button class="wa-dock__close" type="button" id="waClose" aria-label="Ocultar este mensaje">×</button>
+  </div>
+  <a class="wa-dock__btn" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Afinador%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg></a>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.16 0 0 7.16 0 16c0 2.82.74 5.47 2.03 7.77L0 32l8.44-2.21A15.9 15.9 0 0 0 16 31.7c8.84 0 16-7.16 16-16S24.84 0 16 0zm0 29.02c-2.4 0-4.66-.65-6.6-1.78l-.47-.28-5.01 1.31 1.34-4.88-.31-.5A13 13 0 1 1 16 29.02zm7.13-9.74c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.62-.2-.88.2-.26.39-1.01 1.26-1.24 1.52-.23.26-.46.29-.85.1-.39-.2-1.65-.61-3.14-1.94-1.16-1.04-1.94-2.32-2.17-2.71-.23-.39-.02-.6.17-.79.18-.18.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.88-2.12-1.2-2.9-.32-.77-.64-.66-.88-.67l-.75-.01c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26 0 1.92 1.4 3.78 1.6 4.04.2.26 2.76 4.22 6.7 5.91.94.41 1.67.65 2.24.83.94.3 1.79.26 2.47.16.75-.11 2.3-.94 2.62-1.85.32-.91.32-1.69.23-1.85-.1-.16-.36-.26-.75-.46z"/></symbol>
+</svg>
+<script src="../assets/tools.js"></script>
+<script>
+
+</script>
+</body>
+</html>

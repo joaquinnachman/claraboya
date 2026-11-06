@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rider técnico · Herramientas de producción | Claraboya Estudio</title>
+<meta name="description" content="Armá el rider técnico de tu banda: stage plot arrastrable, input list, monitores, backline y energía. Exportalo en PDF con tu logo. Gratis, de Claraboya Estudio.">
+<link rel="canonical" href="https://claraboyaestudio.netlify.app/herramientas/rider-tecnico/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1F2426">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Claraboya Estudio">
+<meta property="og:title" content="Rider técnico · Herramientas de producción | Claraboya Estudio">
+<meta property="og:description" content="Armá el rider técnico de tu banda: stage plot arrastrable, input list, monitores, backline y energía. Exportalo en PDF con tu logo. Gratis, de Claraboya Estudio.">
+<meta property="og:url" content="https://claraboyaestudio.netlify.app/herramientas/rider-tecnico/">
+<meta property="og:image" content="https://claraboyaestudio.netlify.app/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/icon-32.png">
+<link rel="apple-touch-icon" href="../../img/app-180.png">
+<link rel="preload" href="../../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../herramientas/assets/tools.css">
+<script src="../assets/vendor/jspdf-2.5.1.min.js" defer></script>
+<script src="../assets/vendor/jspdf-autotable-3.8.2.min.js" defer></script>
+<script src="../assets/vendor/html2canvas-1.4.1.min.js" defer></script>
+<style>
+  .btn.confirm-delete{ background:var(--brick); color:#fff; }
+
+  .grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .grid-3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px; }
+  @media (max-width: 760px){ .grid-2, .grid-3{ grid-template-columns: 1fr; } }
+
+  /* datos generales */
+  .logo-row{ display:flex; align-items:center; gap:14px; }
+  .logo-preview{ width:76px; height:76px; border-radius:4px; background:var(--ink-3); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; border:1px dashed var(--border-strong); }
+  .logo-preview img{ width:100%; height:100%; object-fit:contain; }
+  .logo-preview span{ font-size:10.5px; color:var(--text-faint); text-align:center; padding:4px; }
+  .logo-actions{ display:flex; flex-direction:column; gap:6px; }
+  .color-row{ display:flex; align-items:center; gap:12px; }
+  input[type=color]{ width:42px; height:36px; padding:2px; border-radius:3px; background:var(--ink-3); border:0; cursor:pointer; flex:none; }
+
+  /* stage plot */
+  .stage-toolbar{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .palette-btn{ font: 600 12px/1 var(--body); background:var(--ink-3); color:var(--paper); border:0; border-radius:99px; padding:7px 12px 7px 9px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+  .palette-btn:hover{ background:var(--ink-4); }
+  .stage-surface{
+    position:relative; width:100%; aspect-ratio: 16/9; max-height:480px; background:
+      linear-gradient(var(--ink-3),var(--ink-3)),
+      repeating-linear-gradient(0deg, rgba(242,242,242,0.05) 0 1px, transparent 1px 40px),
+      repeating-linear-gradient(90deg, rgba(242,242,242,0.05) 0 1px, transparent 1px 40px);
+    border-radius: 4px; overflow:hidden; touch-action:none; border:1px solid var(--line);
+  }
+  .stage-edge-label{ position:absolute; left:50%; transform:translateX(-50%); font: 400 13px/1 var(--display); letter-spacing:0.14em; color:var(--text-faint); pointer-events:none; }
+  .stage-edge-label.top{ top:9px; }
+  .stage-edge-label.bottom{ bottom:9px; color:var(--gold); }
+  .stage-item{ position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:3px; cursor:grab; user-select:none; touch-action:none; }
+  .stage-item:active{ cursor:grabbing; }
+  .stage-item.selected .stage-icon-box{ outline:2px solid var(--rosa); outline-offset:2px; border-radius:6px; }
+  .stage-icon-box svg{ width:38px; height:38px; display:block; }
+  .stage-item-label{ font: 700 9.5px/1.3 var(--body); color:var(--paper); background:rgba(0,0,0,0.6); padding:1px 5px; border-radius:3px; white-space:nowrap; max-width:120px; overflow:hidden; text-overflow:ellipsis; }
+  .stage-inspector{ display:flex; gap:8px; margin-top:10px; align-items:center; flex-wrap:wrap; background:var(--ink-3); border-radius:3px; padding:10px 12px; }
+  .stage-inspector input{ flex:1; min-width:140px; background:var(--ink-4); }
+  .stage-empty-hint{ font-size:12px; color:var(--text-faint); margin-top:8px; }
+
+  /* tablas */
+  .rider-table{ width:100%; border-collapse:separate; border-spacing:0 5px; }
+  .rider-table th{ text-align:left; font: 700 10.5px/1.2 var(--body); text-transform:uppercase; letter-spacing:0.05em; color:var(--text-faint); padding:0 8px 4px; }
+  .rider-table td{ padding:5px 6px; vertical-align:middle; }
+  .rider-table tr.row-bg td{ background:var(--ink-3); }
+  .rider-table tr.row-bg td:first-child{ border-radius:3px 0 0 3px; }
+  .rider-table tr.row-bg td:last-child{ border-radius:0 3px 3px 0; }
+  .rider-table input, .rider-table select{ padding:8px 8px; font-size:12.5px; background:var(--ink-4); }
+  .rider-table td.col-num{ font-family:var(--font-mono); color:var(--text-faint); font-size:12px; width:26px; text-align:center; }
+  .rider-table td.col-check{ width:40px; text-align:center; }
+  .rider-table td.col-actions{ width:64px; white-space:nowrap; text-align:right; }
+  .rider-table input[type=checkbox]{ width:17px; height:17px; accent-color: var(--rosa); cursor:pointer; }
+  .table-scroll{ overflow-x:auto; }
+  .table-scroll table{ min-width:640px; }
+  .table-add-row{ margin-top:10px; }
+
+  .template-row{ display:flex; gap:8px; flex-wrap:wrap; }
+
+  /* guardados */
+  .saved-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--ink-3); border-radius:3px; padding:11px 13px; margin-bottom:6px; }
+  .saved-name{ font-weight:700; font-size:14px; }
+  .saved-meta{ font-size:12px; color:var(--text-faint); font-family:var(--font-mono); }
+  .saved-actions{ display:flex; gap:6px; flex:none; }
+
+  /* barra fija de guardar / exportar */
+  .export-bar{ display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; background:var(--ink-2); border-radius:4px; padding:14px 18px; position:sticky; bottom:12px; z-index:20; box-shadow:0 12px 32px rgba(0,0,0,0.5); border:1px solid var(--border-strong); }
+  .export-bar-text{ font-size:13px; color:var(--text-dim); }
+  .export-bar-text strong{ color:var(--paper); }
+
+  @media (max-width: 620px){
+    .export-bar{ flex-direction:column; align-items:stretch; }
+    .export-bar .btn{ flex:1; }
+  }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Rider técnico — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/rider-tecnico/", "description": "Armá el rider técnico de tu banda: stage plot arrastrable, input list, monitores, backline y energía. Exportalo en PDF con tu logo. Gratis, de Claraboya Estudio.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "publisher": {"@id": "https://claraboyaestudio.netlify.app/#estudio", "@type": "LocalBusiness", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
+<link rel="manifest" href="../../manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../../herramientas/assets/pwa.js" defer></script>
+</head>
+<body class="tool" data-tool="rider-tecnico">
+<a class="skip" href="#app">Ir a la herramienta</a>
+<header class="tn">
+  <div class="tn__bar">
+    <a class="tn__logo" href="../../" aria-label="Claraboya Estudio, ir al inicio"><img src="../../img/logo.webp" alt="" width="120" height="128"></a>
+    <a class="tn__hub" href="../">Herramientas <span>de producción</span></a>
+    <a class="tn__studio" href="../../#servicios">El estudio</a>
+  </div>
+  <nav class="tn__tools" aria-label="Cambiar de herramienta">
+    <a href="../matriz-de-acordes/"><b>01</b>Matriz de acordes</a>
+    <a href="../brujula-armonica/"><b>02</b>Brújula armónica</a>
+    <a href="../hoja-de-ruta/"><b>03</b>Hoja de ruta</a>
+    <a href="../rider-tecnico/" aria-current="page"><b>04</b>Rider técnico</a>
+    <a href="../armador-de-setlists/"><b>05</b>Armador de setlists</a>
+    <a href="../calentamiento-vocal/"><b>06</b>Calentamiento vocal</a>
+    <a href="../afinador/"><b>07</b>Afinador</a>
+    <a href="../metronomo/"><b>08</b>Metrónomo</a>
+    <a href="../buscador-de-bpm/"><b>09</b>Buscador de BPM</a>
+  </nav>
+</header>
+<main class="app app--rider-tecnico" id="app">
+  <header class="tool-head">
+    <div>
+      <p class="tool-head__kicker"><b>04</b> · Salir a tocar</p>
+      <h1>Rider técnico</h1>
+      <p class="tool-head__sub">Stage plot, input list, monitores y backline para mandarle a la sala en un PDF prolijo, con el logo de tu proyecto.</p>
+    </div>
+    <div class="tool-head__aside"><span class="status-pill" id="statusPill">cargando…</span></div>
+  </header>
+
+  <div class="context-note" id="contextNote" hidden></div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Plantillas rápidas</h2>
+    </div>
+    <p class="panel-sub">Arrancá de una base ya armada y ajustá lo que haga falta. Reemplaza el stage plot y las listas; los datos de la banda se mantienen.</p>
+    <div class="template-row">
+      <button class="btn ghost" data-template="rock4">🎸 Banda de rock (4 integrantes)</button>
+      <button class="btn ghost" data-template="duo">🎻 Dúo acústico</button>
+      <button class="btn ghost" data-template="dj">🎛 Set DJ / electrónico</button>
+      <button class="btn ghost" id="blankTemplateBtn">＋ Rider en blanco</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Datos generales</h2>
+    <div class="grid-3" style="margin-bottom:14px;">
+      <div class="field"><label class="field-label">Proyecto / banda</label><input type="text" id="fBandName" placeholder="Nombre de la banda" autocomplete="off"></div>
+      <div class="field"><label class="field-label">Género</label><input type="text" id="fGenre" placeholder="Rock, pop, jazz..."></div>
+      <div class="field"><label class="field-label">Cantidad de integrantes</label><input type="text" id="fMembers" placeholder="4"></div>
+    </div>
+    <div class="grid-3" style="margin-bottom:14px;">
+      <div class="field"><label class="field-label">Contacto técnico</label><input type="text" id="fContactName" placeholder="Nombre"></div>
+      <div class="field"><label class="field-label">Teléfono / email</label><input type="text" id="fContactInfo" placeholder="11 1234-5678"></div>
+      <div class="field"><label class="field-label">Fecha del show</label><input type="text" id="fShowDate" placeholder="dd/mm/aaaa"></div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label class="field-label">Logo del proyecto</label>
+        <div class="logo-row">
+          <div class="logo-preview" id="logoPreview"><span>Sin logo</span></div>
+          <div class="logo-actions">
+            <input type="file" id="logoInput" accept="image/*" style="display:none;">
+            <button class="btn small" id="logoUploadBtn">Subir logo</button>
+            <button class="btn small ghost" id="logoRemoveBtn" style="display:none;">Quitar</button>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Color de acento del PDF</label>
+        <div class="color-row">
+          <input type="color" id="fAccentColor" value="#6E1618">
+          <span class="hint" style="margin:0;">Se usa en los encabezados del PDF. Cambialo si el proyecto tiene su propio color.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Stage plot</h2></div>
+    <p class="panel-sub">Tocá un ícono para agregarlo al escenario y arrastralo a su lugar. El público queda del lado inferior. Mics, amplis, teclados y DI se suman solos a la Input List; los monitores se suman a Monitores — después completá ahí los datos que falten.</p>
+    <div class="stage-toolbar" id="stagePalette"></div>
+    <div class="stage-surface" id="stageSurface">
+      <div class="stage-edge-label top">Fondo de escenario</div>
+      <div class="stage-edge-label bottom">▼ Público / FOH ▼</div>
+      <div id="stageItemsLayer" style="position:absolute; inset:0;"></div>
+    </div>
+    <div class="stage-inspector" id="stageInspector" style="display:none;">
+      <input type="text" id="stageItemLabel" placeholder="Etiqueta (ej. Guitarra Juan)">
+      <button class="btn small" id="rotateStageItemBtn">↻ Rotar</button>
+      <button class="btn small ghost" id="deleteStageItemBtn">✕ Eliminar</button>
+    </div>
+    <p class="stage-empty-hint" id="stageEmptyHint">Todavía no agregaste nada al escenario — usá los íconos de arriba.</p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Input list</h2></div>
+    <p class="panel-sub">Un renglón por canal físico de consola. Orden sugerido: batería, bajo, guitarras, teclados y por último voces.</p>
+    <div class="table-scroll">
+      <table class="rider-table" id="inputTable">
+        <thead><tr>
+          <th>#</th><th>Instrumento / fuente</th><th>Mic o DI sugerido</th><th>Pie</th><th>48V</th><th>Provisto por</th><th>Notas</th><th></th>
+        </tr></thead>
+        <tbody id="inputTableBody"></tbody>
+      </table>
+    </div>
+    <div id="inputEmptyNote" class="empty-note" style="display:none;">Todavía no hay canales cargados.</div>
+    <button class="btn primary small table-add-row" id="addInputRowBtn">+ Agregar canal</button>
+    <datalist id="micSuggestions">
+      <option value="Shure SM58 (voz)"><option value="Shure SM57 (instrumento)">
+      <option value="Sennheiser e604 (toms)"><option value="Sennheiser e904 (toms)">
+      <option value="AKG D112 / Beta 52A (bombo)"><option value="Shure Beta 91A (bombo, interior)">
+      <option value="AKG C414 (overhead / acústica)"><option value="Shure SM81 (overhead)">
+      <option value="DI Radial ProDI"><option value="DI Radial J48 (activa)">
+      <option value="Directo desde consola / interfaz">
+    </datalist>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Monitores</h2></div>
+    <p class="panel-sub">Una mezcla por destinatario — quién la necesita y qué tiene que escuchar en ella.</p>
+    <div class="table-scroll">
+      <table class="rider-table" id="outputTable">
+        <thead><tr><th>Mix</th><th>Para quién</th><th>Contenido</th><th>Tipo</th><th></th></tr></thead>
+        <tbody id="outputTableBody"></tbody>
+      </table>
+    </div>
+    <div id="outputEmptyNote" class="empty-note" style="display:none;">Todavía no hay mezclas de monitores cargadas.</div>
+    <button class="btn primary small table-add-row" id="addOutputRowBtn">+ Agregar mezcla</button>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Backline y energía</h2></div>
+    <p class="panel-sub">Qué trae la banda y qué necesita que ponga la sala.</p>
+    <div class="table-scroll">
+      <table class="rider-table" id="backlineTable">
+        <thead><tr><th>Ítem</th><th>Provisto por</th><th>Cantidad</th><th>Notas</th><th></th></tr></thead>
+        <tbody id="backlineTableBody"></tbody>
+      </table>
+    </div>
+    <div id="backlineEmptyNote" class="empty-note" style="display:none;">Todavía no hay ítems de backline cargados.</div>
+    <button class="btn primary small table-add-row" id="addBacklineRowBtn">+ Agregar ítem</button>
+    <div class="field" style="margin-top:14px;">
+      <label class="field-label">Requerimientos de energía</label>
+      <textarea id="fPower" placeholder="Ej: 2 tomas de 220V cerca del escenario — una para backline, otra para monitores."></textarea>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Horarios y notas</h2>
+    <div class="grid-3" style="margin-bottom:14px;">
+      <div class="field"><label class="field-label">Load-in</label><input type="text" id="fLoadIn" placeholder="18:00"></div>
+      <div class="field"><label class="field-label">Soundcheck</label><input type="text" id="fSoundcheck" placeholder="19:30"></div>
+      <div class="field"><label class="field-label">Duración del show</label><input type="text" id="fShowLength" placeholder="60 min"></div>
+    </div>
+    <div class="field">
+      <label class="field-label">Notas adicionales</label>
+      <textarea id="fNotes" placeholder="Cualquier excepción o pedido puntual que no entre en las listas de arriba."></textarea>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Mis riders guardados</h2>
+      <button class="btn small ghost" id="newRiderBtn">＋ Nuevo rider</button>
+    </div>
+    <div id="savedRidersList"></div>
+  </section>
+
+  <div class="export-bar" role="region" aria-label="Guardar y exportar">
+    <div class="export-bar-text">
+      Editando: <strong id="currentRiderLabel">Rider sin guardar</strong>
+      <span id="exportStatusMsg" style="display:block; color:var(--brick); margin-top:2px;"></span>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="btn ghost" id="saveRiderBtn">💾 Guardar</button>
+      <button class="btn primary" id="exportPdfBtn">⬇ Exportar PDF</button>
+    </div>
+  </div>
+
+  <section class="next" aria-labelledby="next-t">
+    <h2 class="next__title" id="next-t">Seguí con</h2>
+    <div class="next__grid">
+    <a class="next__card" href="../armador-de-setlists/" data-next="setlist" data-next-slug="armador-de-setlists">
+      <span class="next__why">Mismo show, siguiente paso</span>
+      <span class="next__name">Armador de setlists</span>
+      <span class="next__desc">Armá el orden de los temas y usá el modo show en el escenario.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../calentamiento-vocal/?foco=preshow&amp;min=10&amp;volver=rider-tecnico">
+      <span class="next__why">Antes de subir</span>
+      <span class="next__name">Calentamiento vocal</span>
+      <span class="next__desc">Calentamiento pre-show guiado con voz. Al terminar volvés acá.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    </div>
+  </section>
+</main>
+<footer class="tf">
+  <div class="tf__band">
+    <div class="tf__cta">
+      <div>
+        <p class="tf__cta-title">¿Y cuando el tema esté listo?</p>
+        <p>Estas herramientas las usamos en Claraboya. Si querés grabar, producir, mezclar o masterizar, escribinos: te respondemos nosotros.</p>
+      </div>
+      <a class="btn big btn--wa" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Rider%20t%C3%A9cnico%20de%20Claraboya.%20Tenemos%20una%20banda%20y%20quer%C3%ADamos%20consultar%20por%20grabar." target="_blank" rel="noopener"><svg class="btn__icon" viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg>Escribinos por WhatsApp</a>
+    </div>
+  </div>
+  <div class="tf__data">
+    <span data-cb-storage-note>Lo que cargás se guarda <strong>solo en este navegador</strong>. Para pasarlo a otro dispositivo, descargá una copia y restaurala allá.</span>
+    <div class="tf__data-actions">
+      <button class="btn small ghost" type="button" data-cb-export>Descargar copia</button>
+      <button class="btn small ghost" type="button" data-cb-import>Restaurar copia</button>
+    </div>
+  </div>
+  <div class="tf__bottom">
+    <img src="../../img/logo.webp" alt="" width="40" height="43" loading="lazy">
+    <p>Claraboya Estudio · Vicente López, Buenos Aires · <span class="ver">v{{VERSION}}</span></p>
+    <nav class="tf__links" aria-label="Enlaces">
+      <a href="../../">Inicio</a>
+      <a href="https://www.instagram.com/claraboya.estudio" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://linktr.ee/claraboyaestudio" target="_blank" rel="noopener">Linktree</a>
+      <a href="https://cafecito.app/claraboyaestudio" target="_blank" rel="noopener">Invitanos un cafecito</a>
+    </nav>
+  </div>
+</footer>
+<div class="wa-dock" id="waDock">
+  <div class="wa-dock__bubble" id="waBubble">
+    <a class="wa-dock__text" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Rider%20t%C3%A9cnico%20de%20Claraboya.%20Tenemos%20una%20banda%20y%20quer%C3%ADamos%20consultar%20por%20grabar." target="_blank" rel="noopener">¿La banda ya suena en vivo? Llevemos esos temas al disco.<span>Escribinos por WhatsApp</span></a>
+    <button class="wa-dock__close" type="button" id="waClose" aria-label="Ocultar este mensaje">×</button>
+  </div>
+  <a class="wa-dock__btn" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Rider%20t%C3%A9cnico%20de%20Claraboya.%20Tenemos%20una%20banda%20y%20quer%C3%ADamos%20consultar%20por%20grabar." target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg></a>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.16 0 0 7.16 0 16c0 2.82.74 5.47 2.03 7.77L0 32l8.44-2.21A15.9 15.9 0 0 0 16 31.7c8.84 0 16-7.16 16-16S24.84 0 16 0zm0 29.02c-2.4 0-4.66-.65-6.6-1.78l-.47-.28-5.01 1.31 1.34-4.88-.31-.5A13 13 0 1 1 16 29.02zm7.13-9.74c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.62-.2-.88.2-.26.39-1.01 1.26-1.24 1.52-.23.26-.46.29-.85.1-.39-.2-1.65-.61-3.14-1.94-1.16-1.04-1.94-2.32-2.17-2.71-.23-.39-.02-.6.17-.79.18-.18.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.88-2.12-1.2-2.9-.32-.77-.64-.66-.88-.67l-.75-.01c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26 0 1.92 1.4 3.78 1.6 4.04.2.26 2.76 4.22 6.7 5.91.94.41 1.67.65 2.24.83.94.3 1.79.26 2.47.16.75-.11 2.3-.94 2.62-1.85.32-.91.32-1.69.23-1.85-.1-.16-.36-.26-.75-.46z"/></symbol>
+</svg>
+<script src="../assets/tools.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  /* ============ icon set ============ */
+  var STAGE_TYPES = [
+    { type:'mic', label:'Mic', defaultLabel:'Mic' },
+    { type:'ampGuitar', label:'Ampli guitarra', defaultLabel:'Ampli guitarra' },
+    { type:'ampBass', label:'Ampli bajo', defaultLabel:'Ampli bajo' },
+    { type:'drumKit', label:'Batería', defaultLabel:'Batería' },
+    { type:'keys', label:'Teclado', defaultLabel:'Teclado' },
+    { type:'monitor', label:'Monitor', defaultLabel:'Monitor' },
+    { type:'di', label:'DI', defaultLabel:'DI' },
+    { type:'power', label:'Energía', defaultLabel:'220V' },
+    { type:'riser', label:'Riser', defaultLabel:'Riser' }
+  ];
+
+  function iconSvg(type){
+    switch(type){
+      case 'mic':
+        return '<svg viewBox="0 0 60 60"><line x1="30" y1="24" x2="30" y2="48" stroke="#f5f5f7" stroke-width="3"/><circle cx="30" cy="16" r="11" fill="#5ac8fa"/><circle cx="30" cy="16" r="11" fill="none" stroke="#0b0b0d" stroke-width="2"/></svg>';
+      case 'ampGuitar':
+        return '<svg viewBox="0 0 60 60"><rect x="9" y="14" width="42" height="32" rx="4" fill="#e8c14a"/><circle cx="22" cy="30" r="6" fill="#0b0b0d"/><circle cx="38" cy="30" r="6" fill="#0b0b0d"/></svg>';
+      case 'ampBass':
+        return '<svg viewBox="0 0 60 60"><rect x="7" y="12" width="46" height="36" rx="4" fill="#b3223f"/><circle cx="30" cy="30" r="11" fill="#0b0b0d"/></svg>';
+      case 'drumKit':
+        return '<svg viewBox="0 0 60 60"><circle cx="30" cy="34" r="16" fill="#9a9aa0"/><circle cx="14" cy="18" r="8" fill="#e8c14a"/><circle cx="46" cy="18" r="8" fill="#e8c14a"/><circle cx="30" cy="12" r="7" fill="#5ac8fa"/></svg>';
+      case 'keys':
+        return '<svg viewBox="0 0 60 60"><rect x="5" y="22" width="50" height="18" rx="3" fill="#f5f5f7"/><line x1="14" y1="22" x2="14" y2="40" stroke="#0b0b0d" stroke-width="2"/><line x1="23" y1="22" x2="23" y2="40" stroke="#0b0b0d" stroke-width="2"/><line x1="32" y1="22" x2="32" y2="40" stroke="#0b0b0d" stroke-width="2"/><line x1="41" y1="22" x2="41" y2="40" stroke="#0b0b0d" stroke-width="2"/><line x1="50" y1="22" x2="50" y2="40" stroke="#0b0b0d" stroke-width="2"/></svg>';
+      case 'monitor':
+        return '<svg viewBox="0 0 60 60"><polygon points="10,42 50,42 40,18 20,18" fill="#5ac8fa"/></svg>';
+      case 'di':
+        return '<svg viewBox="0 0 60 60"><rect x="15" y="15" width="30" height="30" rx="4" fill="#3a3a3c" stroke="#f5f5f7" stroke-width="2"/><text x="30" y="35" font-size="13" font-weight="700" text-anchor="middle" fill="#f5f5f7" font-family="ui-monospace,monospace">DI</text></svg>';
+      case 'power':
+        return '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="18" fill="#3a3a3c" stroke="#e8c14a" stroke-width="2"/><text x="30" y="36" font-size="18" text-anchor="middle" fill="#e8c14a">⚡</text></svg>';
+      case 'riser':
+        return '<svg viewBox="0 0 60 60"><rect x="6" y="16" width="48" height="28" rx="3" fill="none" stroke="#9a9aa0" stroke-width="2" stroke-dasharray="5,4"/></svg>';
+      default:
+        return '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="16" fill="#9a9aa0"/></svg>';
+    }
+  }
+
+  /* ============ templates ============ */
+  function blankRider(){
+    return {
+      bandName:'', genre:'', members:'', contactName:'', contactInfo:'', showDate:'',
+      logoDataUrl:'', logoAspect:1, accentColor:'#6E1618',
+      stagePlot: [],
+      inputRows: [],
+      outputRows: [],
+      backlineRows: [],
+      power:'', loadIn:'', soundcheck:'', showLength:'', notes:''
+    };
+  }
+
+  function inputRow(instrument, mic, stand, phantom, providedBy, notes){
+    return { id:'ir'+Math.random().toString(36).slice(2,9), instrument:instrument||'', mic:mic||'', stand:stand||'Ninguno', phantom:!!phantom, providedBy:providedBy||'Banda', notes:notes||'' };
+  }
+  function outputRow(who, content, kind){
+    return { id:'or'+Math.random().toString(36).slice(2,9), who:who||'', content:content||'', kind:kind||'Wedge' };
+  }
+  function backlineRow(item, providedBy, qty, notes){
+    return { id:'br'+Math.random().toString(36).slice(2,9), item:item||'', providedBy:providedBy||'Banda', qty:qty||'1', notes:notes||'' };
+  }
+  function stageItem(type, x, y, label){
+    return { id:'si'+Math.random().toString(36).slice(2,9), type:type, x:x, y:y, label:label||'', rotation:0, linkedTable:null, linkedRowId:null };
+  }
+
+  // Which list a given stage-plot icon feeds automatically, and how to seed that row.
+  // Sources (mics, amps, DI, keys) go to the Input List; monitor wedges go to Monitores.
+  // Power and risers don't carry audio, so they don't create a channel/mix row.
+  var STAGE_TYPE_ROW_LINK = {
+    mic:       { table:'input',  mic:'Shure SM58', stand:'Alto', providedBy:'Venue' },
+    ampGuitar: { table:'input',  mic:'Shure SM57', stand:'Boom', providedBy:'Venue' },
+    ampBass:   { table:'input',  mic:'DI Radial ProDI', stand:'Ninguno', providedBy:'Banda' },
+    drumKit:   { table:'input',  mic:'Kit completo — ver detalle de mics por pieza', stand:'Ninguno', providedBy:'Venue' },
+    keys:      { table:'input',  mic:'DI Radial ProDI', stand:'Ninguno', providedBy:'Banda' },
+    di:        { table:'input',  mic:'DI Radial ProDI', stand:'Ninguno', providedBy:'Banda' },
+    custom:    { table:'input',  mic:'', stand:'Ninguno', providedBy:'Venue' },
+    monitor:   { table:'output', kind:'Wedge' }
+  };
+
+  function templateRock4(){
+    var r = blankRider();
+    r.genre = 'Rock';
+    r.members = '4';
+    r.stagePlot = [
+      stageItem('drumKit', 50, 28, 'Batería'),
+      stageItem('ampGuitar', 22, 55, 'Ampli guitarra'),
+      stageItem('ampBass', 78, 55, 'Ampli bajo'),
+      stageItem('mic', 30, 78, 'Voz principal'),
+      stageItem('mic', 70, 78, 'Voz coro'),
+      stageItem('monitor', 30, 90, 'Mon. 1'),
+      stageItem('monitor', 70, 90, 'Mon. 2'),
+      stageItem('monitor', 50, 14, 'Mon. batería')
+    ];
+    r.inputRows = [
+      inputRow('Bombo','AKG D112 / Beta 52A','Ninguno',false,'Venue',''),
+      inputRow('Redoblante','Shure SM57','Ninguno',false,'Venue',''),
+      inputRow('Hi-Hat','Shure SM81','Boom',true,'Venue',''),
+      inputRow('Tom 1','Sennheiser e604','Ninguno',false,'Venue',''),
+      inputRow('Tom 2','Sennheiser e604','Ninguno',false,'Venue',''),
+      inputRow('Overhead L','AKG C414','Boom',true,'Venue',''),
+      inputRow('Overhead R','AKG C414','Boom',true,'Venue',''),
+      inputRow('Bajo','DI Radial ProDI','Ninguno',false,'Banda','Directo + mic ampli opcional'),
+      inputRow('Guitarra 1','Shure SM57','Boom',false,'Venue','Mic al ampli'),
+      inputRow('Guitarra 2','Shure SM57','Boom',false,'Venue','Mic al ampli'),
+      inputRow('Voz principal','Shure SM58','Alto',false,'Venue',''),
+      inputRow('Voz coro','Shure SM58','Alto',false,'Venue','')
+    ];
+    r.outputRows = [
+      outputRow('Batería','Todo un poco, énfasis en click si hay','Wedge'),
+      outputRow('Bajo','Bajo + voz principal','Wedge'),
+      outputRow('Guitarra 1','Guitarra propia + voz principal','Wedge'),
+      outputRow('Guitarra 2','Guitarra propia + voz principal','Wedge'),
+      outputRow('Voces','Mezcla general con énfasis en voces','Wedge')
+    ];
+    r.backlineRows = [
+      backlineRow('Batería completa','Venue','1','A confirmar con la banda — si no, la lleva la banda'),
+      backlineRow('Platillos y pedal de hi-hat propios','Banda','1',''),
+      backlineRow('Ampli de guitarra','Banda','2',''),
+      backlineRow('Ampli de bajo','Banda','1',''),
+      backlineRow('Pies de mic rectos','Venue','2',''),
+      backlineRow('Pie de mic boom','Venue','1','Para hi-hat')
+    ];
+    r.power = '2 tomas de 220V cerca del escenario — una para backline, otra para monitores/consola.';
+    r.loadIn = '18:00'; r.soundcheck = '19:30'; r.showLength = '60 min';
+    return r;
+  }
+
+  function templateDuo(){
+    var r = blankRider();
+    r.genre = 'Acústico';
+    r.members = '2';
+    r.stagePlot = [
+      stageItem('mic', 35, 55, 'Guitarra 1'),
+      stageItem('mic', 65, 55, 'Guitarra 2'),
+      stageItem('mic', 35, 78, 'Voz 1'),
+      stageItem('mic', 65, 78, 'Voz 2'),
+      stageItem('monitor', 35, 90, 'Mon. 1'),
+      stageItem('monitor', 65, 90, 'Mon. 2')
+    ];
+    r.inputRows = [
+      inputRow('Guitarra acústica 1','DI Radial J48 (activa)','Ninguno',true,'Banda',''),
+      inputRow('Guitarra acústica 2','DI Radial J48 (activa)','Ninguno',true,'Banda',''),
+      inputRow('Voz 1','Shure SM58','Alto',false,'Venue',''),
+      inputRow('Voz 2','Shure SM58','Alto',false,'Venue','')
+    ];
+    r.outputRows = [
+      outputRow('Los dos','Mezcla general pareja de todo','Wedge')
+    ];
+    r.backlineRows = [
+      backlineRow('Sillas altas (opcional)','Venue','2',''),
+      backlineRow('Pies de mic rectos','Venue','2','')
+    ];
+    r.power = '1 toma de 220V cerca del escenario alcanza.';
+    r.loadIn = '19:00'; r.soundcheck = '20:00'; r.showLength = '45 min';
+    return r;
+  }
+
+  function templateDj(){
+    var r = blankRider();
+    r.genre = 'Electrónico / DJ set';
+    r.members = '1';
+    r.stagePlot = [
+      stageItem('di', 40, 55, 'Salida L'),
+      stageItem('di', 60, 55, 'Salida R'),
+      stageItem('mic', 50, 75, 'Mic para hablar'),
+      stageItem('monitor', 50, 90, 'Mon. cabina')
+    ];
+    r.inputRows = [
+      inputRow('Controladora / mixer — L','DI Radial ProDI (o directo si hay entrada de línea)','Ninguno',false,'Banda','RCA o XLR según el equipo'),
+      inputRow('Controladora / mixer — R','DI Radial ProDI (o directo si hay entrada de línea)','Ninguno',false,'Banda',''),
+      inputRow('Mic para hablar al público','Shure SM58','Alto',false,'Venue','Opcional')
+    ];
+    r.outputRows = [
+      outputRow('Cabina','Mezcla general con algo más de graves para referencia','Wedge')
+    ];
+    r.backlineRows = [
+      backlineRow('Mesa / rack para controladora','Venue','1',''),
+      backlineRow('Cables RCA/XLR según equipo','Banda','1','')
+    ];
+    r.power = '1 toma de 220V en la cabina, estable y sin ruido (idealmente circuito aparte del de luces).';
+    r.loadIn = '20:00'; r.soundcheck = '20:30'; r.showLength = '90 min';
+    return r;
+  }
+
+  /* ============ state ============ */
+  var state = {
+    rider: templateRock4(),
+    currentRiderId: null,
+    savedRiders: [],
+    selectedStageItemId: null,
+    db: null
+  };
+
+  function escapeHtml(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+
+  /* ============ db wiring ============ */
+  var ridersCol = null;
+
+  function setStatus(text, ok){
+    var pill = document.getElementById('statusPill');
+    pill.textContent = text;
+    pill.className = 'status-pill ' + (ok===true ? 'ok' : ok===false ? 'off' : '');
+  }
+
+  function initDb(){
+    CB.db().then(function(db){
+      if (!db){ setStatus('sin guardado', false); return; }
+      state.db = db;
+      ridersCol = db.collection('riders');
+      setStatus(CB.storageLabel, CB.persistent);
+      ridersCol.orderBy('updatedAt','desc').onSnapshot(function(snap){
+        state.savedRiders = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+        renderSavedRiders();
+      }, function(){});
+    }).catch(function(){ setStatus('sin guardado', false); });
+  }
+
+  function saveRider(){
+    var data = Object.assign({}, state.rider, { updatedAt: Date.now() });
+    if (!ridersCol){ setStatus('sin guardado — no se puede persistir en esta vista', false); return; }
+    if (state.currentRiderId){
+      ridersCol.doc(state.currentRiderId).set(data);
+    } else {
+      data.createdAt = Date.now();
+      ridersCol.add(data).then(function(ref){ if (ref && ref.id) state.currentRiderId = ref.id; renderCurrentLabel(); });
+      CB.toast('Rider guardado en este navegador.');
+      return;
+    }
+    renderCurrentLabel();
+    CB.toast('Cambios guardados.');
+  }
+
+  function loadRider(doc){
+    state.rider = Object.assign(blankRider(), doc);
+    delete state.rider.id;
+    state.currentRiderId = doc.id;
+    state.selectedStageItemId = null;
+    renderEverything();
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  function deleteRider(id){
+    var doc = state.savedRiders.find(function(d){ return d.id === id; });
+    CB.confirm('¿Eliminar el rider' + (doc && doc.bandName ? ' de ' + doc.bandName : '') + '?', 'Eliminar').then(function(yes){
+      if (!yes) return;
+      if (ridersCol) ridersCol.doc(id).delete();
+      if (state.currentRiderId === id){ state.currentRiderId = null; renderCurrentLabel(); }
+    });
+  }
+
+  function renderSavedRiders(){
+    var wrap = document.getElementById('savedRidersList');
+    if (!state.savedRiders.length){ wrap.innerHTML = '<div class="empty-note">Todavía no guardaste ningún rider.</div>'; return; }
+    wrap.innerHTML = '';
+    state.savedRiders.forEach(function(doc){
+      var row = document.createElement('div');
+      row.className = 'saved-row';
+      row.innerHTML =
+        '<div><div class="saved-name">'+escapeHtml(doc.bandName || '(sin nombre)')+'</div>' +
+        '<div class="saved-meta">'+(doc.genre ? escapeHtml(doc.genre)+' · ' : '')+new Date(doc.updatedAt||Date.now()).toLocaleDateString('es-AR')+'</div></div>';
+      var actions = document.createElement('div');
+      actions.className = 'saved-actions';
+      var loadBtn = document.createElement('button'); loadBtn.className='btn small'; loadBtn.textContent='Cargar';
+      loadBtn.addEventListener('click', function(){ loadRider(doc); });
+      var delBtn = document.createElement('button'); delBtn.className='btn small ghost'; delBtn.textContent='Eliminar';
+      delBtn.addEventListener('click', function(){ deleteRider(doc.id); });
+      actions.appendChild(loadBtn); actions.appendChild(delBtn);
+      row.appendChild(actions);
+      wrap.appendChild(row);
+    });
+  }
+
+  function renderCurrentLabel(){
+    document.getElementById('currentRiderLabel').textContent = state.rider.bandName
+      ? state.rider.bandName + (state.currentRiderId ? '' : ' (sin guardar)')
+      : 'Rider sin guardar';
+    // "Seguí con" lleva el nombre de la banda al armador de setlists
+    CB.setNextLink('setlist', state.rider.bandName ? { show: state.rider.bandName } : null);
+  }
+
+  /* ============ general info rendering / binding ============ */
+  var GENERAL_FIELDS = [
+    ['fBandName','bandName'], ['fGenre','genre'], ['fMembers','members'],
+    ['fContactName','contactName'], ['fContactInfo','contactInfo'], ['fShowDate','showDate'],
+    ['fPower','power'], ['fLoadIn','loadIn'], ['fSoundcheck','soundcheck'], ['fShowLength','showLength'], ['fNotes','notes']
+  ];
+
+  function renderGeneralFields(){
+    GENERAL_FIELDS.forEach(function(pair){
+      document.getElementById(pair[0]).value = state.rider[pair[1]] || '';
+    });
+    document.getElementById('fAccentColor').value = state.rider.accentColor || '#6E1618';
+    renderLogoPreview();
+    renderCurrentLabel();
+  }
+
+  function renderLogoPreview(){
+    var box = document.getElementById('logoPreview');
+    var removeBtn = document.getElementById('logoRemoveBtn');
+    if (state.rider.logoDataUrl){
+      box.innerHTML = '<img src="'+state.rider.logoDataUrl+'" alt="Logo">';
+      removeBtn.style.display = 'inline-flex';
+    } else {
+      box.innerHTML = '<span>Sin logo</span>';
+      removeBtn.style.display = 'none';
+    }
+  }
+
+  function handleLogoFile(file){
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        var maxDim = 400;
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        state.rider.logoDataUrl = canvas.toDataURL('image/png');
+        state.rider.logoAspect = img.width / img.height || 1;
+        renderLogoPreview();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ============ stage plot rendering ============ */
+  function renderPalette(){
+    var wrap = document.getElementById('stagePalette');
+    wrap.innerHTML = '';
+    STAGE_TYPES.forEach(function(t){
+      var btn = document.createElement('button');
+      btn.className = 'palette-btn';
+      btn.innerHTML = '<span style="width:18px;height:18px;display:inline-block;">'+iconSvg(t.type)+'</span>'+t.label;
+      btn.addEventListener('click', function(){ addStageItem(t.type, t.defaultLabel); });
+      wrap.appendChild(btn);
+    });
+    var customBtn = document.createElement('button');
+    customBtn.className = 'palette-btn';
+    customBtn.innerHTML = '<span style="width:18px;height:18px;display:inline-block;">'+iconSvg('custom')+'</span>Personalizado';
+    customBtn.addEventListener('click', function(){ addStageItem('custom', '', true); });
+    wrap.appendChild(customBtn);
+  }
+
+  function addStageItem(type, defaultLabel, focusLabel){
+    var jitter = (Math.random()*10-5);
+    var item = stageItem(type, 50 + jitter, 50 + jitter, defaultLabel);
+    state.rider.stagePlot.push(item);
+    linkStageItemToRow(item, defaultLabel);
+    renderStagePlot();
+    selectStageItem(item.id);
+    if (focusLabel){
+      var labelInput = document.getElementById('stageItemLabel');
+      labelInput.focus();
+      labelInput.select();
+    }
+  }
+
+  // Creates the matching Input List / Monitores row for a newly-added stage icon
+  // (see STAGE_TYPE_ROW_LINK) and remembers the link on the item so a rename or
+  // delete on the stage plot can keep that row in sync.
+  function linkStageItemToRow(item, defaultLabel){
+    var cfg = STAGE_TYPE_ROW_LINK[item.type];
+    if (!cfg) return;
+    var name = item.label || defaultLabel || '';
+    if (cfg.table === 'input'){
+      var row = inputRow(name, cfg.mic, cfg.stand, false, cfg.providedBy, '');
+      state.rider.inputRows.push(row);
+      item.linkedTable = 'input'; item.linkedRowId = row.id;
+      renderInputTable();
+    } else if (cfg.table === 'output'){
+      var orow = outputRow(name, '', cfg.kind);
+      state.rider.outputRows.push(orow);
+      item.linkedTable = 'output'; item.linkedRowId = orow.id;
+      renderOutputTable();
+    }
+  }
+
+  function findLinkedRow(item){
+    if (!item || !item.linkedRowId) return null;
+    var arr = item.linkedTable === 'output' ? state.rider.outputRows : state.rider.inputRows;
+    return arr.find(function(r){ return r.id === item.linkedRowId; }) || null;
+  }
+
+  function selectStageItem(id){
+    state.selectedStageItemId = id;
+    var item = state.rider.stagePlot.find(function(i){ return i.id === id; });
+    var inspector = document.getElementById('stageInspector');
+    if (!item){ inspector.style.display = 'none'; renderStagePlot(); return; }
+    inspector.style.display = 'flex';
+    document.getElementById('stageItemLabel').value = item.label || '';
+    renderStagePlot();
+  }
+
+  function renderStagePlot(){
+    var layer = document.getElementById('stageItemsLayer');
+    layer.innerHTML = '';
+    document.getElementById('stageEmptyHint').style.display = state.rider.stagePlot.length ? 'none' : 'block';
+
+    state.rider.stagePlot.forEach(function(item){
+      var el = document.createElement('div');
+      el.className = 'stage-item' + (state.selectedStageItemId === item.id ? ' selected' : '');
+      el.style.left = item.x + '%';
+      el.style.top = item.y + '%';
+      el.innerHTML =
+        '<div class="stage-icon-box" style="transform:rotate('+(item.rotation||0)+'deg);">'+iconSvg(item.type)+'</div>' +
+        (item.label ? '<span class="stage-item-label">'+escapeHtml(item.label)+'</span>' : '');
+      makeDraggable(el, item);
+      layer.appendChild(el);
+    });
+  }
+
+  function selectStageItemLight(id, el){
+    // Lightweight selection used at drag-start: updates classes/inspector directly
+    // instead of calling renderStagePlot(), which would rebuild the DOM mid-drag
+    // and leave the drag handlers pointing at a detached, invisible element.
+    if (state.selectedStageItemId === id) return;
+    var prevSelected = document.querySelector('.stage-item.selected');
+    if (prevSelected) prevSelected.classList.remove('selected');
+    if (el) el.classList.add('selected');
+    state.selectedStageItemId = id;
+    var item = state.rider.stagePlot.find(function(i){ return i.id === id; });
+    document.getElementById('stageInspector').style.display = 'flex';
+    document.getElementById('stageItemLabel').value = item ? (item.label || '') : '';
+  }
+
+  function makeDraggable(el, item){
+    el.addEventListener('pointerdown', function(e){
+      e.preventDefault();
+      selectStageItemLight(item.id, el);
+      try { el.setPointerCapture(e.pointerId); } catch(err){}
+      var stage = document.getElementById('stageSurface');
+      var rect = stage.getBoundingClientRect();
+      var rafPending = false;
+
+      function applyPosition(){
+        el.style.left = item.x + '%';
+        el.style.top = item.y + '%';
+        rafPending = false;
+      }
+
+      function onMove(ev){
+        var x = (ev.clientX - rect.left) / rect.width * 100;
+        var y = (ev.clientY - rect.top) / rect.height * 100;
+        x = Math.max(3, Math.min(97, x));
+        y = Math.max(5, Math.min(95, y));
+        item.x = x; item.y = y;
+        if (!rafPending){ rafPending = true; requestAnimationFrame(applyPosition); }
+      }
+      function onUp(ev){
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        try { el.releasePointerCapture(ev.pointerId); } catch(err){}
+      }
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+    });
+  }
+
+  /* ============ input / output / backline tables ============ */
+  function renderInputTable(){
+    var body = document.getElementById('inputTableBody');
+    body.innerHTML = '';
+    document.getElementById('inputEmptyNote').style.display = state.rider.inputRows.length ? 'none' : 'block';
+    state.rider.inputRows.forEach(function(row, idx){
+      var tr = document.createElement('tr');
+      tr.className = 'row-bg';
+      tr.innerHTML = '<td class="col-num">'+(idx+1)+'</td>';
+
+      var tdInstr = document.createElement('td');
+      var instrInput = document.createElement('input'); instrInput.type='text'; instrInput.value = row.instrument;
+      instrInput.addEventListener('blur', function(){ row.instrument = instrInput.value; });
+      tdInstr.appendChild(instrInput);
+
+      var tdMic = document.createElement('td');
+      var micInput = document.createElement('input'); micInput.type='text'; micInput.value = row.mic; micInput.setAttribute('list','micSuggestions');
+      micInput.addEventListener('blur', function(){ row.mic = micInput.value; });
+      tdMic.appendChild(micInput);
+
+      var tdStand = document.createElement('td');
+      var standSelect = document.createElement('select');
+      ['Ninguno','Alto','Bajo','Boom'].forEach(function(opt){ var o=document.createElement('option'); o.value=opt; o.textContent=opt; if (row.stand===opt) o.selected=true; standSelect.appendChild(o); });
+      standSelect.addEventListener('change', function(){ row.stand = standSelect.value; });
+      tdStand.appendChild(standSelect);
+
+      var tdPhantom = document.createElement('td'); tdPhantom.className='col-check';
+      var phantomCb = document.createElement('input'); phantomCb.type='checkbox'; phantomCb.checked = !!row.phantom;
+      phantomCb.addEventListener('change', function(){ row.phantom = phantomCb.checked; });
+      tdPhantom.appendChild(phantomCb);
+
+      var tdProvided = document.createElement('td');
+      var provSelect = document.createElement('select');
+      ['Banda','Venue'].forEach(function(opt){ var o=document.createElement('option'); o.value=opt; o.textContent=opt; if (row.providedBy===opt) o.selected=true; provSelect.appendChild(o); });
+      provSelect.addEventListener('change', function(){ row.providedBy = provSelect.value; });
+      tdProvided.appendChild(provSelect);
+
+      var tdNotes = document.createElement('td');
+      var notesInput = document.createElement('input'); notesInput.type='text'; notesInput.value = row.notes;
+      notesInput.addEventListener('blur', function(){ row.notes = notesInput.value; });
+      tdNotes.appendChild(notesInput);
+
+      var tdActions = document.createElement('td'); tdActions.className='col-actions';
+      var upBtn = document.createElement('button'); upBtn.className='icon-btn'; upBtn.textContent='▲'; upBtn.disabled = idx===0;
+      upBtn.addEventListener('click', function(){ swapRows(state.rider.inputRows, idx, idx-1); renderInputTable(); });
+      var downBtn = document.createElement('button'); downBtn.className='icon-btn'; downBtn.textContent='▼'; downBtn.disabled = idx===state.rider.inputRows.length-1;
+      downBtn.addEventListener('click', function(){ swapRows(state.rider.inputRows, idx, idx+1); renderInputTable(); });
+      var delBtn = document.createElement('button'); delBtn.className='icon-btn'; delBtn.textContent='✕';
+      delBtn.addEventListener('click', function(){ state.rider.inputRows.splice(idx,1); renderInputTable(); });
+      tdActions.appendChild(upBtn); tdActions.appendChild(downBtn); tdActions.appendChild(delBtn);
+
+      tr.appendChild(tdInstr); tr.appendChild(tdMic); tr.appendChild(tdStand); tr.appendChild(tdPhantom);
+      tr.appendChild(tdProvided); tr.appendChild(tdNotes); tr.appendChild(tdActions);
+      body.appendChild(tr);
+    });
+  }
+
+  function swapRows(arr, i, j){ var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp; }
+
+  function renderOutputTable(){
+    var body = document.getElementById('outputTableBody');
+    body.innerHTML = '';
+    document.getElementById('outputEmptyNote').style.display = state.rider.outputRows.length ? 'none' : 'block';
+    state.rider.outputRows.forEach(function(row, idx){
+      var tr = document.createElement('tr'); tr.className='row-bg';
+      tr.innerHTML = '<td class="col-num">'+(idx+1)+'</td>';
+
+      var tdWho = document.createElement('td');
+      var whoInput = document.createElement('input'); whoInput.type='text'; whoInput.value = row.who;
+      whoInput.addEventListener('blur', function(){ row.who = whoInput.value; });
+      tdWho.appendChild(whoInput);
+
+      var tdContent = document.createElement('td');
+      var contentInput = document.createElement('input'); contentInput.type='text'; contentInput.value = row.content;
+      contentInput.addEventListener('blur', function(){ row.content = contentInput.value; });
+      tdContent.appendChild(contentInput);
+
+      var tdKind = document.createElement('td');
+      var kindSelect = document.createElement('select');
+      ['Wedge','IEM'].forEach(function(opt){ var o=document.createElement('option'); o.value=opt; o.textContent=opt; if (row.kind===opt) o.selected=true; kindSelect.appendChild(o); });
+      kindSelect.addEventListener('change', function(){ row.kind = kindSelect.value; });
+      tdKind.appendChild(kindSelect);
+
+      var tdActions = document.createElement('td'); tdActions.className='col-actions';
+      var delBtn = document.createElement('button'); delBtn.className='icon-btn'; delBtn.textContent='✕';
+      delBtn.addEventListener('click', function(){ state.rider.outputRows.splice(idx,1); renderOutputTable(); });
+      tdActions.appendChild(delBtn);
+
+      tr.appendChild(tdWho); tr.appendChild(tdContent); tr.appendChild(tdKind); tr.appendChild(tdActions);
+      body.appendChild(tr);
+    });
+  }
+
+  function renderBacklineTable(){
+    var body = document.getElementById('backlineTableBody');
+    body.innerHTML = '';
+    document.getElementById('backlineEmptyNote').style.display = state.rider.backlineRows.length ? 'none' : 'block';
+    state.rider.backlineRows.forEach(function(row, idx){
+      var tr = document.createElement('tr'); tr.className='row-bg';
+
+      var tdItem = document.createElement('td');
+      var itemInput = document.createElement('input'); itemInput.type='text'; itemInput.value = row.item;
+      itemInput.addEventListener('blur', function(){ row.item = itemInput.value; });
+      tdItem.appendChild(itemInput);
+
+      var tdProvided = document.createElement('td');
+      var provSelect = document.createElement('select');
+      ['Banda','Venue'].forEach(function(opt){ var o=document.createElement('option'); o.value=opt; o.textContent=opt; if (row.providedBy===opt) o.selected=true; provSelect.appendChild(o); });
+      provSelect.addEventListener('change', function(){ row.providedBy = provSelect.value; });
+      tdProvided.appendChild(provSelect);
+
+      var tdQty = document.createElement('td');
+      var qtyInput = document.createElement('input'); qtyInput.type='text'; qtyInput.value = row.qty; qtyInput.style.width='50px';
+      qtyInput.addEventListener('blur', function(){ row.qty = qtyInput.value; });
+      tdQty.appendChild(qtyInput);
+
+      var tdNotes = document.createElement('td');
+      var notesInput = document.createElement('input'); notesInput.type='text'; notesInput.value = row.notes;
+      notesInput.addEventListener('blur', function(){ row.notes = notesInput.value; });
+      tdNotes.appendChild(notesInput);
+
+      var tdActions = document.createElement('td'); tdActions.className='col-actions';
+      var delBtn = document.createElement('button'); delBtn.className='icon-btn'; delBtn.textContent='✕';
+      delBtn.addEventListener('click', function(){ state.rider.backlineRows.splice(idx,1); renderBacklineTable(); });
+      tdActions.appendChild(delBtn);
+
+      tr.appendChild(tdItem); tr.appendChild(tdProvided); tr.appendChild(tdQty); tr.appendChild(tdNotes); tr.appendChild(tdActions);
+      body.appendChild(tr);
+    });
+  }
+
+  function renderEverything(){
+    renderGeneralFields();
+    renderPalette();
+    renderStagePlot();
+    renderInputTable();
+    renderOutputTable();
+    renderBacklineTable();
+  }
+
+  /* ============ PDF export ============ */
+  function hexToRgb(hex){
+    var m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#b3223f');
+    return m ? [parseInt(m[1],16), parseInt(m[2],16), parseInt(m[3],16)] : [179,34,63];
+  }
+
+  function exportPdf(){
+    if (typeof window.html2canvas !== 'function' || !(window.jspdf && window.jspdf.jsPDF)){
+      setExportMsg('El generador de PDF todavía está cargando (o no hay conexión). Probá en unos segundos.');
+      return;
+    }
+    var btn = document.getElementById('exportPdfBtn');
+    btn.disabled = true;
+    var originalText = btn.textContent;
+    btn.textContent = 'Generando…';
+
+    var inspector = document.getElementById('stageInspector');
+    var wasInspectorVisible = inspector.style.display !== 'none';
+    var prevSelected = state.selectedStageItemId;
+    state.selectedStageItemId = null;
+    renderStagePlot();
+    inspector.style.display = 'none';
+
+    var stageEl = document.getElementById('stageSurface');
+
+    html2canvas(stageEl, { backgroundColor: '#2F3639', scale: 2 }).then(function(canvas){
+      buildPdf(canvas.toDataURL('image/png'), canvas.width / canvas.height);
+      state.selectedStageItemId = prevSelected;
+      renderStagePlot();
+      if (wasInspectorVisible) inspector.style.display = 'flex';
+      btn.disabled = false; btn.textContent = originalText;
+    }).catch(function(){
+      buildPdf(null, 16/9);
+      state.selectedStageItemId = prevSelected;
+      renderStagePlot();
+      if (wasInspectorVisible) inspector.style.display = 'flex';
+      btn.disabled = false; btn.textContent = originalText;
+    });
+  }
+
+  function buildPdf(stageImageDataUrl, stageAspect){
+    var jsPDFCtor = window.jspdf && window.jspdf.jsPDF;
+    if (!jsPDFCtor){ setExportMsg('No se pudo cargar el generador de PDF. Revisá la conexión y probá de nuevo.'); return; }
+    var doc = new jsPDFCtor({ unit:'mm', format:'a4' });
+    var pageW = doc.internal.pageSize.getWidth();
+    var pageH = doc.internal.pageSize.getHeight();
+    var accent = hexToRgb(state.rider.accentColor);
+    var r = state.rider;
+    var margin = 15;
+    var footerReserve = 12;
+    var maxY = pageH - footerReserve;
+    var cursorY = 0;
+
+    function footer(){
+      doc.setFontSize(8);
+      doc.setTextColor(140,140,140);
+      doc.text('Hecho con Rider técnico · Herramientas de producción de Claraboya Estudio · claraboyaestudio.netlify.app', pageW/2, pageH-8, { align:'center' });
+    }
+
+    function ensureSpace(neededH){
+      if (cursorY + neededH > maxY){
+        doc.addPage();
+        cursorY = 18;
+      }
+    }
+
+    // header + estimatedBodyH (mm of table/content that should follow it) travel together —
+    // if the estimate doesn't fit on the current page, break BEFORE drawing the header so it
+    // never gets left behind while its table jumps to the next page.
+    function sectionHeader(title, estimatedBodyH){
+      ensureSpace(10 + (estimatedBodyH || 12));
+      doc.setFont(undefined,'bold'); doc.setFontSize(12.5); doc.setTextColor(20,20,20);
+      doc.text(title, margin, cursorY);
+      doc.setDrawColor(accent[0],accent[1],accent[2]); doc.setLineWidth(0.6);
+      doc.line(margin, cursorY+2.2, pageW-margin, cursorY+2.2);
+      cursorY += 8;
+    }
+
+    var ROW_H_ESTIMATE = 7.2; // mm — generous single-line row height incl. padding, used only to decide page breaks ahead of time
+
+    function tableStyles(){
+      return {
+        theme: 'striped',
+        headStyles: { fillColor: accent, textColor: 255, fontSize: 8.5, cellPadding: 2 },
+        styles: { fontSize: 8.5, cellPadding: 1.8 },
+        margin: { left:margin, right:margin, top:18, bottom:18 },
+        pageBreak: 'avoid', // move the WHOLE table to the next page if it can't fully fit on the current one — never start it and cut it off
+        rowPageBreak: 'avoid' // if a table is taller than a full page, never split a single row's content across two pages either
+      };
+    }
+
+    /* --- page 1: cover + stage plot together --- */
+    doc.setFillColor(accent[0], accent[1], accent[2]);
+    doc.rect(0, 0, pageW, 5, 'F');
+    cursorY = 16;
+
+    var logoW = 0, logoH = 0;
+    if (r.logoDataUrl){
+      try {
+        logoW = 24;
+        logoH = Math.min(24, logoW / (r.logoAspect || 1));
+        doc.addImage(r.logoDataUrl, 'PNG', margin, cursorY, logoW, logoH, undefined, 'FAST');
+      } catch(e){ logoW = 0; logoH = 0; }
+    }
+    var textX = margin + (logoW ? logoW + 6 : 0);
+    var headerBlockH = Math.max(logoH, 20);
+
+    doc.setTextColor(20,20,20);
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(19);
+    doc.text(r.bandName || 'Proyecto sin nombre', textX, cursorY + 7);
+
+    doc.setFontSize(10.5);
+    doc.setTextColor(accent[0], accent[1], accent[2]);
+    doc.text('RIDER TÉCNICO', textX, cursorY + 13);
+
+    var infoBits = [];
+    if (r.genre) infoBits.push(r.genre);
+    if (r.members) infoBits.push(r.members + ' integrantes');
+    if (r.showDate) infoBits.push('Fecha: ' + r.showDate);
+    if (r.contactName || r.contactInfo) infoBits.push('Contacto: ' + [r.contactName, r.contactInfo].filter(Boolean).join(' — '));
+    if (infoBits.length){
+      doc.setFont(undefined, 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(80,80,80);
+      doc.text(doc.splitTextToSize(infoBits.join('   ·   '), pageW - textX - margin), textX, cursorY + 18.5);
+    }
+
+    cursorY += headerBlockH + 9;
+
+    sectionHeader('Stage Plot');
+    if (stageImageDataUrl){
+      var imgW = pageW - margin*2;
+      var imgH = imgW / stageAspect;
+      var maxImgH = maxY - cursorY - 4;
+      if (imgH > maxImgH){ imgH = maxImgH; imgW = imgH * stageAspect; }
+      doc.addImage(stageImageDataUrl, 'PNG', (pageW-imgW)/2, cursorY, imgW, imgH, undefined, 'FAST');
+      cursorY += imgH + 10;
+    } else {
+      doc.setFontSize(9.5); doc.setTextColor(140,140,140);
+      doc.text('(No se pudo generar la imagen del escenario — revisalo en la app.)', margin, cursorY);
+      cursorY += 10;
+    }
+
+    /* --- continuous flow from here on: only breaks pages when content doesn't fit --- */
+    if (r.inputRows.length){
+      sectionHeader('Input List', 8 + r.inputRows.length * ROW_H_ESTIMATE);
+      doc.autoTable(Object.assign({
+        startY: cursorY,
+        head: [['#','Instrumento / fuente','Mic o DI sugerido','Pie','48V','Provisto por','Notas']],
+        body: r.inputRows.map(function(row, idx){
+          return [ idx+1, row.instrument, row.mic, row.stand, row.phantom ? 'Sí' : '—', row.providedBy, row.notes ];
+        })
+      }, tableStyles()));
+      cursorY = doc.lastAutoTable.finalY + 9;
+    }
+
+    if (r.outputRows.length){
+      sectionHeader('Monitores', 8 + r.outputRows.length * ROW_H_ESTIMATE);
+      doc.autoTable(Object.assign({
+        startY: cursorY,
+        head: [['Mix','Para quién','Contenido','Tipo']],
+        body: r.outputRows.map(function(row, idx){ return [ idx+1, row.who, row.content, row.kind ]; })
+      }, tableStyles()));
+      cursorY = doc.lastAutoTable.finalY + 9;
+    }
+
+    if (r.backlineRows.length || r.power){
+      sectionHeader('Backline y energía', 8 + r.backlineRows.length * ROW_H_ESTIMATE);
+      if (r.backlineRows.length){
+        doc.autoTable(Object.assign({
+          startY: cursorY,
+          head: [['Ítem','Provisto por','Cantidad','Notas']],
+          body: r.backlineRows.map(function(row){ return [ row.item, row.providedBy, row.qty, row.notes ]; })
+        }, tableStyles()));
+        cursorY = doc.lastAutoTable.finalY + 6;
+      }
+      if (r.power){
+        var powerLines = doc.splitTextToSize('Energía: ' + r.power, pageW - margin*2);
+        ensureSpace(powerLines.length * 4.5 + 4);
+        doc.setFont(undefined,'normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
+        doc.text(powerLines, margin, cursorY);
+        cursorY += powerLines.length * 4.5 + 6;
+      }
+    }
+
+    var scheduleBits = [];
+    if (r.loadIn) scheduleBits.push('Load-in: ' + r.loadIn);
+    if (r.soundcheck) scheduleBits.push('Soundcheck: ' + r.soundcheck);
+    if (r.showLength) scheduleBits.push('Duración del show: ' + r.showLength);
+    if (scheduleBits.length || r.notes){
+      var notesLineEstimate = r.notes ? doc.splitTextToSize(r.notes, pageW - margin*2).length : 0;
+      sectionHeader('Horarios y notas', (scheduleBits.length ? 8 : 0) + (notesLineEstimate ? 6 + notesLineEstimate * 4.5 : 0));
+      if (scheduleBits.length){
+        ensureSpace(8);
+        doc.setFont(undefined,'normal'); doc.setFontSize(9.5); doc.setTextColor(40,40,40);
+        doc.text(scheduleBits.join('   ·   '), margin, cursorY);
+        cursorY += 8;
+      }
+      if (r.notes){
+        var notesLines = doc.splitTextToSize(r.notes, pageW - margin*2);
+        ensureSpace(notesLines.length * 4.5 + 6);
+        doc.setFont(undefined,'bold'); doc.setFontSize(9.5); doc.setTextColor(20,20,20);
+        doc.text('Notas adicionales', margin, cursorY);
+        cursorY += 5.5;
+        doc.setFont(undefined,'normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
+        doc.text(notesLines, margin, cursorY);
+        cursorY += notesLines.length * 4.5;
+      }
+    }
+
+    var totalPages = doc.internal.getNumberOfPages();
+    for (var p = 1; p <= totalPages; p++){
+      doc.setPage(p);
+      footer();
+    }
+
+    var filename = (r.bandName || 'rider-tecnico').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'rider-tecnico';
+    var blob = doc.output('blob');
+    offerPdfDownload(blob, filename + '-rider-tecnico.pdf');
+  }
+
+  function setExportMsg(text){
+    var el = document.getElementById('exportStatusMsg');
+    el.textContent = text || '';
+  }
+
+  function offerPdfDownload(blob, filename){
+    setExportMsg('');
+    CB.saveFile(blob, filename).then(function(){
+      CB.toast('PDF listo: ' + filename);
+    }).catch(function(){ setExportMsg('No se pudo descargar el PDF. Probá de nuevo.'); });
+  }
+
+  /* ============ wiring ============ */
+  function bindGeneralFieldEvents(){
+    GENERAL_FIELDS.forEach(function(pair){
+      var el = document.getElementById(pair[0]);
+      el.addEventListener('blur', function(){ state.rider[pair[1]] = el.value; if (pair[1]==='bandName') renderCurrentLabel(); });
+      if (pair[1]==='bandName') el.addEventListener('input', function(){ state.rider.bandName = el.value; renderCurrentLabel(); });
+    });
+    document.getElementById('fAccentColor').addEventListener('input', function(e){ state.rider.accentColor = e.target.value; });
+  }
+
+  // Las plantillas reemplazan escenario y listas; los datos generales (banda, contacto, logo) se conservan.
+  var KEEP_ON_TEMPLATE = ['bandName','contactName','contactInfo','showDate','logoDataUrl','logoAspect','accentColor'];
+  function applyTemplate(key, resetAll){
+    var prev = state.rider;
+    if (key === 'rock4') state.rider = templateRock4();
+    else if (key === 'duo') state.rider = templateDuo();
+    else if (key === 'dj') state.rider = templateDj();
+    else state.rider = blankRider();
+    if (!resetAll){
+      KEEP_ON_TEMPLATE.forEach(function(k){ if (prev[k]) state.rider[k] = prev[k]; });
+      if (prev.genre && key === 'blank') state.rider.genre = prev.genre;
+    } else {
+      state.currentRiderId = null;
+    }
+    state.selectedStageItemId = null;
+    renderEverything();
+  }
+
+  function init(){
+    document.querySelectorAll('[data-template]').forEach(function(btn){
+      btn.addEventListener('click', function(){ applyTemplate(btn.dataset.template); });
+    });
+    document.getElementById('blankTemplateBtn').addEventListener('click', function(){ applyTemplate('blank'); });
+
+    document.getElementById('logoUploadBtn').addEventListener('click', function(){ document.getElementById('logoInput').click(); });
+    document.getElementById('logoInput').addEventListener('change', function(e){ handleLogoFile(e.target.files[0]); });
+    document.getElementById('logoRemoveBtn').addEventListener('click', function(){ state.rider.logoDataUrl = ''; renderLogoPreview(); });
+
+    document.getElementById('rotateStageItemBtn').addEventListener('click', function(){
+      var item = state.rider.stagePlot.find(function(i){ return i.id === state.selectedStageItemId; });
+      if (item){ item.rotation = ((item.rotation||0) + 90) % 360; renderStagePlot(); }
+    });
+    document.getElementById('deleteStageItemBtn').addEventListener('click', function(){
+      var item = state.rider.stagePlot.find(function(i){ return i.id === state.selectedStageItemId; });
+      if (item && item.linkedRowId){
+        if (item.linkedTable === 'output'){
+          state.rider.outputRows = state.rider.outputRows.filter(function(r){ return r.id !== item.linkedRowId; });
+          renderOutputTable();
+        } else {
+          state.rider.inputRows = state.rider.inputRows.filter(function(r){ return r.id !== item.linkedRowId; });
+          renderInputTable();
+        }
+      }
+      state.rider.stagePlot = state.rider.stagePlot.filter(function(i){ return i.id !== state.selectedStageItemId; });
+      state.selectedStageItemId = null;
+      document.getElementById('stageInspector').style.display = 'none';
+      renderStagePlot();
+    });
+    document.getElementById('stageItemLabel').addEventListener('input', function(e){
+      var item = state.rider.stagePlot.find(function(i){ return i.id === state.selectedStageItemId; });
+      if (item){
+        item.label = e.target.value;
+        var linkedRow = findLinkedRow(item);
+        if (linkedRow){
+          if (item.linkedTable === 'output') linkedRow.who = item.label; else linkedRow.instrument = item.label;
+          if (item.linkedTable === 'output') renderOutputTable(); else renderInputTable();
+        }
+        renderStagePlot();
+        document.getElementById('stageItemLabel').focus();
+      }
+    });
+    document.getElementById('stageSurface').addEventListener('pointerdown', function(e){
+      if (e.target.id === 'stageSurface' || e.target.id === 'stageItemsLayer'){
+        state.selectedStageItemId = null;
+        document.getElementById('stageInspector').style.display = 'none';
+        renderStagePlot();
+      }
+    });
+
+    document.getElementById('addInputRowBtn').addEventListener('click', function(){ state.rider.inputRows.push(inputRow('')); renderInputTable(); });
+    document.getElementById('addOutputRowBtn').addEventListener('click', function(){ state.rider.outputRows.push(outputRow('')); renderOutputTable(); });
+    document.getElementById('addBacklineRowBtn').addEventListener('click', function(){ state.rider.backlineRows.push(backlineRow('')); renderBacklineTable(); });
+
+    document.getElementById('newRiderBtn').addEventListener('click', function(){ applyTemplate('blank', true); window.scrollTo({ top:0, behavior:'smooth' }); });
+    document.getElementById('saveRiderBtn').addEventListener('click', saveRider);
+    document.getElementById('exportPdfBtn').addEventListener('click', exportPdf);
+
+    bindGeneralFieldEvents();
+    restoreDraft();
+    applyIncomingContext();
+    renderEverything();
+    initDb();
+    startDraftAutosave();
+  }
+
+  /* El rider en armado se guarda solo (aunque no hayas tocado "Guardar"),
+     así podés ir al setlist o al calentamiento y volver sin perder nada. */
+  var lastDraft = '';
+  function saveDraft(){
+    // los campos de texto se vuelcan al estado en blur: forzarlo antes de guardar
+    GENERAL_FIELDS.forEach(function(pair){ var el = document.getElementById(pair[0]); if (el) state.rider[pair[1]] = el.value; });
+    var payload = { rider: state.rider, currentRiderId: state.currentRiderId };
+    var str = JSON.stringify(payload);
+    if (str === lastDraft) return;
+    lastDraft = str;
+    CB.draft('rider', payload);
+  }
+  function restoreDraft(){
+    var d = CB.draft('rider');
+    if (!d || !d.rider) return;
+    var banda = (CB.params.get('banda') || '').trim().toLowerCase();
+    if (banda && (d.rider.bandName || '').trim().toLowerCase() !== banda) return;  // viene a armar otro rider
+    state.rider = Object.assign(blankRider(), d.rider);
+    state.currentRiderId = d.currentRiderId || null;
+    lastDraft = JSON.stringify(d);
+  }
+  function startDraftAutosave(){
+    setInterval(saveDraft, 2500);
+    document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') saveDraft(); });
+    window.addEventListener('pagehide', saveDraft);
+  }
+
+  /* Viene de otra herramienta con ?banda= (Hoja de ruta, Armador de setlists) */
+  function applyIncomingContext(){
+    var banda = (CB.params.get('banda') || '').trim().slice(0, 80);
+    if (!banda) return;
+    if ((state.rider.bandName || '').trim().toLowerCase() !== banda.toLowerCase()){
+      state.rider = templateRock4();
+      state.currentRiderId = null;
+      state.rider.bandName = banda;
+    }
+    var note = document.getElementById('contextNote');
+    note.hidden = false;
+    note.innerHTML = '<span>Armando el rider de <strong></strong>. Elegí una plantilla o arrancá del ejemplo y ajustalo.</span>';
+    note.querySelector('strong').textContent = banda;
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

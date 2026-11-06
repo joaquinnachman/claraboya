@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#121516">
+<title>Afinador online · Claraboya Estudio</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../../../favicon.ico" sizes="any">
+<style>
+@font-face{font-family:'Bebas Neue';src:url(fonts/bebas.woff2) format('woff2');font-weight:400;font-display:block}
+@font-face{font-family:'Montserrat';src:url(fonts/mont500.woff2) format('woff2');font-weight:500;font-display:block}
+@font-face{font-family:'Montserrat';src:url(fonts/mont600.woff2) format('woff2');font-weight:600;font-display:block}
+@font-face{font-family:'Montserrat';src:url(fonts/mont700.woff2) format('woff2');font-weight:700;font-display:block}
+@font-face{font-family:'Montserrat';src:url(fonts/mont800.woff2) format('woff2');font-weight:800;font-display:block}
+:root{
+  --bg:#121516; --panel:#1F2426; --panel2:#272D30; --line:rgba(242,242,242,.09);
+  --fg:#F2F2F2; --dim:rgba(242,242,242,.62); --faint:rgba(242,242,242,.38);
+  --bordo:#551112; --red:#B0242A; --red2:#D8343B;
+  --face:#D6D3CA; --ink:#1B1C1C;
+  --display:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
+  --body:'Montserrat',system-ui,sans-serif;
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:var(--body);font-weight:500;overflow:hidden;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+svg{display:block}
+
+/* ---------- layout ---------- */
+#app{height:100%;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto;
+  padding:calc(10px + var(--safe-t)) 16px calc(12px + var(--safe-b));gap:10px;max-width:760px;margin:0 auto;
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(85,17,18,.38), transparent 60%),
+    var(--bg)}
+header{display:flex;align-items:center;gap:12px;order:0}
+.picker{order:1}.stage{order:2}.strings{order:3}.bar{order:4}
+.brand{white-space:nowrap;font-family:var(--display);font-size:28px;letter-spacing:.06em;line-height:1}
+.brand span{display:inline-block;background:var(--bordo);padding:2px 8px 0;margin-left:6px;letter-spacing:.08em}
+.spacer{flex:1}
+.iconbtn{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--panel);border:1px solid var(--line)}
+.iconbtn svg{width:22px;height:22px}
+.iconbtn:active{background:var(--panel2)}
+
+.picker{display:flex;gap:8px;align-items:stretch}
+.tuningbtn{flex:1;min-width:0;display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:9px 14px;text-align:left}
+.tuningbtn .ins{font-family:var(--display);font-size:15px;letter-spacing:.14em;color:var(--dim);line-height:1}
+.tuningbtn .tun{font-family:var(--display);font-size:24px;letter-spacing:.04em;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tuningbtn .txt{flex:1;min-width:0}
+.tuningbtn .chev{width:18px;opacity:.7;flex:none}
+.tuningbtn:active{background:var(--panel2)}
+.modebtn{width:84px;border-radius:14px;border:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.modebtn b{font-family:var(--display);font-weight:400;font-size:22px;letter-spacing:.08em;line-height:1}
+.modebtn small{font-size:10px;letter-spacing:.12em;color:var(--dim);font-weight:700}
+.modebtn.on{background:var(--bordo);border-color:transparent}
+.modebtn.on small{color:rgba(242,242,242,.8)}
+
+/* ---------- tuner ---------- */
+.stage{min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.readout{display:flex;align-items:flex-end;justify-content:center;gap:4px;line-height:.8;height:min(23vh,170px);position:relative;width:100%}
+.note{font-family:var(--display);font-size:min(25vh,190px);letter-spacing:.01em;transition:color .2s, text-shadow .2s;position:relative}
+.note .acc{font-size:.5em;vertical-align:top;position:relative;top:.06em;margin-left:.02em}
+.oct{font-family:var(--display);font-size:min(7vh,52px);color:var(--dim);padding-bottom:.25em;min-width:.6em}
+.note.idle{color:rgba(242,242,242,.18)}
+.note.ok{color:#fff;text-shadow:0 0 34px rgba(216,52,59,.55)}
+.sub{display:flex;gap:18px;justify-content:center;font-size:13px;font-weight:600;letter-spacing:.08em;color:var(--dim);font-variant-numeric:tabular-nums;min-height:18px}
+.sub b{color:var(--fg);font-weight:700}
+
+.meter{width:100%;max-width:560px;position:relative}
+.meter svg{width:100%;height:auto}
+.hint{font-family:var(--display);font-size:30px;letter-spacing:.14em;height:34px;line-height:34px;text-align:center;transition:color .2s}
+.hint.flat,.hint.sharp{color:var(--fg)}
+.hint.ok{color:var(--red2)}
+.hint.idle{color:var(--faint);font-size:20px;letter-spacing:.18em}
+
+.level{width:120px;height:4px;border-radius:2px;background:var(--panel2);overflow:hidden}
+.level i{display:block;height:100%;width:0;background:var(--fg);opacity:.55;transition:width .08s}
+
+/* ---------- strings ---------- */
+.strings{display:flex;gap:8px;justify-content:center}
+.str{flex:1;max-width:92px;min-width:0;height:76px;border-radius:14px;background:var(--panel);border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;transition:background .15s,border-color .15s,transform .1s}
+.str:active{transform:scale(.96)}
+.str .n{font-family:var(--display);font-size:32px;line-height:.9;letter-spacing:.02em}
+.str .n .acc{font-size:.62em;vertical-align:top;position:relative;top:.04em}
+.str .n sup{font-size:.55em;vertical-align:top;position:relative;top:.05em}
+.str .k{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--faint)}
+.str.target{border-color:var(--fg);background:var(--panel2)}
+.str.locked{border-color:var(--red2)}
+.str.done{background:var(--bordo);border-color:transparent}
+.str.done .k{color:rgba(242,242,242,.75)}
+.str .tick{position:absolute;top:6px;right:7px;width:14px;height:14px;opacity:0;transition:opacity .2s}
+.str.done .tick{opacity:1}
+.str .pr{position:absolute;left:10px;right:10px;bottom:6px;height:3px;border-radius:2px;background:rgba(242,242,242,.08);overflow:hidden}
+.str .pr i{display:block;height:100%;width:0;background:var(--red2)}
+.str.done .pr{display:none}
+.strings.many .str{height:68px}
+.strings.many .str .n{font-size:27px}
+
+.chromnote{font-size:12px;letter-spacing:.14em;color:var(--faint);text-align:center;font-weight:700;padding:26px 0}
+
+/* ---------- bottom bar ---------- */
+.bar{display:flex;gap:8px}
+.pill{height:48px;border-radius:14px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;
+  font-size:12px;font-weight:700;letter-spacing:.1em}
+.pill svg{width:18px;height:18px}
+.pill:active{background:var(--panel2)}
+.pill.grow{flex:1}
+.pill.playing{background:var(--bordo);border-color:transparent}
+.pill .big{font-family:var(--display);font-size:22px;font-weight:400;letter-spacing:.04em}
+
+/* ---------- sheets ---------- */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .2s;z-index:10}
+.scrim.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:88%;z-index:11;background:var(--panel);border-radius:22px 22px 0 0;
+  transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;max-width:760px;margin:0 auto;
+  padding-bottom:var(--safe-b);border-top:1px solid var(--line)}
+.sheet.show{transform:none}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:rgba(242,242,242,.2);margin:10px auto 4px;flex:none}
+.sheet h2{font-family:var(--display);font-weight:400;font-size:30px;letter-spacing:.06em;margin:4px 20px 10px;display:flex;align-items:center;gap:10px}
+.sheet h2 .close{margin-left:auto}
+.sheet .body{overflow:auto;padding:0 20px 20px;-webkit-overflow-scrolling:touch}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 20px 12px;flex:none;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:42px;padding:0 16px;border-radius:21px;background:var(--panel2);border:1px solid var(--line);
+  font-family:var(--display);font-size:20px;letter-spacing:.06em;display:flex;align-items:center;gap:8px}
+.chip.on{background:var(--fg);color:var(--bg);border-color:transparent}
+.group{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--faint);margin:16px 2px 8px;text-transform:uppercase}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:13px 14px;border-radius:14px;background:var(--bg);border:1px solid var(--line);margin-bottom:7px}
+.row:active{background:#191d1f}
+.row .nm{font-family:var(--display);font-size:23px;letter-spacing:.04em;line-height:1;flex:1;min-width:0}
+.row .ns{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+.row.on{background:var(--bordo);border-color:transparent}
+.row.on .ns{color:rgba(242,242,242,.85)}
+.row .del{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;margin:-6px -6px -6px 0;background:rgba(0,0,0,.18)}
+.row .del svg{width:16px;height:16px}
+.addrow{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:14px;border:1.5px dashed rgba(242,242,242,.25);
+  font-size:12px;font-weight:700;letter-spacing:.14em;margin-top:4px}
+
+.set{padding:14px 0;border-bottom:1px solid var(--line)}
+.set:last-child{border-bottom:0}
+.set .lab{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.set .lab b{font-size:12px;font-weight:700;letter-spacing:.14em}
+.set .lab span{font-size:12px;color:var(--dim);font-weight:600}
+.seg{display:flex;background:var(--bg);border-radius:12px;padding:4px;gap:4px;border:1px solid var(--line)}
+.seg button{flex:1;height:40px;border-radius:9px;font-weight:700;font-size:13px;letter-spacing:.06em;color:var(--dim)}
+.seg button.on{background:var(--fg);color:var(--bg)}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:48px;height:48px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:24px;font-weight:600}
+.stepper button:active{background:#191d1f}
+.stepper .val{flex:1;text-align:center;font-family:var(--display);font-size:40px;letter-spacing:.04em;line-height:1}
+.stepper .val small{font-size:.5em;color:var(--dim);margin-left:4px}
+.quick{display:flex;gap:6px;margin-top:10px}
+.quick button{flex:1;height:34px;border-radius:9px;background:var(--bg);border:1px solid var(--line);font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--dim)}
+.quick button.on{color:var(--fg);border-color:var(--fg)}
+
+/* editor */
+.ed-name{width:100%;height:50px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);padding:0 14px;
+  font-family:var(--display);font-size:24px;letter-spacing:.04em;outline:none;-webkit-user-select:text;user-select:text}
+.ed-name:focus{border-color:var(--fg)}
+.ed-strings{display:grid;gap:8px;margin-top:14px}
+.ed-str{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:8px}
+.ed-str .k{width:64px;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--faint);padding-left:6px}
+.ed-str button{width:44px;height:44px;border-radius:11px;background:var(--panel2);font-size:22px;font-weight:600}
+.ed-str .v{flex:1;text-align:center;font-family:var(--display);font-size:30px;line-height:1}
+.ed-str .v small{font-size:.55em;color:var(--dim)}
+.ed-str .play{width:44px}
+.ed-str .play svg{width:18px;height:18px;margin:auto}
+.btn-main{width:100%;height:54px;border-radius:14px;background:var(--red);font-family:var(--display);font-size:24px;letter-spacing:.1em;margin-top:16px}
+.btn-main:active{background:var(--bordo)}
+
+/* ---------- start overlay ---------- */
+#start{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:30px;text-align:center;
+  background:radial-gradient(100% 70% at 50% 30%, rgba(85,17,18,.55), transparent 70%), var(--bg);transition:opacity .3s}
+#start.hide{opacity:0;pointer-events:none}
+#start .logo{font-family:var(--display);font-size:64px;letter-spacing:.06em;line-height:.9}
+#start .logo span{display:block;background:var(--bordo);padding:6px 14px 0;font-size:.62em;letter-spacing:.2em;margin-top:6px}
+#start p{max-width:320px;color:var(--dim);font-size:14px;line-height:1.5;margin:0}
+#start .go{width:132px;height:132px;border-radius:50%;background:var(--red);display:grid;place-items:center;box-shadow:0 0 0 10px rgba(176,36,42,.18),0 0 0 22px rgba(176,36,42,.08)}
+#start .go svg{width:52px;height:52px}
+#start .go:active{background:var(--bordo)}
+#start .err{color:#ff8a8f;font-weight:600}
+#start .foot{position:absolute;bottom:calc(18px + var(--safe-b));font-size:11px;letter-spacing:.2em;color:var(--faint);font-weight:700}
+
+#toast{position:fixed;left:50%;top:calc(18px + var(--safe-t));transform:translate(-50%,calc(-100% - 40px));z-index:30;background:var(--fg);color:var(--bg);
+  border-radius:12px;padding:11px 18px;font-weight:800;font-size:13px;letter-spacing:.1em;transition:transform .3s cubic-bezier(.2,.8,.2,1);white-space:nowrap}
+#toast.show{transform:translate(-50%,0)}
+
+/* ---------- landscape (tablet acostada) ---------- */
+@media (orientation:landscape) and (min-width:700px){
+  #app{max-width:none;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:auto 1fr auto;column-gap:28px;padding-left:28px;padding-right:28px}
+  header{grid-column:1/3}
+  .stage{grid-column:1;grid-row:2/4}
+  .side{grid-column:2;grid-row:2/4;display:flex;flex-direction:column;gap:14px;justify-content:center;min-height:0}
+  .strings{flex-wrap:wrap}
+  .readout{height:min(26vh,200px)}
+  .meter{max-width:min(720px,100%)}
+  .str{height:min(16vh,118px);max-width:none}
+  .str .n{font-size:min(6vh,46px)}
+  .strings.many .str{height:min(14vh,100px)}
+  .strings.many .str .n{font-size:min(5vh,38px)}
+  .pill{height:58px}
+  .tuningbtn{padding:12px 16px}
+  .tuningbtn .tun{font-size:30px}
+  .note{font-size:min(28vh,220px)}
+}
+@media (orientation:portrait), (max-width:699px){ .side{display:contents} }
+@media (orientation:portrait) and (min-width:700px){
+  .str{max-width:none;height:104px} .str .n{font-size:44px} .str .k{font-size:12px}
+  .pill{height:60px;font-size:14px} .tuningbtn .tun{font-size:30px} .tuningbtn{padding:12px 16px}
+  .brand{font-size:36px}
+}
+@media (max-height:640px) and (orientation:portrait){ .str{height:62px} .str .n{font-size:26px} .hint{font-size:24px} }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="brand">CLARABOYA<span>AFINADOR</span></div>
+    <div class="spacer"></div>
+    <a class="iconbtn exit" id="btnExit" href="../" aria-label="Salir de pantalla completa" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></a>
+    <div class="level" title="Nivel del micrófono"><i id="lvl"></i></div>
+    <button class="iconbtn" id="btnSettings" aria-label="Ajustes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+    </button>
+  </header>
+
+  <section class="stage">
+    <div class="readout"><div class="note idle" id="note">–</div><div class="oct" id="oct"></div></div>
+    <div class="sub"><span id="hz">— Hz</span><span id="cents">—</span><span id="tgt"></span></div>
+    <div class="meter" id="meter"></div>
+    <div class="hint idle" id="hint">TOCÁ UNA CUERDA</div>
+  </section>
+
+  <div class="side">
+    <div class="picker">
+      <button class="tuningbtn" id="btnTuning">
+        <div class="txt"><div class="ins" id="insName">GUITARRA</div><div class="tun" id="tunName">ESTÁNDAR</div></div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <button class="modebtn on" id="btnMode"><b id="modeTxt">AUTO</b><small id="modeSub">DETECTA</small></button>
+    </div>
+    <div class="strings" id="strings"></div>
+    <div class="bar">
+      <button class="pill grow" id="btnRef">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg>
+        <span id="refTxt">REFERENCIA</span>
+      </button>
+      <button class="pill" id="btnA4"><span>LA</span><span class="big" id="a4Txt">440</span></button>
+      <button class="pill" id="btnReset" aria-label="Reiniciar cuerdas afinadas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 108-8 8.5 8.5 0 00-6 2.5L4 8"/><path d="M4 3v5h5"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<div class="sheet" id="sheetTuning">
+  <div class="grab"></div>
+  <h2>INSTRUMENTO<button class="iconbtn close" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h2>
+  <div class="chips" id="chips"></div>
+  <div class="body" id="tuningList"></div>
+</div>
+
+<div class="sheet" id="sheetEditor">
+  <div class="grab"></div>
+  <h2 id="edTitle">NUEVA AFINACIÓN<button class="iconbtn close" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h2>
+  <div class="body">
+    <input class="ed-name" id="edName" placeholder="NOMBRE (EJ: OPEN G DEL PALMO)" maxlength="28">
+    <div class="ed-strings" id="edStrings"></div>
+    <button class="btn-main" id="edSave">GUARDAR AFINACIÓN</button>
+  </div>
+</div>
+
+<div class="sheet" id="sheetSettings">
+  <div class="grab"></div>
+  <h2>AJUSTES<button class="iconbtn close" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h2>
+  <div class="body">
+    <div class="set">
+      <div class="lab"><b>REFERENCIA (LA4)</b><span>Frecuencia del La central</span></div>
+      <div class="stepper"><button data-a4="-1">−</button><div class="val"><span id="a4Val">440</span><small>HZ</small></div><button data-a4="1">+</button></div>
+      <div class="quick" id="a4Quick"><button data-a4set="432">432</button><button data-a4set="438">438</button><button data-a4set="440">440</button><button data-a4set="442">442</button><button data-a4set="444">444</button></div>
+    </div>
+    <div class="set" id="setCapo">
+      <div class="lab"><b>CEJILLA</b><span id="capoHint">Sin cejilla</span></div>
+      <div class="stepper"><button data-capo="-1">−</button><div class="val"><span id="capoVal">0</span><small>TRASTE</small></div><button data-capo="1">+</button></div>
+    </div>
+    <div class="set">
+      <div class="lab"><b>NOTACIÓN</b></div>
+      <div class="seg" data-seg="notation"><button data-v="en">C D E F G A B</button><button data-v="es">DO RE MI FA SOL</button></div>
+    </div>
+    <div class="set">
+      <div class="lab"><b>TOLERANCIA</b><span>Cuándo una cuerda cuenta como afinada</span></div>
+      <div class="seg" data-seg="tol"><button data-v="1">±1 CENT</button><button data-v="3">±3 CENTS</button><button data-v="5">±5 CENTS</button></div>
+    </div>
+    <div class="set">
+      <div class="lab"><b>SENSIBILIDAD DEL MIC</b><span>Bajala si hay ruido en la sala</span></div>
+      <div class="seg" data-seg="sens"><button data-v="low">BAJA</button><button data-v="mid">MEDIA</button><button data-v="high">ALTA</button></div>
+    </div>
+    <div class="set">
+      <div class="lab"><b>AGUJA</b><span>Qué tan rápido responde</span></div>
+      <div class="seg" data-seg="speed"><button data-v="smooth">SUAVE</button><button data-v="normal">NORMAL</button><button data-v="fast">RÁPIDA</button></div>
+    </div>
+  </div>
+</div>
+
+<div id="start">
+  <div class="logo">CLARABOYA<span>AFINADOR</span></div>
+  <button class="go" id="btnStart" aria-label="Activar micrófono">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
+  </button>
+  <p id="startMsg">Tocá el botón para activar el micrófono. El sonido se analiza en tu dispositivo y no se graba ni se envía a ningún lado.</p>
+  <div class="foot">VICENTE LÓPEZ · BUENOS AIRES</div>
+</div>
+<div id="toast"></div>
+
+<script src="pitch.js"></script>
+<script src="tunings.js"></script>
+<script src="app.js"></script>
+<script>if (window.self === window.top) document.getElementById('btnExit').hidden = false;</script>
+</body>
+</html>

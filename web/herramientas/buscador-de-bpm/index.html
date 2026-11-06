@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buscador de BPM por canción · Herramientas de producción | Claraboya Estudio</title>
+<meta name="description" content="Buscá cualquier canción y sabé su tempo en BPM. Si el catálogo no lo tiene, lo calculamos escuchando la vista previa o lo marcás con tap. Gratis, de Claraboya Estudio.">
+<link rel="canonical" href="https://claraboyaestudio.netlify.app/herramientas/buscador-de-bpm/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1F2426">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Claraboya Estudio">
+<meta property="og:title" content="Buscador de BPM por canción · Herramientas de producción | Claraboya Estudio">
+<meta property="og:description" content="Buscá cualquier canción y sabé su tempo en BPM. Si el catálogo no lo tiene, lo calculamos escuchando la vista previa o lo marcás con tap. Gratis, de Claraboya Estudio.">
+<meta property="og:url" content="https://claraboyaestudio.netlify.app/herramientas/buscador-de-bpm/">
+<meta property="og:image" content="https://claraboyaestudio.netlify.app/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/icon-32.png">
+<link rel="apple-touch-icon" href="../../img/app-180.png">
+<link rel="preload" href="../../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../herramientas/assets/tools.css">
+<style>
+  .finder{ display:grid; gap:10px; }
+  .finder__form{ display:grid; grid-template-columns:1fr auto; gap:8px; }
+  .finder__form input{ font-size:1rem; padding:13px 14px; }
+  .finder__status{ margin:0; font-size:.85rem; color:var(--faint); min-height:1.2em; }
+  .finder__status.error{ color:var(--brick); }
+  .results{ list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+  .res{ width:100%; display:grid; grid-template-columns:48px 1fr auto; align-items:center; gap:12px; padding:6px 12px 6px 6px; border:1px solid transparent; border-radius:5px; background:var(--ink-3); color:var(--paper); text-align:left; cursor:pointer; font:inherit; }
+  .res:hover, .res:focus-visible{ border-color:var(--line); background:var(--ink-4); }
+  .res img, .res .ph{ width:48px; height:48px; border-radius:3px; object-fit:cover; background:var(--bordo); display:grid; place-items:center; font:400 1.5rem/1 var(--display); }
+  .res__t{ display:block; font-weight:700; font-size:.92rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .res__a{ display:block; font-size:.8rem; color:var(--soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .res__m{ min-width:0; }
+  .res__d{ font-size:.78rem; color:var(--faint); font-variant-numeric:tabular-nums; }
+
+  .song{ background:var(--ink-2); border-radius:6px; padding:clamp(18px,3vw,28px); display:grid; grid-template-columns: 1fr auto; gap:18px 28px; align-items:center; }
+  .song[hidden]{ display:none; }
+  .song__head{ display:flex; align-items:center; gap:16px; min-width:0; }
+  .song__cover{ width:96px; height:96px; border-radius:4px; object-fit:cover; background:var(--bordo); flex:none; }
+  .song__meta{ min-width:0; }
+  .song__title{ margin:0; font:400 clamp(1.8rem,4vw,2.6rem)/.95 var(--display); letter-spacing:.01em; }
+  .song__artist{ margin:6px 0 0; color:var(--soft); }
+  .song__bpm{ display:grid; justify-items:end; text-align:right; }
+  .song__num{ font:400 clamp(5rem,12vw,7.5rem)/.82 var(--display); color:var(--paper); }
+  .song__num.none{ color:var(--faint); }
+  .song__unit{ font:700 .78rem/1 var(--body); letter-spacing:.08em; color:var(--faint); margin-top:6px; }
+  .song__src{ font-size:.78rem; color:var(--rosa); margin-top:6px; font-weight:600; }
+  .song__adj{ grid-column:1/-1; display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; }
+  .listen{ grid-column:1/-1; background:var(--ink-3); border-radius:5px; padding:14px 16px; display:grid; gap:10px; }
+  .listen__title{ margin:0; font:400 1.4rem/1 var(--display); letter-spacing:.02em; }
+  .listen__row{ display:flex; flex-wrap:wrap; gap:8px; align-items:stretch; }
+  .listen__tap{ min-width:120px; border:0; border-radius:3px; background:var(--bordo); color:var(--paper); font:400 1.5rem/1 var(--display); letter-spacing:.06em; cursor:pointer; display:grid; place-content:center; gap:3px; padding:8px 14px; }
+  .listen__tap small{ font:600 .62rem/1 var(--body); letter-spacing:.04em; color:rgba(242,242,242,.7); }
+  .listen__tap:active{ background:var(--bordo-2); }
+  .listen .hint{ margin:0; }
+  .song__actions{ grid-column:1/-1; display:flex; flex-wrap:wrap; gap:10px; }
+  @media (max-width: 620px){
+    .song{ grid-template-columns:1fr; }
+    .song__bpm{ justify-items:start; text-align:left; }
+    .song__cover{ width:72px; height:72px; }
+  }
+  .recent{ display:grid; gap:10px; }
+  .recent[hidden]{ display:none; }
+  .recent__title{ margin:0; font:400 1.65rem/1 var(--display); letter-spacing:.02em; }
+  .recent__list{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px; }
+  .recent__list button{ display:inline-flex; align-items:center; gap:10px; padding:8px 12px; border:0; border-radius:99px; background:var(--ink-2); color:var(--paper); font:600 .84rem/1.2 var(--body); cursor:pointer; }
+  .recent__list button:hover{ background:var(--ink-3); }
+  .recent__list b{ font:400 1.15rem/1 var(--display); color:var(--rosa); letter-spacing:.03em; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Buscador de BPM — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/buscador-de-bpm/", "description": "Buscá cualquier canción y sabé su tempo en BPM. Si el catálogo no lo tiene, lo calculamos escuchando la vista previa o lo marcás con tap. Gratis, de Claraboya Estudio.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "publisher": {"@id": "https://claraboyaestudio.netlify.app/#estudio", "@type": "LocalBusiness", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
+<link rel="manifest" href="../../manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../../herramientas/assets/pwa.js" defer></script>
+</head>
+<body class="tool" data-tool="buscador-de-bpm">
+<a class="skip" href="#app">Ir a la herramienta</a>
+<header class="tn">
+  <div class="tn__bar">
+    <a class="tn__logo" href="../../" aria-label="Claraboya Estudio, ir al inicio"><img src="../../img/logo.webp" alt="" width="120" height="128"></a>
+    <a class="tn__hub" href="../">Herramientas <span>de producción</span></a>
+    <a class="tn__studio" href="../../#servicios">El estudio</a>
+  </div>
+  <nav class="tn__tools" aria-label="Cambiar de herramienta">
+    <a href="../matriz-de-acordes/"><b>01</b>Matriz de acordes</a>
+    <a href="../brujula-armonica/"><b>02</b>Brújula armónica</a>
+    <a href="../hoja-de-ruta/"><b>03</b>Hoja de ruta</a>
+    <a href="../rider-tecnico/"><b>04</b>Rider técnico</a>
+    <a href="../armador-de-setlists/"><b>05</b>Armador de setlists</a>
+    <a href="../calentamiento-vocal/"><b>06</b>Calentamiento vocal</a>
+    <a href="../afinador/"><b>07</b>Afinador</a>
+    <a href="../metronomo/"><b>08</b>Metrónomo</a>
+    <a href="../buscador-de-bpm/" aria-current="page"><b>09</b>Buscador de BPM</a>
+  </nav>
+</header>
+<main class="app app--buscador-de-bpm app--narrow" id="app">
+  <header class="tool-head">
+    <div>
+      <p class="tool-head__kicker"><b>09</b> · Para todos los días</p>
+      <h1>Buscador de BPM</h1>
+      <p class="tool-head__sub">Escribí la canción y el artista, elegí la versión y te mostramos su tempo. Después lo llevás directo al metrónomo.</p>
+    </div>
+  </header>
+
+  <section class="panel finder" aria-label="Buscar canción">
+    <form class="finder__form" id="searchForm" role="search">
+      <label class="visually-hidden" for="q">Canción y artista</label>
+      <input type="search" id="q" placeholder="Canción y artista, por ejemplo: Persiana americana Soda Stereo" autocomplete="off" enterkeyhint="search">
+      <button class="btn primary" type="submit">Buscar</button>
+    </form>
+    <p class="finder__status" id="status" role="status"></p>
+    <ul class="results" id="results" aria-label="Resultados"></ul>
+  </section>
+
+  <section class="song" id="song" hidden aria-live="polite">
+    <div class="song__head">
+      <img class="song__cover" id="sCover" alt="" width="120" height="120">
+      <div class="song__meta">
+        <p class="song__title" id="sTitle"></p>
+        <p class="song__artist" id="sArtist"></p>
+      </div>
+    </div>
+    <div class="song__bpm">
+      <span class="song__num" id="sBpm">—</span>
+      <span class="song__unit">BPM</span>
+      <span class="song__src" id="sSrc"></span>
+    </div>
+    <div class="song__adj" id="sAdj">
+      <button class="btn small ghost" type="button" id="halfBtn">½ mitad</button>
+      <button class="btn small ghost" type="button" id="dblBtn">×2 doble</button>
+      <span class="hint" style="margin:0">Los catálogos a veces dan el doble o la mitad del tempo que se siente. Si no te cierra, ajustalo acá.</span>
+    </div>
+
+    <div class="listen" id="listen">
+      <p class="listen__title" id="listenTitle">Escuchá y marcá el tempo</p>
+      <div class="listen__row">
+        <button class="btn" type="button" id="playPrev" disabled>▶ Escuchar 30 s</button>
+        <button class="btn" type="button" id="analyze" disabled>Calcular escuchando</button>
+        <button class="listen__tap" type="button" id="tapBtn">Tap<small id="tapInfo">tocá al ritmo</small></button>
+      </div>
+      <p class="hint" id="listenNote"></p>
+    </div>
+
+    <div class="song__actions">
+      <a class="btn primary big" id="toMet" href="../metronomo/">Usar en el metrónomo</a>
+      <button class="btn ghost" type="button" id="copyBtn">Copiar BPM</button>
+    </div>
+  </section>
+
+  <section class="recent" id="recentBox" hidden aria-labelledby="recent-t">
+    <h2 class="recent__title" id="recent-t">Últimas que buscaste</h2>
+    <ul class="recent__list" id="recent"></ul>
+  </section>
+
+  <p class="hint">Los datos vienen de los catálogos públicos de Deezer e iTunes. El cálculo escuchando usa la vista previa de 30 segundos: es una estimación, chequeala con el oído antes de un show.</p>
+
+  <section class="next" aria-labelledby="next-t">
+    <h2 class="next__title" id="next-t">Seguí con</h2>
+    <div class="next__grid">
+    <a class="next__card" href="../metronomo/">
+      <span class="next__why">Con el tempo en la mano</span>
+      <span class="next__name">Metrónomo</span>
+      <span class="next__desc">Practicá el tema a su velocidad, o más lento.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../armador-de-setlists/">
+      <span class="next__why">¿Lo tocás en vivo?</span>
+      <span class="next__name">Armador de setlists</span>
+      <span class="next__desc">Sumalo al repertorio con su BPM y tonalidad.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    </div>
+  </section>
+
+</main>
+<footer class="tf">
+  <div class="tf__band">
+    <div class="tf__cta">
+      <div>
+        <p class="tf__cta-title">¿Y cuando el tema esté listo?</p>
+        <p>Estas herramientas las usamos en Claraboya. Si querés grabar, producir, mezclar o masterizar, escribinos: te respondemos nosotros.</p>
+      </div>
+      <a class="btn big btn--wa" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Buscador%20de%20BPM%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener"><svg class="btn__icon" viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg>Escribinos por WhatsApp</a>
+    </div>
+  </div>
+  <div class="tf__bottom">
+    <img src="../../img/logo.webp" alt="" width="40" height="43" loading="lazy">
+    <p>Claraboya Estudio · Vicente López, Buenos Aires · <span class="ver">v{{VERSION}}</span></p>
+    <nav class="tf__links" aria-label="Enlaces">
+      <a href="../../">Inicio</a>
+      <a href="https://www.instagram.com/claraboya.estudio" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://linktr.ee/claraboyaestudio" target="_blank" rel="noopener">Linktree</a>
+      <a href="https://cafecito.app/claraboyaestudio" target="_blank" rel="noopener">Invitanos un cafecito</a>
+    </nav>
+  </div>
+</footer>
+<div class="wa-dock" id="waDock">
+  <div class="wa-dock__bubble" id="waBubble">
+    <a class="wa-dock__text" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Buscador%20de%20BPM%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener">¿Vas a grabar un cover? Lo hacemos en Claraboya.<span>Escribinos por WhatsApp</span></a>
+    <button class="wa-dock__close" type="button" id="waClose" aria-label="Ocultar este mensaje">×</button>
+  </div>
+  <a class="wa-dock__btn" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Buscador%20de%20BPM%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg></a>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.16 0 0 7.16 0 16c0 2.82.74 5.47 2.03 7.77L0 32l8.44-2.21A15.9 15.9 0 0 0 16 31.7c8.84 0 16-7.16 16-16S24.84 0 16 0zm0 29.02c-2.4 0-4.66-.65-6.6-1.78l-.47-.28-5.01 1.31 1.34-4.88-.31-.5A13 13 0 1 1 16 29.02zm7.13-9.74c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.62-.2-.88.2-.26.39-1.01 1.26-1.24 1.52-.23.26-.46.29-.85.1-.39-.2-1.65-.61-3.14-1.94-1.16-1.04-1.94-2.32-2.17-2.71-.23-.39-.02-.6.17-.79.18-.18.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.88-2.12-1.2-2.9-.32-.77-.64-.66-.88-.67l-.75-.01c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26 0 1.92 1.4 3.78 1.6 4.04.2.26 2.76 4.22 6.7 5.91.94.41 1.67.65 2.24.83.94.3 1.79.26 2.47.16.75-.11 2.3-.94 2.62-1.85.32-.91.32-1.69.23-1.85-.1-.16-.36-.26-.75-.46z"/></symbol>
+</svg>
+<script src="../assets/tools.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var RKEY = 'cb.buscador-de-bpm.recientes';
+
+  /* ---------- catálogos públicos por JSONP (Deezer, y si falla iTunes) ---------- */
+  var seq = 0;
+  function jsonp(url, ms) {
+    return new Promise(function (resolve, reject) {
+      var cb = '__cbBpm' + (++seq) + '_' + Date.now(), sc = document.createElement('script'), done = false;
+      var timer = setTimeout(function () { end(); reject(new Error('timeout')); }, ms || 8000);
+      function end() {
+        done = true; clearTimeout(timer); window[cb] = function () {};
+        setTimeout(function () { try { delete window[cb]; } catch (e) {} }, 30000);
+        if (sc.parentNode) sc.parentNode.removeChild(sc);
+      }
+      window[cb] = function (d) { if (done) return; end(); resolve(d); };
+      sc.onerror = function () { if (done) return; end(); reject(new Error('network')); };
+      sc.src = url + (url.indexOf('?') === -1 ? '?' : '&') + 'callback=' + cb;
+      document.head.appendChild(sc);
+    });
+  }
+  var PROVIDERS = [
+    { name: 'Deezer',
+      search: function (q) {
+        return jsonp('https://api.deezer.com/search?q=' + encodeURIComponent(q) + '&limit=10&output=jsonp').then(function (r) {
+          if (!r || !r.data) throw new Error('empty');
+          return r.data.map(function (t) {
+            return { src: 'Deezer', id: t.id, title: t.title_short || t.title, artist: (t.artist && t.artist.name) || '',
+              cover: (t.album && (t.album.cover_medium || t.album.cover)) || '', preview: t.preview || '', duration: t.duration || 0, bpm: 0 };
+          });
+        });
+      },
+      details: function (it) {
+        return jsonp('https://api.deezer.com/track/' + it.id + '?output=jsonp').then(function (t) {
+          if (t && t.bpm && t.bpm > 30) it.bpm = Math.round(t.bpm);
+          if (t && t.preview) it.preview = t.preview;
+          return it;
+        }).catch(function () { return it; });
+      } },
+    { name: 'iTunes',
+      search: function (q) {
+        return jsonp('https://itunes.apple.com/search?term=' + encodeURIComponent(q) + '&entity=song&limit=10&country=AR').then(function (r) {
+          if (!r || !r.results) throw new Error('empty');
+          return r.results.map(function (t) {
+            return { src: 'iTunes', id: t.trackId, title: t.trackName, artist: t.artistName || '',
+              cover: (t.artworkUrl100 || '').replace('100x100', '200x200'), preview: t.previewUrl || '', duration: Math.round((t.trackTimeMillis || 0) / 1000), bpm: 0 };
+          });
+        });
+      },
+      details: function (it) { return Promise.resolve(it); } }
+  ];
+  function search(q) {
+    var i = 0;
+    function next() {
+      if (i >= PROVIDERS.length) return Promise.reject(new Error('unavailable'));
+      var p = PROVIDERS[i++];
+      return p.search(q).then(function (list) {
+        var seen = {};
+        list = list.filter(function (t) { var k = (t.title + '|' + t.artist).toLowerCase(); if (!t.title || seen[k]) return false; seen[k] = 1; return true; });
+        if (!list.length && i < PROVIDERS.length) return next();
+        return list;
+      }).catch(function () { return next(); });
+    }
+    return next();
+  }
+  function fmt(s) { s = Math.round(s || 0); return s ? Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2) : ''; }
+  function status(t, err) { var el = $('status'); el.textContent = t || ''; el.className = 'finder__status' + (err ? ' error' : ''); }
+
+  function coverEl(it, size) {
+    if (it.cover) {
+      var img = document.createElement('img'); img.src = it.cover; img.alt = ''; img.width = size; img.height = size; img.loading = 'lazy';
+      img.onerror = function () { var ph = phEl(it); img.replaceWith(ph); };
+      return img;
+    }
+    return phEl(it);
+  }
+  function phEl(it) { var s = document.createElement('span'); s.className = 'ph'; s.textContent = (it.title || '?').charAt(0).toUpperCase(); return s; }
+
+  function renderResults(list) {
+    var ul = $('results'); ul.innerHTML = '';
+    list.forEach(function (it) {
+      var li = document.createElement('li'), b = document.createElement('button');
+      b.type = 'button'; b.className = 'res';
+      var m = document.createElement('span'); m.className = 'res__m';
+      var t = document.createElement('span'); t.className = 'res__t'; t.textContent = it.title;
+      var a = document.createElement('span'); a.className = 'res__a'; a.textContent = it.artist;
+      var d = document.createElement('span'); d.className = 'res__d'; d.textContent = fmt(it.duration);
+      m.appendChild(t); m.appendChild(a);
+      b.appendChild(coverEl(it, 48)); b.appendChild(m); b.appendChild(d);
+      b.addEventListener('click', function () { pick(it); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+
+  $('searchForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = $('q').value.trim();
+    if (!q) { $('q').focus(); return; }
+    status('Buscando…'); $('results').innerHTML = '';
+    search(q).then(function (list) {
+      if (!list.length) { status('No encontramos esa canción. Probá con otras palabras o sumá el artista.', true); return; }
+      status(list.length + ' resultados de ' + list[0].src + '. Elegí la versión correcta.');
+      renderResults(list);
+    }).catch(function () { status('No pudimos conectarnos con los catálogos. Revisá la conexión y probá de nuevo.', true); });
+  });
+
+  /* ---------- canción elegida ---------- */
+  var cur = null, audio = null, ctx = null;
+  function setBpm(b, src) {
+    cur.bpm = b ? Math.round(b) : 0;
+    if (src) cur.bpmSrc = src;
+    var el = $('sBpm');
+    el.textContent = cur.bpm || '—';
+    el.className = 'song__num' + (cur.bpm ? '' : ' none');
+    $('sSrc').textContent = cur.bpm ? (cur.bpmSrc || '') : 'Sin dato en el catálogo';
+    $('sAdj').hidden = !cur.bpm;
+    var p = new URLSearchParams({ bpm: cur.bpm || 100, tema: cur.title, artista: cur.artist });
+    $('toMet').href = '../metronomo/?' + p.toString();
+    if (cur.bpm) remember(cur);
+  }
+  function pick(it) {
+    status('Buscando el tempo de "' + it.title + '"…');
+    stopPreview();
+    var p = PROVIDERS.filter(function (x) { return x.name === it.src; })[0] || PROVIDERS[0];
+    p.details(it).then(function (full) { status(''); show(full); });
+  }
+  function show(it) {
+    cur = it;
+    $('song').hidden = false;
+    var img = $('sCover');
+    img.onerror = function () { img.removeAttribute('src'); img.style.visibility = 'hidden'; };
+    if (it.cover) { img.src = it.cover; img.style.visibility = ''; } else { img.removeAttribute('src'); img.style.visibility = 'hidden'; }
+    $('sTitle').textContent = it.title;
+    $('sArtist').textContent = it.artist;
+    taps = []; $('tapInfo').textContent = 'tocá al ritmo';
+    setBpm(it.bpm, it.bpm ? (it.bpmSrc || 'Dato de ' + it.src) : '');
+    $('listenTitle').textContent = it.bpm ? '¿Querés confirmarlo de oído?' : 'Calculalo escuchando';
+    $('listenNote').textContent = it.preview
+      ? (it.bpm ? 'Escuchá la vista previa y tocá Tap al ritmo para comprobarlo.' : 'Este tema no tiene el BPM cargado. Tocá "Calcular escuchando" o marcá el pulso con Tap mientras suena.')
+      : 'Este tema no tiene vista previa. Marcá el pulso con Tap mientras lo escuchás en otro lado.';
+    $('playPrev').disabled = !it.preview; $('analyze').disabled = !it.preview;
+    $('playPrev').textContent = '▶ Escuchar 30 s';
+    $('song').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  $('halfBtn').addEventListener('click', function () { if (cur && cur.bpm) setBpm(cur.bpm / 2, 'Ajustado a mano'); });
+  $('dblBtn').addEventListener('click', function () { if (cur && cur.bpm) setBpm(cur.bpm * 2, 'Ajustado a mano'); });
+  $('copyBtn').addEventListener('click', function () {
+    if (!cur || !cur.bpm) return;
+    var txt = cur.title + ' — ' + cur.artist + ': ' + cur.bpm + ' BPM';
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () {
+      window.CB && CB.toast ? CB.toast('Copiado: ' + txt) : null;
+    }).catch(function () {});
+  });
+
+  /* ---------- vista previa ---------- */
+  function stopPreview() { if (audio) { audio.pause(); audio = null; } $('playPrev').textContent = '▶ Escuchar 30 s'; }
+  $('playPrev').addEventListener('click', function () {
+    if (!cur || !cur.preview) return;
+    if (audio && !audio.paused) { stopPreview(); return; }
+    audio = new Audio(cur.preview);
+    audio.addEventListener('ended', stopPreview);
+    audio.play().then(function () { $('playPrev').textContent = '■ Frenar'; }).catch(function () { $('listenNote').textContent = 'No pudimos reproducir la vista previa en este navegador.'; });
+  });
+
+  /* ---------- tap ---------- */
+  var taps = [];
+  function tap() {
+    if (!cur) return;
+    var now = performance.now();
+    if (taps.length && now - taps[taps.length - 1] > 2000) taps = [];
+    taps.push(now); if (taps.length > 10) taps.shift();
+    if (taps.length < 4) { $('tapInfo').textContent = 'seguí tocando'; return; }
+    var avg = (taps[taps.length - 1] - taps[0]) / (taps.length - 1);
+    setBpm(60000 / avg, 'Marcado con Tap (' + taps.length + ' toques)');
+    $('tapInfo').textContent = taps.length + ' toques';
+  }
+  $('tapBtn').addEventListener('pointerdown', function (e) { e.preventDefault(); tap(); });
+  $('tapBtn').addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(); } });
+
+  /* ---------- cálculo escuchando la vista previa ---------- */
+  $('analyze').addEventListener('click', function () {
+    if (!cur || !cur.preview) return;
+    var btn = this, it = cur;
+    btn.disabled = true; btn.textContent = 'Escuchando…';
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!ctx) ctx = new AC();
+    fetch(it.preview, { mode: 'cors' }).then(function (r) { if (!r.ok) throw new Error('http'); return r.arrayBuffer(); })
+      .then(function (buf) { return new Promise(function (res, rej) { ctx.decodeAudioData(buf, res, rej); }); })
+      .then(function (ab) {
+        var n = ab.length, mono = new Float32Array(n), ch = ab.numberOfChannels;
+        for (var c = 0; c < ch; c++) { var d = ab.getChannelData(c); for (var i = 0; i < n; i++) mono[i] += d[i] / ch; }
+        var r = detectBpm(mono, ab.sampleRate);
+        if (cur !== it) return;
+        if (!r) throw new Error('nodetect');
+        setBpm(r.bpm, 'Calculado escuchando la vista previa' + (r.conf < 6 ? ' (con dudas: chequealo con Tap)' : ''));
+      })
+      .catch(function () {
+        if (cur === it) $('listenNote').textContent = 'No pudimos analizar la vista previa desde el navegador. Escuchala y marcá el pulso con Tap.';
+      })
+      .then(function () { btn.disabled = !cur || !cur.preview; btn.textContent = 'Calcular escuchando'; });
+  });
+
+  // Estima el tempo de un audio (mono, Float32Array). Devuelve { bpm, conf } o null.
+  // Envolvente de ataques en dos bandas (graves y completa) + autocorrelación con peine de armónicos.
+  function detectBpm(x, sr) {
+    var f = Math.max(1, Math.round(sr / 11025)), r = sr / f, n = Math.floor(x.length / f);
+    if (n < r * 6) return null;
+    var y = new Float32Array(n), lo = new Float32Array(n), a = Math.exp(-2 * Math.PI * 150 / r), z = 0, i, j;
+    for (i = 0; i < n; i++) {
+      var s = 0; for (j = 0; j < f; j++) s += x[i * f + j]; s /= f;
+      y[i] = s; z = (1 - a) * s + a * z; lo[i] = z;
+    }
+    var hop = Math.max(1, Math.round(r * 0.0116)), win = hop * 4, fps = r / hop;
+    var frames = Math.floor((n - win) / hop);
+    if (frames < 200) return null;
+    var flux = new Float32Array(frames), pf = 0, pl = 0;
+    for (i = 0; i < frames; i++) {
+      var ef = 0, el = 0, o = i * hop;
+      for (j = 0; j < win; j++) { var v = y[o + j], w = lo[o + j]; ef += v * v; el += w * w; }
+      ef = Math.log(1e-9 + ef); el = Math.log(1e-9 + el);
+      flux[i] = (i ? Math.max(0, ef - pf) + 1.5 * Math.max(0, el - pl) : 0);
+      pf = ef; pl = el;
+    }
+    // restar la media local (~0.4 s) y normalizar
+    var half = Math.round(fps * 0.2), nov = new Float32Array(frames), acc = 0, cnt = 0;
+    for (i = 0; i < Math.min(frames, half); i++) { acc += flux[i]; cnt++; }
+    for (i = 0; i < frames; i++) {
+      if (i + half < frames) { acc += flux[i + half]; cnt++; }
+      if (i - half - 1 >= 0) { acc -= flux[i - half - 1]; cnt--; }
+      nov[i] = Math.max(0, flux[i] - acc / cnt);
+    }
+    var maxLag = Math.ceil(60 * fps / 40) * 2 + 2, ac = new Float32Array(maxLag + 1);
+    for (var L = 1; L <= maxLag; L++) {
+      var sum = 0; for (i = 0; i + L < frames; i++) sum += nov[i] * nov[i + L];
+      ac[L] = sum / (frames - L);
+    }
+    function at(lag) { var k = Math.floor(lag), t = lag - k; return k + 1 > maxLag ? 0 : ac[k] * (1 - t) + ac[k + 1] * t; }
+    var best = 0, bestScore = -1, total = 0, count = 0;
+    for (var b = 60; b <= 200; b += 0.25) {
+      var lag = 60 * fps / b;
+      var sc = at(lag) + 0.5 * at(2 * lag) + 0.25 * at(3 * lag) + 0.25 * at(4 * lag);
+      var oct = Math.log(b / 115) / Math.LN2;
+      sc *= Math.exp(-0.5 * (oct / 0.85) * (oct / 0.85));
+      total += sc; count++;
+      if (sc > bestScore) { bestScore = sc; best = b; }
+    }
+    if (bestScore <= 0) return null;
+    return { bpm: Math.round(best), conf: bestScore / (total / count) };
+  }
+
+
+  /* ---------- últimas búsquedas ---------- */
+  function readRecent() { try { return JSON.parse(localStorage.getItem(RKEY) || '[]'); } catch (e) { return []; } }
+  function remember(it) {
+    var list = readRecent().filter(function (x) { return !(x.title === it.title && x.artist === it.artist); });
+    list.unshift({ src: it.src, id: it.id, title: it.title, artist: it.artist, cover: it.cover, preview: it.preview, duration: it.duration, bpm: it.bpm, bpmSrc: it.bpmSrc });
+    try { localStorage.setItem(RKEY, JSON.stringify(list.slice(0, 10))); } catch (e) {}
+    renderRecent();
+  }
+  function renderRecent() {
+    var list = readRecent(), ul = $('recent');
+    $('recentBox').hidden = !list.length;
+    ul.innerHTML = '';
+    list.forEach(function (it) {
+      var li = document.createElement('li'), b = document.createElement('button');
+      b.type = 'button';
+      var t = document.createElement('span'); t.textContent = it.title + (it.artist ? ' · ' + it.artist : '');
+      var n = document.createElement('b'); n.textContent = it.bpm;
+      b.appendChild(t); b.appendChild(n);
+      b.addEventListener('click', function () { stopPreview(); show(JSON.parse(JSON.stringify(it))); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+  renderRecent();
+  var q0 = new URLSearchParams(location.search).get('q');
+  if (q0) { $('q').value = q0; $('searchForm').requestSubmit ? $('searchForm').requestSubmit() : $('searchForm').dispatchEvent(new Event('submit')); }
+})();
+
+</script>
+</body>
+</html>

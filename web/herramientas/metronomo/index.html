@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metrónomo online · Herramientas de producción | Claraboya Estudio</title>
+<meta name="description" content="Metrónomo online gratis: tempo de 30 a 300 BPM, compases, subdivisiones, acentos por pulso, tap tempo y subida automática de tempo para practicar. De Claraboya Estudio.">
+<link rel="canonical" href="https://claraboyaestudio.netlify.app/herramientas/metronomo/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1F2426">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Claraboya Estudio">
+<meta property="og:title" content="Metrónomo online · Herramientas de producción | Claraboya Estudio">
+<meta property="og:description" content="Metrónomo online gratis: tempo de 30 a 300 BPM, compases, subdivisiones, acentos por pulso, tap tempo y subida automática de tempo para practicar. De Claraboya Estudio.">
+<meta property="og:url" content="https://claraboyaestudio.netlify.app/herramientas/metronomo/">
+<meta property="og:image" content="https://claraboyaestudio.netlify.app/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/icon-32.png">
+<link rel="apple-touch-icon" href="../../img/app-180.png">
+<link rel="preload" href="../../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../herramientas/assets/tools.css">
+<style>
+  .met{ display:grid; grid-template-columns: 1.35fr 1fr; gap:16px; align-items:start; }
+  @media (max-width: 860px){ .met{ grid-template-columns:1fr; } }
+  .met__main{ background:var(--ink-2); border-radius:6px; padding:clamp(18px,3vw,30px); display:grid; gap:16px; }
+  .met__tempo{ display:grid; grid-template-columns:64px 1fr 64px; align-items:center; gap:10px; }
+  .met__step{ width:64px; height:64px; border-radius:50%; border:0; background:var(--ink-3); color:var(--paper); font:500 2rem/1 var(--body); cursor:pointer; }
+  .met__step:hover{ background:var(--ink-4); }
+  .met__bpm{ display:grid; justify-items:center; gap:2px; }
+  .met__num{ width:100%; max-width:4.2ch; padding:0; background:transparent !important; border:0 !important; text-align:center; font:400 clamp(5.5rem,14vw,8.5rem)/.85 var(--display) !important; color:var(--paper); letter-spacing:.01em; }
+  .met__num:focus{ outline:none; color:#fff; }
+  .met__unit{ font:700 .78rem/1 var(--body); letter-spacing:.08em; color:var(--faint); }
+  .met__word{ font:400 1.4rem/1 var(--display); letter-spacing:.06em; color:var(--rosa); margin-top:4px; }
+  .met__slider, #volSlider{ width:100%; accent-color: var(--rosa); }
+  .met__quick{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+
+  .beats{ list-style:none; margin:4px 0 0; padding:0; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+  .beat{ width:clamp(38px,6vw,52px); height:clamp(38px,6vw,52px); border-radius:50%; border:2px solid rgba(242,242,242,.28); background:transparent; cursor:pointer; position:relative; padding:0; transition: transform .06s ease, background .06s ease; }
+  .beat[data-acc="2"]{ border-color:var(--rosa); }
+  .beat[data-acc="2"]::after{ content:""; position:absolute; inset:6px; border-radius:50%; background:rgba(217,120,122,.28); }
+  .beat[data-acc="0"]{ border-style:dashed; opacity:.45; }
+  .beat.group{ margin-left:10px; }
+  .beat.on{ background:var(--paper); transform:scale(1.12); }
+  .beat.on[data-acc="2"]{ background:var(--rosa); }
+  .met__beats-hint{ text-align:center; margin-top:-6px; }
+
+  .met__actions{ display:grid; grid-template-columns:1fr auto; gap:10px; }
+  .met__play{ display:flex; align-items:center; justify-content:center; gap:12px; height:68px; border:0; border-radius:6px; background:var(--bordo); color:var(--paper); font:400 2rem/1 var(--display); letter-spacing:.06em; cursor:pointer; }
+  .met__play:hover{ background:var(--bordo-2); }
+  .met__play svg{ width:26px; height:26px; }
+  .met__play .i-stop{ display:none; }
+  .met__play[aria-pressed="true"] .i-stop{ display:block; }
+  .met__play[aria-pressed="true"] .i-play{ display:none; }
+  .met__tap{ width:112px; height:68px; border:0; border-radius:6px; background:var(--ink-3); color:var(--paper); font:400 1.9rem/1 var(--display); letter-spacing:.06em; cursor:pointer; display:grid; place-content:center; gap:4px; }
+  .met__tap small{ font:600 .62rem/1 var(--body); letter-spacing:.04em; color:var(--faint); }
+  .met__tap:active{ background:var(--ink-4); }
+  .met__keys{ text-align:center; margin:0; }
+  kbd{ font:600 .72rem/1 var(--body); padding:2px 6px; border-radius:3px; background:var(--ink-3); color:var(--soft); }
+  @media (hover: none){ .met__keys{ display:none; } }
+
+  .met__side{ display:grid; gap:16px; }
+  .met__side .panel{ display:grid; gap:8px; }
+  .met__side .field-label{ margin:6px 0 0; }
+  .seg{ display:flex; flex-wrap:wrap; gap:6px; }
+  .seg button{ flex:1 1 auto; min-width:44px; padding:9px 10px; border:0; border-radius:3px; background:var(--ink-3); color:var(--soft); font:700 .82rem/1 var(--body); cursor:pointer; }
+  .seg button:hover{ color:var(--paper); }
+  .seg button[aria-pressed="true"]{ background:var(--paper); color:var(--ink); }
+  .trainer__toggle{ display:flex; align-items:center; gap:10px; font-weight:700; cursor:pointer; }
+  .trainer__toggle input{ width:18px; height:18px; accent-color:var(--rosa); }
+  .trainer{ display:flex; flex-wrap:wrap; gap:8px 14px; font-size:.86rem; color:var(--soft); }
+  .trainer label{ display:flex; align-items:center; gap:6px; }
+  .trainer input{ width:56px; text-align:center; padding:7px 6px; }
+  .trainer.off{ opacity:.45; pointer-events:none; }
+  .context-note{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px 20px; background:var(--bordo); border-radius:4px; padding:12px 18px; }
+  .context-note[hidden]{ display:none; }
+  .context-note p{ margin:0; }
+  .context-note .btn{ background:var(--paper); color:var(--bordo); }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Metrónomo — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/metronomo/", "description": "Metrónomo online gratis: tempo de 30 a 300 BPM, compases, subdivisiones, acentos por pulso, tap tempo y subida automática de tempo para practicar. De Claraboya Estudio.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "publisher": {"@id": "https://claraboyaestudio.netlify.app/#estudio", "@type": "LocalBusiness", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
+<link rel="manifest" href="../../manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../../herramientas/assets/pwa.js" defer></script>
+</head>
+<body class="tool" data-tool="metronomo">
+<a class="skip" href="#app">Ir a la herramienta</a>
+<header class="tn">
+  <div class="tn__bar">
+    <a class="tn__logo" href="../../" aria-label="Claraboya Estudio, ir al inicio"><img src="../../img/logo.webp" alt="" width="120" height="128"></a>
+    <a class="tn__hub" href="../">Herramientas <span>de producción</span></a>
+    <a class="tn__studio" href="../../#servicios">El estudio</a>
+  </div>
+  <nav class="tn__tools" aria-label="Cambiar de herramienta">
+    <a href="../matriz-de-acordes/"><b>01</b>Matriz de acordes</a>
+    <a href="../brujula-armonica/"><b>02</b>Brújula armónica</a>
+    <a href="../hoja-de-ruta/"><b>03</b>Hoja de ruta</a>
+    <a href="../rider-tecnico/"><b>04</b>Rider técnico</a>
+    <a href="../armador-de-setlists/"><b>05</b>Armador de setlists</a>
+    <a href="../calentamiento-vocal/"><b>06</b>Calentamiento vocal</a>
+    <a href="../afinador/"><b>07</b>Afinador</a>
+    <a href="../metronomo/" aria-current="page"><b>08</b>Metrónomo</a>
+    <a href="../buscador-de-bpm/"><b>09</b>Buscador de BPM</a>
+  </nav>
+</header>
+<main class="app app--metronomo" id="app">
+  <header class="tool-head">
+    <div>
+      <p class="tool-head__kicker"><b>08</b> · Para todos los días</p>
+      <h1>Metrónomo</h1>
+      <p class="tool-head__sub">Elegí el tempo, el compás y la subdivisión. Podés marcar qué pulsos suenan fuerte y hacer que el tempo suba solo mientras practicás.</p>
+    </div>
+  </header>
+
+  <div class="context-note" id="fromNote" hidden>
+    <p id="fromText"></p>
+    <a class="btn small" id="fromBack" href="../buscador-de-bpm/">Volver al buscador</a>
+  </div>
+
+  <section class="met" aria-label="Metrónomo">
+    <div class="met__main">
+      <div class="met__tempo">
+        <button class="met__step" type="button" data-step="-1" aria-label="Bajar 1 BPM">−</button>
+        <div class="met__bpm">
+          <label class="visually-hidden" for="bpmInput">Tempo en BPM</label>
+          <input id="bpmInput" class="met__num" type="text" inputmode="numeric" value="100" maxlength="3" autocomplete="off">
+          <span class="met__unit">BPM <span id="unitNote"></span></span>
+          <span class="met__word" id="tempoWord">Moderato</span>
+        </div>
+        <button class="met__step" type="button" data-step="1" aria-label="Subir 1 BPM">+</button>
+      </div>
+      <input id="bpmSlider" class="met__slider" type="range" min="30" max="300" value="100" aria-label="Tempo">
+      <div class="met__quick" aria-label="Ajuste rápido">
+        <button class="btn small ghost" type="button" data-step="-10">−10</button>
+        <button class="btn small ghost" type="button" data-step="-5">−5</button>
+        <button class="btn small ghost" type="button" id="halfBtn">½</button>
+        <button class="btn small ghost" type="button" id="dblBtn">×2</button>
+        <button class="btn small ghost" type="button" data-step="5">+5</button>
+        <button class="btn small ghost" type="button" data-step="10">+10</button>
+      </div>
+
+      <ol class="beats" id="beats" aria-label="Pulsos del compás. Tocá un pulso para cambiar su acento."></ol>
+      <p class="hint met__beats-hint">Tocá un pulso para cambiar el acento: fuerte, normal o silencio.</p>
+
+      <div class="met__actions">
+        <button class="met__play" type="button" id="playBtn" aria-pressed="false">
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>
+          <svg class="i-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></svg>
+          <span id="playTxt">Arrancar</span>
+        </button>
+        <button class="met__tap" type="button" id="tapBtn">Tap<small id="tapInfo">tocá al ritmo</small></button>
+      </div>
+      <p class="hint met__keys">Teclado: <kbd>Espacio</kbd> arranca y frena · <kbd>←</kbd> <kbd>→</kbd> cambian de a 1 · <kbd>T</kbd> es tap.</p>
+    </div>
+
+    <div class="met__side">
+      <div class="panel">
+        <span class="field-label">Compás</span>
+        <div class="seg" id="meterSeg">
+          <button type="button" data-meter="2/4">2/4</button><button type="button" data-meter="3/4">3/4</button><button type="button" data-meter="4/4">4/4</button><button type="button" data-meter="5/4">5/4</button><button type="button" data-meter="6/8">6/8</button><button type="button" data-meter="7/8">7/8</button><button type="button" data-meter="12/8">12/8</button>
+        </div>
+        <span class="field-label">Subdivisión</span>
+        <div class="seg" id="subSeg">
+          <button type="button" data-sub="1" title="Solo el pulso">Pulso</button><button type="button" data-sub="2" title="Corcheas">2</button><button type="button" data-sub="3" title="Tresillos">3</button><button type="button" data-sub="4" title="Semicorcheas">4</button>
+        </div>
+        <span class="field-label">Sonido</span>
+        <div class="seg" id="soundSeg">
+          <button type="button" data-sound="click">Click</button><button type="button" data-sound="wood">Madera</button><button type="button" data-sound="beep">Bip</button><button type="button" data-sound="cow">Cencerro</button>
+        </div>
+        <label class="field-label" for="volSlider">Volumen</label>
+        <input id="volSlider" type="range" min="0" max="100" value="80">
+      </div>
+
+      <div class="panel">
+        <label class="trainer__toggle"><input type="checkbox" id="trainOn"> <span>Subir el tempo de a poco</span></label>
+        <p class="hint" style="margin-top:4px">Para practicar un pasaje difícil: arranca lento y sube solo.</p>
+        <div class="trainer" id="trainer">
+          <label>Sumar <input type="text" inputmode="numeric" id="trainStep" value="5" maxlength="2"> BPM</label>
+          <label>cada <input type="text" inputmode="numeric" id="trainBars" value="4" maxlength="2"> compases</label>
+          <label>hasta <input type="text" inputmode="numeric" id="trainMax" value="160" maxlength="3"> BPM</label>
+        </div>
+        <p class="hint" id="trainStatus"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="next" aria-labelledby="next-t">
+    <h2 class="next__title" id="next-t">Seguí con</h2>
+    <div class="next__grid">
+    <a class="next__card" href="../buscador-de-bpm/">
+      <span class="next__why">¿No sabés el tempo?</span>
+      <span class="next__name">Buscador de BPM</span>
+      <span class="next__desc">Buscá la canción y traé su tempo al metrónomo.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../armador-de-setlists/">
+      <span class="next__why">Ensayo listo</span>
+      <span class="next__name">Armador de setlists</span>
+      <span class="next__desc">Ordená el show con el BPM de cada tema.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../afinador/">
+      <span class="next__why">Antes de arrancar</span>
+      <span class="next__name">Afinador</span>
+      <span class="next__desc">Afiná con el micrófono del celular o la compu.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    </div>
+  </section>
+
+</main>
+<footer class="tf">
+  <div class="tf__band">
+    <div class="tf__cta">
+      <div>
+        <p class="tf__cta-title">¿Y cuando el tema esté listo?</p>
+        <p>Estas herramientas las usamos en Claraboya. Si querés grabar, producir, mezclar o masterizar, escribinos: te respondemos nosotros.</p>
+      </div>
+      <a class="btn big btn--wa" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Metr%C3%B3nomo%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener"><svg class="btn__icon" viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg>Escribinos por WhatsApp</a>
+    </div>
+  </div>
+  <div class="tf__bottom">
+    <img src="../../img/logo.webp" alt="" width="40" height="43" loading="lazy">
+    <p>Claraboya Estudio · Vicente López, Buenos Aires · <span class="ver">v{{VERSION}}</span></p>
+    <nav class="tf__links" aria-label="Enlaces">
+      <a href="../../">Inicio</a>
+      <a href="https://www.instagram.com/claraboya.estudio" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://linktr.ee/claraboyaestudio" target="_blank" rel="noopener">Linktree</a>
+      <a href="https://cafecito.app/claraboyaestudio" target="_blank" rel="noopener">Invitanos un cafecito</a>
+    </nav>
+  </div>
+</footer>
+<div class="wa-dock" id="waDock">
+  <div class="wa-dock__bubble" id="waBubble">
+    <a class="wa-dock__text" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Metr%C3%B3nomo%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener">¿Ya lo tocás a tempo? Grabémoslo.<span>Escribinos por WhatsApp</span></a>
+    <button class="wa-dock__close" type="button" id="waClose" aria-label="Ocultar este mensaje">×</button>
+  </div>
+  <a class="wa-dock__btn" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Metr%C3%B3nomo%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg></a>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.16 0 0 7.16 0 16c0 2.82.74 5.47 2.03 7.77L0 32l8.44-2.21A15.9 15.9 0 0 0 16 31.7c8.84 0 16-7.16 16-16S24.84 0 16 0zm0 29.02c-2.4 0-4.66-.65-6.6-1.78l-.47-.28-5.01 1.31 1.34-4.88-.31-.5A13 13 0 1 1 16 29.02zm7.13-9.74c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.62-.2-.88.2-.26.39-1.01 1.26-1.24 1.52-.23.26-.46.29-.85.1-.39-.2-1.65-.61-3.14-1.94-1.16-1.04-1.94-2.32-2.17-2.71-.23-.39-.02-.6.17-.79.18-.18.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.88-2.12-1.2-2.9-.32-.77-.64-.66-.88-.67l-.75-.01c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26 0 1.92 1.4 3.78 1.6 4.04.2.26 2.76 4.22 6.7 5.91.94.41 1.67.65 2.24.83.94.3 1.79.26 2.47.16.75-.11 2.3-.94 2.62-1.85.32-.91.32-1.69.23-1.85-.1-.16-.36-.26-.75-.46z"/></symbol>
+</svg>
+<script src="../assets/tools.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var KEY = 'cb.metronomo.v1';
+  var MIN = 30, MAX = 300;
+  var DEFAULT_ACC = {
+    '2/4': [2, 1], '3/4': [2, 1, 1], '4/4': [2, 1, 1, 1], '5/4': [2, 1, 1, 1, 1],
+    '6/8': [2, 1, 1, 2, 1, 1], '7/8': [2, 1, 2, 1, 2, 1, 1], '12/8': [2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1]
+  };
+  var S = { bpm: 100, meter: '4/4', sub: 1, sound: 'click', vol: 80, acc: {}, trainOn: false, trainStep: 5, trainBars: 4, trainMax: 160 };
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved) for (var k in saved) if (k in S) S[k] = saved[k]; } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function accents() {
+    var a = S.acc[S.meter];
+    var d = DEFAULT_ACC[S.meter] || DEFAULT_ACC['4/4'];
+    return (a && a.length === d.length) ? a : d.slice();
+  }
+  function clamp(n) { n = Math.round(+n); if (!isFinite(n)) return S.bpm; return Math.max(MIN, Math.min(MAX, n)); }
+
+  // ---------- parámetros de la URL (desde el buscador de BPM o el setlist) ----------
+  var q = new URLSearchParams(location.search);
+  if (q.get('bpm')) S.bpm = clamp(q.get('bpm'));
+  if (q.get('compas') && DEFAULT_ACC[q.get('compas')]) S.meter = q.get('compas');
+  if (q.get('tema')) {
+    $('fromText').textContent = 'Tempo de "' + q.get('tema') + '"' + (q.get('artista') ? ', de ' + q.get('artista') : '') + ': ' + S.bpm + ' BPM.';
+    $('fromNote').hidden = false;
+  }
+
+  // ---------- tempo ----------
+  var WORDS = [[40, 'Grave'], [60, 'Largo'], [66, 'Larghetto'], [76, 'Adagio'], [108, 'Andante'], [120, 'Moderato'], [156, 'Allegro'], [176, 'Vivace'], [200, 'Presto'], [999, 'Prestissimo']];
+  function word(b) { for (var i = 0; i < WORDS.length; i++) if (b < WORDS[i][0]) return WORDS[i][1]; return ''; }
+  function setBpm(b, fromInput) {
+    S.bpm = clamp(b);
+    if (!fromInput) $('bpmInput').value = S.bpm;
+    $('bpmSlider').value = S.bpm;
+    $('tempoWord').textContent = word(S.bpm);
+    save();
+  }
+  $('bpmInput').addEventListener('input', function () {
+    var v = parseInt(this.value.replace(/\D/g, ''), 10);
+    if (v >= MIN && v <= MAX) setBpm(v, true);
+  });
+  function commitInput() { setBpm(parseInt($('bpmInput').value.replace(/\D/g, ''), 10) || S.bpm); }
+  $('bpmInput').addEventListener('blur', commitInput);
+  $('bpmInput').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { commitInput(); this.blur(); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); setBpm(S.bpm + (e.shiftKey ? 10 : 1)); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); setBpm(S.bpm - (e.shiftKey ? 10 : 1)); }
+  });
+  $('bpmInput').addEventListener('focus', function () { this.select(); });
+  $('bpmSlider').addEventListener('input', function () { setBpm(this.value); });
+  document.querySelectorAll('[data-step]').forEach(function (b) {
+    b.addEventListener('click', function () { setBpm(S.bpm + parseInt(b.dataset.step, 10)); });
+  });
+  $('halfBtn').addEventListener('click', function () { setBpm(S.bpm / 2); });
+  $('dblBtn').addEventListener('click', function () { setBpm(S.bpm * 2); });
+
+  // ---------- compás y acentos ----------
+  function renderBeats() {
+    var a = accents(), ol = $('beats');
+    ol.innerHTML = '';
+    var compound = /\/8$/.test(S.meter);
+    a.forEach(function (lvl, i) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'beat' + (compound && i > 0 && lvl === 2 ? ' group' : '');
+      b.dataset.acc = lvl;
+      b.setAttribute('aria-label', 'Pulso ' + (i + 1) + ': ' + (lvl === 2 ? 'fuerte' : lvl === 1 ? 'normal' : 'silencio'));
+      b.addEventListener('click', function () {
+        var cur = accents(); cur[i] = cur[i] === 2 ? 1 : cur[i] === 1 ? 0 : 2;
+        S.acc[S.meter] = cur; save(); renderBeats();
+      });
+      li.appendChild(b); ol.appendChild(li);
+    });
+    $('unitNote').textContent = compound ? '(en corcheas)' : '';
+  }
+  function pressSeg(segId, attr, val) {
+    document.querySelectorAll('#' + segId + ' button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset[attr] === String(val))); });
+  }
+  document.querySelectorAll('#meterSeg button').forEach(function (b) {
+    b.addEventListener('click', function () { S.meter = b.dataset.meter; save(); pressSeg('meterSeg', 'meter', S.meter); renderBeats(); restartBar(); });
+  });
+  document.querySelectorAll('#subSeg button').forEach(function (b) {
+    b.addEventListener('click', function () { S.sub = +b.dataset.sub; save(); pressSeg('subSeg', 'sub', S.sub); restartBar(); });
+  });
+  document.querySelectorAll('#soundSeg button').forEach(function (b) {
+    b.addEventListener('click', function () { S.sound = b.dataset.sound; save(); pressSeg('soundSeg', 'sound', S.sound); if (!playing) preview(); });
+  });
+  $('volSlider').addEventListener('input', function () { S.vol = +this.value; save(); if (master) master.gain.value = vol(); });
+  function vol() { var v = S.vol / 100; return v * v; }
+
+  // ---------- entrenador de tempo ----------
+  function syncTrainer() {
+    $('trainOn').checked = S.trainOn;
+    $('trainStep').value = S.trainStep; $('trainBars').value = S.trainBars; $('trainMax').value = S.trainMax;
+    $('trainer').classList.toggle('off', !S.trainOn);
+    $('trainStatus').textContent = S.trainOn ? 'Va a subir ' + S.trainStep + ' BPM cada ' + S.trainBars + (S.trainBars == 1 ? ' compás' : ' compases') + ' hasta llegar a ' + S.trainMax + '.' : '';
+  }
+  $('trainOn').addEventListener('change', function () { S.trainOn = this.checked; save(); syncTrainer(); });
+  [['trainStep', 1, 50], ['trainBars', 1, 64], ['trainMax', MIN, MAX]].forEach(function (f) {
+    $(f[0]).addEventListener('change', function () {
+      var v = parseInt(this.value, 10); if (!isFinite(v)) v = S[f[0]];
+      S[f[0]] = Math.max(f[1], Math.min(f[2], v)); save(); syncTrainer();
+    });
+  });
+
+  // ---------- audio ----------
+  var ctx = null, master = null, playing = false, timer = null, nextTime = 0, tick = 0, bars = 0, queue = [];
+  function ensureCtx() {
+    if (!ctx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      ctx = new AC({ latencyHint: 'interactive' });
+      master = ctx.createGain(); master.gain.value = vol(); master.connect(ctx.destination);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+  }
+  function env(g, t, peak, dur) {
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + 0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  }
+  function tone(type, f, t, peak, dur, dest) {
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    env(g, t, peak, dur); o.connect(g); g.connect(dest || master);
+    o.start(t); o.stop(t + dur + 0.02);
+    return o;
+  }
+  // nivel: 2 fuerte, 1 normal, 0.5 subdivisión
+  function voice(level, t) {
+    var hi = level === 2, sub = level < 1, p = sub ? 0.32 : hi ? 1 : 0.75;
+    switch (S.sound) {
+      case 'wood':
+        var f = hi ? 1250 : sub ? 760 : 980;
+        var o = tone('sine', f, t, p, 0.07); o.frequency.exponentialRampToValueAtTime(f * 0.86, t + 0.06);
+        tone('sine', f * 2.7, t, p * 0.25, 0.03);
+        break;
+      case 'beep':
+        tone('sine', hi ? 1320 : sub ? 660 : 880, t, p * 0.8, 0.09);
+        break;
+      case 'cow':
+        var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = hi ? 900 : 700; bp.Q.value = 2.5; bp.connect(master);
+        var sc = sub ? 0.5 : hi ? 1.15 : 1;
+        tone('square', 540 * sc, t, p * 0.5, 0.22, bp); tone('square', 800 * sc, t, p * 0.5, 0.22, bp);
+        break;
+      default: // click
+        tone('square', hi ? 2000 : sub ? 1100 : 1500, t, p * 0.55, 0.025);
+        tone('triangle', hi ? 4000 : 3000, t, p * 0.2, 0.012);
+    }
+  }
+  function preview() { ensureCtx(); voice(2, ctx.currentTime + 0.03); }
+
+  function schedule() {
+    var a = accents(), perBar = a.length * S.sub;
+    while (nextTime < ctx.currentTime + 0.12) {
+      var beat = Math.floor(tick / S.sub), sub = tick % S.sub;
+      if (tick === 0 && bars > 0 && S.trainOn && bars % S.trainBars === 0 && S.bpm < S.trainMax) {
+        setBpm(Math.min(S.trainMax, S.bpm + S.trainStep));
+      }
+      var lvl = sub === 0 ? a[beat] : (a[beat] === 0 ? 0 : 0.5);
+      if (lvl > 0) voice(lvl, nextTime);
+      if (sub === 0) queue.push({ t: nextTime, beat: beat });
+      nextTime += 60 / S.bpm / S.sub;
+      tick++;
+      if (tick >= perBar) { tick = 0; bars++; }
+    }
+  }
+  function restartBar() {
+    tick = 0;
+    if (playing) { queue = []; nextTime = ctx.currentTime + 0.06; }
+  }
+  var lit = null;
+  function draw() {
+    if (!playing) return;
+    var now = ctx.currentTime;
+    while (queue.length && queue[0].t <= now) {
+      var ev = queue.shift(), els = document.querySelectorAll('#beats .beat');
+      if (lit) lit.classList.remove('on');
+      lit = els[ev.beat] || null;
+      if (lit) lit.classList.add('on');
+      clearTimeout(draw.off);
+      draw.off = setTimeout(function () { if (lit) lit.classList.remove('on'); }, Math.min(140, 60000 / S.bpm * 0.6));
+    }
+    requestAnimationFrame(draw);
+  }
+
+  var wake = null;
+  function keepAwake() {
+    if (!('wakeLock' in navigator) || !playing) return;
+    navigator.wakeLock.request('screen').then(function (w) { wake = w; }).catch(function () {});
+  }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && playing) keepAwake(); });
+
+  function start() {
+    ensureCtx();
+    playing = true; tick = 0; bars = 0; queue = [];
+    nextTime = ctx.currentTime + 0.08;
+    schedule();
+    timer = setInterval(schedule, 25);
+    requestAnimationFrame(draw);
+    $('playBtn').setAttribute('aria-pressed', 'true'); $('playTxt').textContent = 'Frenar';
+    keepAwake();
+  }
+  function stop() {
+    playing = false; clearInterval(timer); queue = [];
+    if (lit) lit.classList.remove('on');
+    $('playBtn').setAttribute('aria-pressed', 'false'); $('playTxt').textContent = 'Arrancar';
+    if (wake) { wake.release().catch(function () {}); wake = null; }
+  }
+  function toggle() { playing ? stop() : start(); }
+  $('playBtn').addEventListener('click', toggle);
+
+  // ---------- tap tempo ----------
+  var taps = [];
+  function tap() {
+    var now = performance.now();
+    if (taps.length && now - taps[taps.length - 1] > 2000) taps = [];
+    taps.push(now); if (taps.length > 8) taps.shift();
+    if (taps.length < 3) { $('tapInfo').textContent = 'seguí tocando'; return; }
+    var avg = (taps[taps.length - 1] - taps[0]) / (taps.length - 1);
+    setBpm(60000 / avg);
+    $('tapInfo').textContent = taps.length + ' toques';
+  }
+  $('tapBtn').addEventListener('pointerdown', function (e) { e.preventDefault(); tap(); });
+  $('tapBtn').addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(); } });
+
+  // ---------- teclado ----------
+  document.addEventListener('keydown', function (e) {
+    var tg = e.target, typing = tg && (tg.tagName === 'INPUT' && tg.type !== 'range' && tg.type !== 'checkbox' || tg.tagName === 'TEXTAREA' || tg.tagName === 'SELECT');
+    if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.code === 'Space' && !(tg && tg.tagName === 'BUTTON')) { e.preventDefault(); toggle(); }
+    else if (e.key === 'ArrowRight' && tg.type !== 'range') { e.preventDefault(); setBpm(S.bpm + (e.shiftKey ? 10 : 1)); }
+    else if (e.key === 'ArrowLeft' && tg.type !== 'range') { e.preventDefault(); setBpm(S.bpm - (e.shiftKey ? 10 : 1)); }
+    else if (e.key === 't' || e.key === 'T') { tap(); }
+  });
+
+  // ---------- arranque ----------
+  setBpm(S.bpm);
+  pressSeg('meterSeg', 'meter', S.meter); pressSeg('subSeg', 'sub', S.sub); pressSeg('soundSeg', 'sound', S.sound);
+  $('volSlider').value = S.vol;
+  renderBeats(); syncTrainer();
+  window.__metronomo = { S: S, start: start, stop: stop }; // para pruebas
+})();
+
+</script>
+</body>
+</html>

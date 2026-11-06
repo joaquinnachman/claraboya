@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hoja de ruta · Herramientas de producción | Claraboya Estudio</title>
+<meta name="description" content="Hoja de ruta de producción musical: seguí cada tema entre producción, grabación, mezcla y máster, con responsables, fechas y avisos de proyectos frenados. Gratis, de Claraboya Estudio.">
+<link rel="canonical" href="https://claraboyaestudio.netlify.app/herramientas/hoja-de-ruta/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1F2426">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Claraboya Estudio">
+<meta property="og:title" content="Hoja de ruta · Herramientas de producción | Claraboya Estudio">
+<meta property="og:description" content="Hoja de ruta de producción musical: seguí cada tema entre producción, grabación, mezcla y máster, con responsables, fechas y avisos de proyectos frenados. Gratis, de Claraboya Estudio.">
+<meta property="og:url" content="https://claraboyaestudio.netlify.app/herramientas/hoja-de-ruta/">
+<meta property="og:image" content="https://claraboyaestudio.netlify.app/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/icon-32.png">
+<link rel="apple-touch-icon" href="../../img/app-180.png">
+<link rel="preload" href="../../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../herramientas/assets/tools.css">
+
+<style>
+  .grid-2{ display:grid; grid-template-columns: 1fr 1.15fr; gap:16px; align-items:start; }
+  @media (max-width: 900px){ .grid-2{ grid-template-columns: 1fr; } }
+
+  .btn.ghost.active{ background:var(--ink-4); box-shadow:none; }
+  .btn.confirm-delete{ background:var(--brick); color:#fff; box-shadow:none; }
+  .view-toggle{ display:flex; gap:6px; }
+
+  /* formularios */
+  .add-form{ display:grid; gap:8px; margin-bottom:12px; }
+  .add-form.cols-3{ grid-template-columns: 1.2fr 1fr auto; }
+  .add-form.cols-2{ grid-template-columns: 1fr auto; }
+  @media (max-width: 600px){ .add-form.cols-3{ grid-template-columns: 1fr 1fr; } .add-form.cols-3 .btn{ grid-column: 1 / -1; } }
+
+  /* proyectos */
+  .project-row{ display:flex; align-items:center; gap:10px; background:var(--ink-3); border-radius:3px; padding:11px 12px; margin-bottom:6px; cursor:pointer; box-shadow: inset 0 0 0 1.5px transparent; }
+  .project-row:hover{ background:var(--ink-4); }
+  .project-row.selected{ box-shadow: inset 3px 0 0 var(--rosa), inset 0 0 0 1px rgba(217,120,122,0.4); }
+  .project-main{ flex:1; min-width:0; }
+  .project-name{ font-weight:700; font-size:14px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .project-client{ font-size:12px; color:var(--text-faint); margin-top:2px; }
+  .archived-tag, .seed-tag{ font-family:var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:0.04em; border-radius:3px; padding:2px 5px; }
+  .archived-tag{ color:var(--text-faint); background:rgba(242,242,242,0.08); }
+  .seed-tag{ color:var(--gold); background:rgba(224,184,92,0.14); }
+  .project-meta{ display:flex; align-items:center; gap:8px; flex:none; }
+  .song-count{ font-family:var(--font-mono); font-size:11px; color:var(--text-dim); white-space:nowrap; }
+  .mini-bar{ width:64px; height:6px; background:rgba(242,242,242,0.08); border-radius:99px; overflow:hidden; flex:none; }
+  .mini-bar-fill{ height:100%; background:var(--teal); border-radius:99px; }
+  .pct-label{ font-family:var(--font-mono); font-size:11px; color:var(--text-dim); width:32px; text-align:right; flex:none; }
+
+  /* accesos a otras herramientas para el proyecto elegido */
+  .project-links{ display:flex; flex-wrap:wrap; gap:8px; margin:-4px 0 14px; }
+  .project-links[hidden]{ display:none; }
+  .project-links a{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; text-decoration:none; padding:7px 12px; border-radius:99px; border:1px solid var(--line); color:var(--soft); }
+  .project-links a:hover{ border-color:var(--rosa); color:var(--paper); }
+
+  /* temas */
+  .song-row{ background:var(--ink-3); border-radius:3px; padding:12px 13px; margin-bottom:8px; }
+  .song-row-main{ display:flex; align-items:flex-start; gap:12px; }
+  .song-title-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:9px; cursor:pointer; }
+  .song-title{ font-weight:700; font-size:14px; }
+  .urgent-tag{ font-family:var(--font-mono); font-size:9.5px; font-weight:700; color:var(--brick); background:rgba(236,106,97,0.14); border-radius:3px; padding:2px 6px; letter-spacing:0.03em; }
+  .stage-row{ display:flex; gap:6px; flex-wrap:wrap; }
+  .stage-pill{ font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:0.03em; border:0; border-radius:3px; padding:7px 10px; cursor:pointer; background:var(--ink-4); color:var(--text-faint); transition:background .12s,color .12s; }
+  .stage-pill[data-state="proceso"]{ background:rgba(224,184,92,0.18); color:var(--gold); }
+  .stage-pill[data-state="hecho"]{ background:rgba(124,196,176,0.18); color:var(--teal); }
+  .stage-legend{ display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--text-faint); margin:0 0 12px; }
+  .stage-legend i{ display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:5px; vertical-align:-1px; }
+  .song-side{ display:flex; flex-direction:column; gap:6px; flex:none; width:150px; }
+  .song-side select, .song-side input{ font-size:12px; background:var(--ink-4); padding:7px 8px; width:100%; }
+  .song-side-icons{ display:flex; gap:2px; justify-content:flex-end; }
+  .icon-btn.urgent-btn.active{ color:var(--gold); }
+  .song-rec-link{ display:inline-block; margin-top:9px; font-size:12px; font-weight:600; color:var(--rosa); text-underline-offset:3px; }
+  .song-detail{ display:none; margin-top:10px; padding-top:10px; border-top:1px solid var(--line); }
+  .song-detail.open{ display:block; }
+  .song-detail textarea{ min-height:64px; font-size:13px; background:var(--ink-4); }
+  .song-detail-hint{ font-size:11px; color:var(--text-faint); margin-top:4px; }
+
+  /* vista general */
+  .overview-stats{ display:flex; gap:10px 22px; flex-wrap:wrap; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+  .overview-stat{ font-size:13px; color:var(--text-dim); }
+  .overview-stat b{ color:var(--paper); font: 400 1.6rem/1 var(--display); margin-right:4px; vertical-align:-2px; }
+  .overview-row{ display:flex; align-items:center; gap:12px; padding:10px 2px; border-bottom:1px solid var(--line); cursor:pointer; }
+  .overview-row:hover .project-name{ color:var(--paper); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--rosa); }
+  .overview-row:last-child{ border-bottom:none; }
+  .overview-row .project-name{ flex:1; min-width:0; font-weight:600; font-size:13.5px; color:var(--soft); }
+  .overview-row .mini-bar{ width:140px; }
+  .stalled-chip{ font-family:var(--font-mono); font-size:10.5px; color:var(--brick); background:rgba(236,106,97,0.12); padding:3px 8px; border-radius:99px; white-space:nowrap; }
+
+  @media (max-width: 620px){
+    .song-row-main{ flex-direction:column; }
+    .song-side{ width:100%; flex-direction:row; flex-wrap:wrap; }
+    .song-side select, .song-side input{ width:auto; flex:1; min-width:100px; }
+    .overview-row .mini-bar{ width:70px; }
+    .stalled-chip{ display:none; }
+  }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Hoja de ruta — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/hoja-de-ruta/", "description": "Hoja de ruta de producción musical: seguí cada tema entre producción, grabación, mezcla y máster, con responsables, fechas y avisos de proyectos frenados. Gratis, de Claraboya Estudio.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "publisher": {"@id": "https://claraboyaestudio.netlify.app/#estudio", "@type": "LocalBusiness", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
+<link rel="manifest" href="../../manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../../herramientas/assets/pwa.js" defer></script>
+</head>
+<body class="tool" data-tool="hoja-de-ruta">
+<a class="skip" href="#app">Ir a la herramienta</a>
+<header class="tn">
+  <div class="tn__bar">
+    <a class="tn__logo" href="../../" aria-label="Claraboya Estudio, ir al inicio"><img src="../../img/logo.webp" alt="" width="120" height="128"></a>
+    <a class="tn__hub" href="../">Herramientas <span>de producción</span></a>
+    <a class="tn__studio" href="../../#servicios">El estudio</a>
+  </div>
+  <nav class="tn__tools" aria-label="Cambiar de herramienta">
+    <a href="../matriz-de-acordes/"><b>01</b>Matriz de acordes</a>
+    <a href="../brujula-armonica/"><b>02</b>Brújula armónica</a>
+    <a href="../hoja-de-ruta/" aria-current="page"><b>03</b>Hoja de ruta</a>
+    <a href="../rider-tecnico/"><b>04</b>Rider técnico</a>
+    <a href="../armador-de-setlists/"><b>05</b>Armador de setlists</a>
+    <a href="../calentamiento-vocal/"><b>06</b>Calentamiento vocal</a>
+    <a href="../afinador/"><b>07</b>Afinador</a>
+    <a href="../metronomo/"><b>08</b>Metrónomo</a>
+    <a href="../buscador-de-bpm/"><b>09</b>Buscador de BPM</a>
+  </nav>
+</header>
+<main class="app app--hoja-de-ruta" id="app">
+  <header class="tool-head">
+    <div>
+      <p class="tool-head__kicker"><b>03</b> · Producir</p>
+      <h1>Hoja de ruta</h1>
+      <p class="tool-head__sub">El estado de cada tema entre producción, grabación, mezcla y máster, para no perder el hilo cuando llevás varios proyectos a la vez.</p>
+    </div>
+    <div class="tool-head__aside"><span class="status-pill" id="statusPill">cargando…</span></div>
+  </header>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Vista general</h2>
+      <button class="btn small ghost" id="clearSeedBtn" hidden>Borrar ejemplos</button>
+    </div>
+    <div class="overview-stats" id="overviewStats"></div>
+    <div id="overviewList"></div>
+  </section>
+
+  <div class="grid-2">
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Proyectos</h2>
+        <div class="view-toggle" role="group" aria-label="Ver proyectos">
+          <button class="btn small ghost active" id="viewActiveBtn" aria-pressed="true">Activos</button>
+          <button class="btn small ghost" id="viewArchivedBtn" aria-pressed="false">Archivados</button>
+        </div>
+      </div>
+      <div class="add-form cols-3">
+        <input type="text" id="newProjectName" placeholder="Nombre del proyecto / banda" aria-label="Nombre del proyecto">
+        <input type="text" id="newProjectClient" placeholder="Cliente (opcional)" aria-label="Cliente">
+        <button class="btn primary" id="addProjectBtn">+ Nuevo</button>
+      </div>
+      <div id="projectList"></div>
+    </section>
+
+    <section class="panel">
+      <h2 id="songsPanelTitle">Temas</h2>
+      <div class="project-links" id="projectLinks" hidden></div>
+      <div class="add-form cols-2">
+        <input type="text" id="newSongTitle" placeholder="Título del tema" aria-label="Título del tema" disabled>
+        <button class="btn primary" id="addSongBtn" disabled>+ Agregar</button>
+      </div>
+      <p class="hint" id="songsHint">Elegí o creá un proyecto para empezar a cargar temas.</p>
+      <div id="songList"></div>
+      <datalist id="responsableList"></datalist>
+    </section>
+
+  </div>
+
+  <section class="next" aria-labelledby="next-t">
+    <h2 class="next__title" id="next-t">Seguí con</h2>
+    <div class="next__grid">
+    <a class="next__card" href="../rider-tecnico/" data-next="rider" data-next-slug="rider-tecnico">
+      <span class="next__why">¿El proyecto sale a tocar?</span>
+      <span class="next__name">Rider técnico</span>
+      <span class="next__desc">Armá su rider con stage plot e input list en PDF.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../calentamiento-vocal/?foco=estudio&amp;min=10&amp;volver=hoja-de-ruta">
+      <span class="next__why">¿Hoy se graban voces?</span>
+      <span class="next__name">Calentamiento vocal</span>
+      <span class="next__desc">Rutina de 10 minutos pensada para antes de grabar. Al terminar volvés acá.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../brujula-armonica/">
+      <span class="next__why">¿Falta cerrar un arreglo?</span>
+      <span class="next__name">Brújula armónica</span>
+      <span class="next__desc">Progresiones por clima para destrabar una parte.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    </div>
+  </section>
+</main>
+<footer class="tf">
+  <div class="tf__band">
+    <div class="tf__cta">
+      <div>
+        <p class="tf__cta-title">¿Y cuando el tema esté listo?</p>
+        <p>Estas herramientas las usamos en Claraboya. Si querés grabar, producir, mezclar o masterizar, escribinos: te respondemos nosotros.</p>
+      </div>
+      <a class="btn big btn--wa" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20de%20la%20Hoja%20de%20ruta%20de%20Claraboya.%20Tengo%20temas%20en%20proceso%20y%20quer%C3%ADa%20consultar%20por%20grabaci%C3%B3n%2C%20mezcla%20o%20master." target="_blank" rel="noopener"><svg class="btn__icon" viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg>Escribinos por WhatsApp</a>
+    </div>
+  </div>
+  <div class="tf__data">
+    <span data-cb-storage-note>Lo que cargás se guarda <strong>solo en este navegador</strong>. Para pasarlo a otro dispositivo, descargá una copia y restaurala allá.</span>
+    <div class="tf__data-actions">
+      <button class="btn small ghost" type="button" data-cb-export>Descargar copia</button>
+      <button class="btn small ghost" type="button" data-cb-import>Restaurar copia</button>
+    </div>
+  </div>
+  <div class="tf__bottom">
+    <img src="../../img/logo.webp" alt="" width="40" height="43" loading="lazy">
+    <p>Claraboya Estudio · Vicente López, Buenos Aires · <span class="ver">v{{VERSION}}</span></p>
+    <nav class="tf__links" aria-label="Enlaces">
+      <a href="../../">Inicio</a>
+      <a href="https://www.instagram.com/claraboya.estudio" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://linktr.ee/claraboyaestudio" target="_blank" rel="noopener">Linktree</a>
+      <a href="https://cafecito.app/claraboyaestudio" target="_blank" rel="noopener">Invitanos un cafecito</a>
+    </nav>
+  </div>
+</footer>
+<div class="wa-dock" id="waDock">
+  <div class="wa-dock__bubble" id="waBubble">
+    <a class="wa-dock__text" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20de%20la%20Hoja%20de%20ruta%20de%20Claraboya.%20Tengo%20temas%20en%20proceso%20y%20quer%C3%ADa%20consultar%20por%20grabaci%C3%B3n%2C%20mezcla%20o%20master." target="_blank" rel="noopener">¿Te queda grabar, mezclar o masterizar? Esa parte la hacemos nosotros.<span>Escribinos por WhatsApp</span></a>
+    <button class="wa-dock__close" type="button" id="waClose" aria-label="Ocultar este mensaje">×</button>
+  </div>
+  <a class="wa-dock__btn" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20de%20la%20Hoja%20de%20ruta%20de%20Claraboya.%20Tengo%20temas%20en%20proceso%20y%20quer%C3%ADa%20consultar%20por%20grabaci%C3%B3n%2C%20mezcla%20o%20master." target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg></a>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.16 0 0 7.16 0 16c0 2.82.74 5.47 2.03 7.77L0 32l8.44-2.21A15.9 15.9 0 0 0 16 31.7c8.84 0 16-7.16 16-16S24.84 0 16 0zm0 29.02c-2.4 0-4.66-.65-6.6-1.78l-.47-.28-5.01 1.31 1.34-4.88-.31-.5A13 13 0 1 1 16 29.02zm7.13-9.74c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.62-.2-.88.2-.26.39-1.01 1.26-1.24 1.52-.23.26-.46.29-.85.1-.39-.2-1.65-.61-3.14-1.94-1.16-1.04-1.94-2.32-2.17-2.71-.23-.39-.02-.6.17-.79.18-.18.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.88-2.12-1.2-2.9-.32-.77-.64-.66-.88-.67l-.75-.01c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26 0 1.92 1.4 3.78 1.6 4.04.2.26 2.76 4.22 6.7 5.91.94.41 1.67.65 2.24.83.94.3 1.79.26 2.47.16.75-.11 2.3-.94 2.62-1.85.32-.91.32-1.69.23-1.85-.1-.16-.36-.26-.75-.46z"/></symbol>
+</svg>
+<script src="../assets/tools.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var STAGES = [
+    { key:'produccion', label:'PROD', full:'Producción' },
+    { key:'grabacion', label:'GRAB', full:'Grabación' },
+    { key:'mezcla', label:'MEZ', full:'Mezcla' },
+    { key:'master', label:'MAST', full:'Máster' }
+  ];
+  var STATE_CYCLE = ['pendiente','proceso','hecho'];
+  var STALL_DAYS = 14;
+  var DAY_MS = 86400000;
+
+  function emptyStages(){ return { produccion:'pendiente', grabacion:'pendiente', mezcla:'pendiente', master:'pendiente' }; }
+
+  var now = Date.now();
+  var SEED_PROJECTS = [
+    { id:'proj-deriva', name:'Disco — La Deriva', client:'Banda', archived:false },
+    { id:'proj-trio', name:'EP — Trío Atlántico', client:'Cliente externo', archived:false },
+    { id:'proj-valentina', name:'Single — Valentina Ríos', client:'Cliente externo', archived:false },
+    { id:'proj-mirador', name:'Jingle — Café Mirador', client:'Publicidad', archived:true }
+  ];
+  var SEED_SONGS = [
+    { id:'song-deriva-1', projectId:'proj-deriva', title:'Luces Bajas', stages:{produccion:'hecho',grabacion:'hecho',mezcla:'proceso',master:'pendiente'}, responsable:'Productor', urgent:true, dueDate:'10/10', notes:'Falta afinar el bajo del estribillo antes de cerrar la mezcla.', updatedAt: now - 2*DAY_MS },
+    { id:'song-deriva-2', projectId:'proj-deriva', title:'Marea', stages:{produccion:'hecho',grabacion:'hecho',mezcla:'hecho',master:'hecho'}, responsable:'Productor', urgent:false, dueDate:'', notes:'', updatedAt: now - 20*DAY_MS },
+    { id:'song-deriva-3', projectId:'proj-deriva', title:'Ciudad Vacía', stages:{produccion:'hecho',grabacion:'proceso',mezcla:'pendiente',master:'pendiente'}, responsable:'La banda', urgent:false, dueDate:'', notes:'Falta agendar la grabación de voces.', updatedAt: now - 5*DAY_MS },
+    { id:'song-trio-1', projectId:'proj-trio', title:'Horizonte', stages:{produccion:'hecho',grabacion:'proceso',mezcla:'pendiente',master:'pendiente'}, responsable:'Ingeniero', urgent:false, dueDate:'22/10', notes:'', updatedAt: now - 1*DAY_MS },
+    { id:'song-trio-2', projectId:'proj-trio', title:'Sábado', stages:{produccion:'proceso',grabacion:'pendiente',mezcla:'pendiente',master:'pendiente'}, responsable:'Ingeniero', urgent:false, dueDate:'', notes:'', updatedAt: now - 1*DAY_MS },
+    { id:'song-trio-3', projectId:'proj-trio', title:'Río Abajo', stages:{produccion:'pendiente',grabacion:'pendiente',mezcla:'pendiente',master:'pendiente'}, responsable:'', urgent:false, dueDate:'', notes:'Todavía sin fecha de grabación: coordinar con la banda.', updatedAt: now - 30*DAY_MS },
+    { id:'song-valentina-1', projectId:'proj-valentina', title:'No Vuelvas', stages:{produccion:'hecho',grabacion:'hecho',mezcla:'hecho',master:'proceso'}, responsable:'Productor', urgent:true, dueDate:'05/10', notes:'La artista pidió una referencia de máster tipo pop actual: mandarle dos opciones.', updatedAt: now - 3*DAY_MS },
+    { id:'song-mirador-1', projectId:'proj-mirador', title:'Jingle 15 seg', stages:{produccion:'hecho',grabacion:'hecho',mezcla:'hecho',master:'hecho'}, responsable:'Productor', urgent:false, dueDate:'', notes:'Entregado y facturado.', updatedAt: now - 60*DAY_MS }
+  ];
+
+  var state = {
+    projects: [],
+    songs: [],
+    selectedProjectId: null,
+    viewArchived: false,
+    confirmDeleteProject: null,
+    openNotesId: null,
+    db: null
+  };
+
+  function escapeHtml(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+  function projectById(id){ return state.projects.find(function(p){ return p.id === id; }); }
+  function songsForProject(id){ return state.songs.filter(function(s){ return s.projectId === id; }); }
+
+  function projectPct(projectId){
+    var songs = songsForProject(projectId);
+    if (!songs.length) return 0;
+    var done = 0, total = songs.length * STAGES.length;
+    songs.forEach(function(s){ STAGES.forEach(function(st){ if ((s.stages||{})[st.key] === 'hecho') done++; }); });
+    return Math.round(done / total * 100);
+  }
+
+  function projectLastActivity(projectId){
+    var songs = songsForProject(projectId);
+    var proj = projectById(projectId);
+    var last = proj ? (proj.createdAt || 0) : 0;
+    songs.forEach(function(s){ if ((s.updatedAt||0) > last) last = s.updatedAt; });
+    return last;
+  }
+
+  /* ---------- db wiring ---------- */
+  var projectsCol = null, songsCol = null;
+  var seedAttempted = false;
+
+  function setStatus(text, ok){
+    var pill = document.getElementById('statusPill');
+    pill.textContent = text;
+    pill.className = 'status-pill ' + (ok===true ? 'ok' : ok===false ? 'off' : '');
+  }
+
+  function localSeed(){
+    state.projects = SEED_PROJECTS.map(function(p){ return Object.assign({}, p, { createdAt: now, seed:true }); });
+    state.songs = SEED_SONGS.map(function(s){ return Object.assign({}, s, { createdAt: now, seed:true }); });
+    state.selectedProjectId = 'proj-deriva';
+    renderAll();
+  }
+
+  function trySeed(projectsEmpty){
+    if (seedAttempted) return;
+    seedAttempted = true;
+    if (!projectsEmpty || CB.flag('seeded')) return;
+    CB.flag('seeded', true);
+    SEED_PROJECTS.forEach(function(p, i){
+      projectsCol.doc(p.id).set({ name:p.name, client:p.client, archived:p.archived, seed:true, createdAt: Date.now()+i });
+    });
+    SEED_SONGS.forEach(function(s, i){
+      songsCol.doc(s.id).set({
+        projectId:s.projectId, title:s.title, stages:s.stages, responsable:s.responsable,
+        urgent:s.urgent, dueDate:s.dueDate, notes:s.notes, seed:true,
+        createdAt: Date.now()+i, updatedAt: s.updatedAt
+      });
+    });
+  }
+
+  function initDb(){
+    CB.db().then(function(db){
+      if (!db){ setStatus('sin guardado', false); localSeed(); return; }
+      state.db = db;
+      projectsCol = db.collection('projects');
+      songsCol = db.collection('songs');
+      setStatus(CB.storageLabel, CB.persistent);
+
+      projectsCol.orderBy('createdAt','asc').onSnapshot(function(snap){
+        trySeed(snap.empty);
+        state.projects = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+        if (!state.selectedProjectId || !projectById(state.selectedProjectId)){
+          var firstActive = state.projects.filter(function(p){ return !p.archived; })[0];
+          state.selectedProjectId = firstActive ? firstActive.id : (state.projects[0] ? state.projects[0].id : null);
+        }
+        renderAll();
+      }, function(){ setStatus('sin guardado', false); });
+
+      songsCol.orderBy('createdAt','asc').onSnapshot(function(snap){
+        state.songs = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+        renderAll();
+      }, function(){});
+    }).catch(function(){ setStatus('sin guardado', false); localSeed(); });
+  }
+
+  /* ---------- mutations ---------- */
+  function addProject(){
+    var name = document.getElementById('newProjectName').value.trim();
+    if (!name) return;
+    var client = document.getElementById('newProjectClient').value.trim();
+    var data = { name:name, client:client, archived:false, createdAt: Date.now() };
+    if (projectsCol){ projectsCol.add(data); }
+    else { data.id = 'local-proj-'+Date.now(); state.projects.push(data); state.selectedProjectId = data.id; renderAll(); }
+    document.getElementById('newProjectName').value = '';
+    document.getElementById('newProjectClient').value = '';
+  }
+
+  function toggleArchiveProject(p){
+    var patch = { archived: !p.archived };
+    if (projectsCol) projectsCol.doc(p.id).update(patch);
+    else { Object.assign(p, patch); renderAll(); }
+  }
+
+  function deleteProject(id){
+    songsForProject(id).forEach(function(s){
+      if (songsCol) songsCol.doc(s.id).delete();
+    });
+    if (projectsCol) projectsCol.doc(id).delete();
+    if (!songsCol) state.songs = state.songs.filter(function(s){ return s.projectId !== id; });
+    if (!projectsCol) state.projects = state.projects.filter(function(p){ return p.id !== id; });
+    if (state.selectedProjectId === id) state.selectedProjectId = null;
+    if (!projectsCol) renderAll();
+  }
+
+  function addSongData(data){
+    data.createdAt = Date.now();
+    data.updatedAt = Date.now();
+    if (songsCol){ songsCol.add(data); }
+    else { data.id = 'local-song-'+Date.now()+Math.random().toString(36).slice(2,7); state.songs.push(data); renderAll(); }
+  }
+
+  function updateSong(id, patch){
+    patch.updatedAt = Date.now();
+    var song = state.songs.find(function(s){ return s.id === id; });
+    if (song) Object.assign(song, patch);
+    if (songsCol) songsCol.doc(id).update(patch);
+    else renderAll();
+  }
+
+  function deleteSong(id){
+    if (songsCol) songsCol.doc(id).delete();
+    else { state.songs = state.songs.filter(function(s){ return s.id !== id; }); renderAll(); }
+  }
+
+  function cycleStage(song, stageKey){
+    var current = (song.stages || emptyStages())[stageKey] || 'pendiente';
+    var idx = STATE_CYCLE.indexOf(current);
+    var next = STATE_CYCLE[(idx+1) % STATE_CYCLE.length];
+    var newStages = Object.assign({}, song.stages || emptyStages());
+    newStages[stageKey] = next;
+    updateSong(song.id, { stages: newStages });
+  }
+
+  /* ---------- rendering ---------- */
+  function renderAll(){
+    var hasSeed = state.projects.some(function(p){ return p.seed; }) || state.songs.some(function(s){ return s.seed; });
+    document.getElementById('clearSeedBtn').hidden = !hasSeed;
+    renderOverview(); renderProjectList(); renderSongList();
+  }
+
+  function clearSeeds(){
+    state.songs.filter(function(s){ return s.seed; }).forEach(function(s){ if (songsCol) songsCol.doc(s.id).delete(); });
+    state.projects.filter(function(p){ return p.seed; }).forEach(function(p){ if (projectsCol) projectsCol.doc(p.id).delete(); });
+    state.selectedProjectId = null;
+    CB.toast('Listo: quedó vacía para cargar tus proyectos.');
+  }
+
+  function renderOverview(){
+    var active = state.projects.filter(function(p){ return !p.archived; });
+    var totalSongs = 0, totalDone = 0;
+    var stageProgress = { produccion:0, grabacion:0, mezcla:0, master:0 };
+
+    active.forEach(function(p){
+      songsForProject(p.id).forEach(function(s){
+        totalSongs++;
+        var stages = s.stages || emptyStages();
+        var allDone = STAGES.every(function(st){ return stages[st.key] === 'hecho'; });
+        if (allDone) totalDone++;
+        STAGES.forEach(function(st){ if (stages[st.key] === 'proceso') stageProgress[st.key]++; });
+      });
+    });
+
+    document.getElementById('overviewStats').innerHTML =
+      '<span class="overview-stat"><b>'+totalSongs+'</b> temas activos</span>' +
+      '<span class="overview-stat"><b>'+totalDone+'</b> terminados</span>' +
+      '<span class="overview-stat"><b>'+stageProgress.grabacion+'</b> en grabación</span>' +
+      '<span class="overview-stat"><b>'+stageProgress.mezcla+'</b> en mezcla</span>' +
+      '<span class="overview-stat"><b>'+stageProgress.master+'</b> en máster</span>';
+
+    var list = document.getElementById('overviewList');
+    if (!active.length){ list.innerHTML = '<div class="empty-note">Todavía no hay proyectos activos.</div>'; return; }
+
+    list.innerHTML = '';
+    active.forEach(function(p){
+      var pct = projectPct(p.id);
+      var songCount = songsForProject(p.id).length;
+      var daysSince = Math.floor((Date.now() - projectLastActivity(p.id)) / DAY_MS);
+      var stalled = songCount > 0 && pct < 100 && daysSince >= STALL_DAYS;
+      var row = document.createElement('div');
+      row.className = 'overview-row';
+      row.innerHTML =
+        '<span class="project-name">'+escapeHtml(p.name)+'</span>' +
+        '<div class="mini-bar"><div class="mini-bar-fill" style="width:'+pct+'%"></div></div>' +
+        '<span class="pct-label">'+pct+'%</span>' +
+        (stalled ? '<span class="stalled-chip">⏸ sin novedades hace '+daysSince+' días</span>' : '');
+      row.title = 'Ver los temas de ' + p.name;
+      row.addEventListener('click', function(){
+        state.selectedProjectId = p.id; renderProjectList(); renderSongList();
+        var target = document.getElementById('songsPanelTitle');
+        if (window.innerWidth < 900) target.scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function renderProjectList(){
+    var list = document.getElementById('projectList');
+    list.innerHTML = '';
+    var visible = state.projects.filter(function(p){ return !!p.archived === state.viewArchived; });
+
+    if (!visible.length){
+      list.innerHTML = '<div class="empty-note">'+(state.viewArchived ? 'No hay proyectos archivados.' : 'Todavía no armaste ningún proyecto — creá uno arriba.')+'</div>';
+      return;
+    }
+
+    visible.forEach(function(p){
+      var pct = projectPct(p.id);
+      var songCount = songsForProject(p.id).length;
+      var row = document.createElement('div');
+      row.className = 'project-row' + (state.selectedProjectId === p.id ? ' selected' : '');
+
+      var main = document.createElement('div');
+      main.className = 'project-main';
+      main.innerHTML =
+        '<div class="project-name">'+escapeHtml(p.name)+(p.seed ? '<span class="seed-tag">EJEMPLO</span>' : '')+(p.archived ? '<span class="archived-tag">ARCHIVADO</span>' : '')+'</div>' +
+        (p.client ? '<div class="project-client">'+escapeHtml(p.client)+'</div>' : '');
+      main.addEventListener('click', function(){ state.selectedProjectId = p.id; renderProjectList(); renderSongList(); });
+
+      var meta = document.createElement('div');
+      meta.className = 'project-meta';
+      meta.innerHTML =
+        '<span class="song-count">'+songCount+' temas</span>' +
+        '<div class="mini-bar"><div class="mini-bar-fill" style="width:'+pct+'%"></div></div>' +
+        '<span class="pct-label">'+pct+'%</span>';
+
+      var archiveBtn = document.createElement('button');
+      archiveBtn.className = 'icon-btn';
+      archiveBtn.title = p.archived ? 'Reactivar proyecto' : 'Archivar proyecto';
+      archiveBtn.textContent = p.archived ? '♻' : '🗄';
+      archiveBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleArchiveProject(p); });
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'btn small ghost' + (state.confirmDeleteProject === p.id ? ' confirm-delete' : '');
+      delBtn.textContent = state.confirmDeleteProject === p.id ? '¿Seguro?' : '✕';
+      delBtn.title = 'Eliminar proyecto y sus temas';
+      delBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (state.confirmDeleteProject === p.id){
+          deleteProject(p.id);
+          state.confirmDeleteProject = null;
+        } else {
+          state.confirmDeleteProject = p.id;
+          renderProjectList();
+          setTimeout(function(){ if (state.confirmDeleteProject === p.id){ state.confirmDeleteProject = null; renderProjectList(); } }, 4000);
+        }
+      });
+
+      row.appendChild(main);
+      row.appendChild(meta);
+      row.appendChild(archiveBtn);
+      row.appendChild(delBtn);
+      list.appendChild(row);
+    });
+  }
+
+  function renderProjectLinks(proj){
+    var box = document.getElementById('projectLinks');
+    if (!proj){ box.hidden = true; box.innerHTML = ''; CB.setNextLink('rider', null); return; }
+    var banda = proj.name.replace(/^(Disco|EP|Single|Jingle)\s*[—-]\s*/i, '');
+    box.hidden = false;
+    box.innerHTML = '';
+    var links = [
+      { text:'🎤 Rider técnico de ' + banda, href: CB.toolUrl('rider-tecnico', { banda: banda }) },
+      { text:'🎙 Calentar para grabar', href: CB.toolUrl('calentamiento-vocal', { foco:'estudio', min:'10', volver:'hoja-de-ruta' }) }
+    ];
+    links.forEach(function(l){ var a = document.createElement('a'); a.href = l.href; a.textContent = l.text; box.appendChild(a); });
+    CB.setNextLink('rider', { banda: banda });
+  }
+
+  function renderSongList(){
+    var proj = state.selectedProjectId ? projectById(state.selectedProjectId) : null;
+    var titleEl = document.getElementById('songsPanelTitle');
+    var hint = document.getElementById('songsHint');
+    var titleInput = document.getElementById('newSongTitle');
+    var addBtn = document.getElementById('addSongBtn');
+
+    titleEl.textContent = proj ? ('Temas · ' + proj.name) : 'Temas';
+    renderProjectLinks(proj);
+    titleInput.disabled = !proj;
+    addBtn.disabled = !proj;
+    hint.textContent = proj
+      ? 'Tocá cada etapa para pasarla de pendiente a en proceso y a hecho. Tocá el título para agregar notas.'
+      : 'Elegí o creá un proyecto a la izquierda para empezar a cargar temas.';
+
+    var list = document.getElementById('songList');
+    list.innerHTML = '';
+    if (!proj){ return; }
+
+    var legend = document.createElement('div');
+    legend.className = 'stage-legend';
+    legend.innerHTML = '<span><i style="background:var(--ink-4)"></i>Pendiente</span><span><i style="background:var(--gold)"></i>En proceso</span><span><i style="background:var(--teal)"></i>Hecho</span>';
+    list.appendChild(legend);
+
+    var names = {};
+    state.songs.forEach(function(s){ if (s.responsable) names[s.responsable] = true; });
+    document.getElementById('responsableList').innerHTML = Object.keys(names).map(function(n){ return '<option value="'+escapeHtml(n)+'">'; }).join('');
+
+    var songs = songsForProject(proj.id);
+    if (!songs.length){ list.insertAdjacentHTML('beforeend', '<div class="empty-note">Todavía no hay temas cargados en este proyecto.</div>'); return; }
+
+    songs.forEach(function(song){
+      var stages = song.stages || emptyStages();
+      var row = document.createElement('div');
+      row.className = 'song-row';
+
+      var mainRow = document.createElement('div');
+      mainRow.className = 'song-row-main';
+
+      var main = document.createElement('div');
+      main.style.flex = '1';
+      main.style.minWidth = '0';
+
+      var titleRow = document.createElement('div');
+      titleRow.className = 'song-title-row';
+      titleRow.innerHTML =
+        '<span class="song-title">'+escapeHtml(song.title)+'</span>' +
+        (song.urgent ? '<span class="urgent-tag">⚡ URGENTE</span>' : '') +
+        (song.seed ? '<span class="seed-tag">EJEMPLO</span>' : '');
+      titleRow.addEventListener('click', function(){
+        state.openNotesId = state.openNotesId === song.id ? null : song.id;
+        renderSongList();
+      });
+
+      var stageRow = document.createElement('div');
+      stageRow.className = 'stage-row';
+      STAGES.forEach(function(st){
+        var pill = document.createElement('button');
+        pill.className = 'stage-pill';
+        pill.dataset.state = stages[st.key] || 'pendiente';
+        pill.title = st.full + ': ' + (stages[st.key] || 'pendiente');
+        pill.setAttribute('aria-label', st.full + ': ' + (stages[st.key] || 'pendiente') + '. Tocá para cambiar.');
+        pill.textContent = st.label;
+        pill.addEventListener('click', function(){ cycleStage(song, st.key); });
+        stageRow.appendChild(pill);
+      });
+
+      main.appendChild(titleRow);
+      main.appendChild(stageRow);
+      if (stages.grabacion === 'proceso'){
+        var rec = document.createElement('a');
+        rec.className = 'song-rec-link';
+        rec.href = CB.toolUrl('calentamiento-vocal', { foco:'estudio', min:'10', volver:'hoja-de-ruta' });
+        rec.textContent = '🎙 Calentar la voz antes de grabar';
+        main.appendChild(rec);
+      }
+
+      var side = document.createElement('div');
+      side.className = 'song-side';
+
+      var respSelect = document.createElement('input');
+      respSelect.type = 'text';
+      respSelect.placeholder = 'Responsable';
+      respSelect.setAttribute('aria-label', 'Responsable de ' + song.title);
+      respSelect.setAttribute('list', 'responsableList');
+      respSelect.value = song.responsable || '';
+      respSelect.addEventListener('blur', function(){
+        var v = respSelect.value.trim();
+        if (v !== (song.responsable || '')) updateSong(song.id, { responsable: v });
+      });
+
+      var dueInput = document.createElement('input');
+      dueInput.type = 'text';
+      dueInput.placeholder = 'Fecha (dd/mm)';
+      dueInput.setAttribute('aria-label', 'Fecha de ' + song.title);
+      dueInput.value = song.dueDate || '';
+      dueInput.addEventListener('blur', function(){ var v = dueInput.value.trim(); if (v !== (song.dueDate || '')) updateSong(song.id, { dueDate: v }); });
+
+      var iconsRow = document.createElement('div');
+      iconsRow.className = 'song-side-icons';
+
+      var urgentBtn = document.createElement('button');
+      urgentBtn.className = 'icon-btn urgent-btn' + (song.urgent ? ' active' : '');
+      urgentBtn.title = 'Marcar como urgente';
+      urgentBtn.textContent = '⚡';
+      urgentBtn.addEventListener('click', function(){ updateSong(song.id, { urgent: !song.urgent }); });
+
+      var notesBtn = document.createElement('button');
+      notesBtn.className = 'icon-btn';
+      notesBtn.title = 'Notas del tema';
+      notesBtn.textContent = '📝';
+      notesBtn.addEventListener('click', function(){ state.openNotesId = state.openNotesId === song.id ? null : song.id; renderSongList(); });
+
+      var delSongBtn = document.createElement('button');
+      delSongBtn.className = 'icon-btn';
+      delSongBtn.title = 'Eliminar tema';
+      delSongBtn.textContent = '✕';
+      delSongBtn.addEventListener('click', function(){ deleteSong(song.id); });
+
+      iconsRow.appendChild(urgentBtn);
+      iconsRow.appendChild(notesBtn);
+      iconsRow.appendChild(delSongBtn);
+
+      side.appendChild(respSelect);
+      side.appendChild(dueInput);
+      side.appendChild(iconsRow);
+
+      mainRow.appendChild(main);
+      mainRow.appendChild(side);
+      row.appendChild(mainRow);
+
+      var detail = document.createElement('div');
+      detail.className = 'song-detail' + (state.openNotesId === song.id ? ' open' : '');
+      var textarea = document.createElement('textarea');
+      textarea.placeholder = 'Notas: qué falta, referencias, pendientes con el cliente...';
+      textarea.value = song.notes || '';
+      textarea.addEventListener('blur', function(){ updateSong(song.id, { notes: textarea.value }); });
+      detail.appendChild(textarea);
+      var detailHint = document.createElement('div');
+      detailHint.className = 'song-detail-hint';
+      detailHint.textContent = 'Se guarda automáticamente al salir del campo.';
+      detail.appendChild(detailHint);
+      row.appendChild(detail);
+
+      list.appendChild(row);
+    });
+  }
+
+  /* ---------- wiring ---------- */
+  function init(){
+    document.getElementById('addProjectBtn').addEventListener('click', addProject);
+    document.getElementById('newProjectName').addEventListener('keydown', function(e){ if (e.key === 'Enter') addProject(); });
+    document.getElementById('newProjectClient').addEventListener('keydown', function(e){ if (e.key === 'Enter') addProject(); });
+
+    document.getElementById('addSongBtn').addEventListener('click', function(){
+      var input = document.getElementById('newSongTitle');
+      var title = input.value.trim();
+      if (!title || !state.selectedProjectId) return;
+      addSongData({ projectId: state.selectedProjectId, title:title, stages: emptyStages(), responsable:'', urgent:false, dueDate:'', notes:'' });
+      input.value = '';
+    });
+    document.getElementById('newSongTitle').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') document.getElementById('addSongBtn').click();
+    });
+
+    document.getElementById('viewActiveBtn').addEventListener('click', function(){
+      state.viewArchived = false;
+      this.classList.add('active'); this.setAttribute('aria-pressed','true');
+      var other = document.getElementById('viewArchivedBtn'); other.classList.remove('active'); other.setAttribute('aria-pressed','false');
+      renderProjectList();
+    });
+    document.getElementById('viewArchivedBtn').addEventListener('click', function(){
+      state.viewArchived = true;
+      this.classList.add('active'); this.setAttribute('aria-pressed','true');
+      var other = document.getElementById('viewActiveBtn'); other.classList.remove('active'); other.setAttribute('aria-pressed','false');
+      renderProjectList();
+    });
+
+    document.getElementById('clearSeedBtn').addEventListener('click', function(){
+      CB.confirm('¿Borrar los proyectos y temas de ejemplo? Lo tuyo no se toca.', 'Borrar ejemplos').then(function(yes){ if (yes) clearSeeds(); });
+    });
+
+    renderAll();
+    initDb();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
