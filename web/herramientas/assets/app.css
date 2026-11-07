@@ -225,3 +225,4 @@ html[data-app].cb-keyboard .cb-tabbar { display: none; }
 @keyframes cb-in-left { from { opacity: 0; transform: translateX(-14%); } }
 @keyframes cb-fade-out { to { opacity: 0; } }
 @keyframes cb-fade-up { from { opacity: 0; transform: translateY(10px); } }
+.tile[hidden], .list__row[hidden] { display: none; }

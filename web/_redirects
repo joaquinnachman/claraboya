@@ -1,5 +1,6 @@
-# Las apps se bajan de su último Release en GitHub. scripts/build.mjs completa la de AirMix con la versión
-# vigente al publicar, así la web cambia de AirMix una vez por semana, junto con todo lo demás.
+# Las apps se bajan de su último Release en GitHub. scripts/build.mjs completa AirMix y Grab con la versión
+# vigente al publicar, así la web las cambia una vez por semana, junto con todo lo demás.
 /descargas/claraboya.apk  https://github.com/joaquinnachman/claraboya/releases/latest/download/Claraboya.apk  302!
 /descargas/claraboya-afinador.apk  /descargas/claraboya.apk  301!
 /descargas/airmix.apk  {{AIRMIX_URL}}  302!
+/descargas/claraboya-grab.zip  {{GRAB_URL}}  302!

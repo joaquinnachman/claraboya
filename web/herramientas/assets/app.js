@@ -46,6 +46,7 @@
     rider: '<rect x="5" y="4.5" width="14" height="16.5" rx="2"/><path d="M9 4.5V3h6v1.5M8.5 10h7M8.5 13.5h7M8.5 17h4"/>',
     setlist: '<path d="M9.5 6h10.5M9.5 12h10.5M9.5 18h10.5"/><circle cx="5" cy="6" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="18" r="1.3" fill="currentColor"/>',
     voz: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/>',
+    grab: '<path d="M10.5 13.5a4 4 0 0 0 5.6 0l3-3a4 4 0 0 0-5.6-5.6l-1.1 1.1"/><path d="M13.5 10.5a4 4 0 0 0-5.6 0l-3 3a4 4 0 0 0 5.6 5.6l1.1-1.1"/>',
     airmix: '<path d="M6 4v16M12 4v16M18 4v16"/><rect x="3.8" y="12.5" width="4.4" height="3.2" rx="1" fill="currentColor"/><rect x="9.8" y="6.5" width="4.4" height="3.2" rx="1" fill="currentColor"/><rect x="15.8" y="10" width="4.4" height="3.2" rx="1" fill="currentColor"/>',
     whatsapp: '<path d="M4 20l1.2-4A8 8 0 1 1 8.3 19z"/><path d="M9 9.2c.3 2.4 2.4 4.6 5 5.2l1.1-1.2 1.8.8c-.2 1.3-1.2 2-2.4 1.9C11 15.6 8.3 13 8 9.6c0-1.2.7-2.2 1.9-2.4l.8 1.8z" fill="currentColor" stroke="none"/>',
     instagram: '<rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="16.8" cy="7.2" r="0.9" fill="currentColor"/>',

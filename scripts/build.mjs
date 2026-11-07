@@ -59,6 +59,7 @@ await fs.cp(SRC, OUT, { recursive: true });
 // 2. datos de afuera: la versión publicada de cada app en este momento
 const airmix = await latestRelease('joaquinnachman/airmix', 'AirMix.apk');
 const app = await latestRelease('joaquinnachman/claraboya', 'Claraboya.apk');
+const grab = await latestRelease('joaquinnachman/claraboyagrab', 'ClaraboyaGrab-Windows.zip');
 
 // 3. reemplazos en archivos de texto
 const files = await walk(OUT);
@@ -68,7 +69,10 @@ const values = {
   '{{AIRMIX_SIZE}}': airmix.size || '1 MB',
   '{{AIRMIX_URL}}': airmix.url,
   '{{APP_VERSION}}': app.version || VERSION,
-  '{{APP_SIZE}}': app.size || 'unos 7 MB'
+  '{{APP_SIZE}}': app.size || 'unos 4 MB',
+  '{{GRAB_VERSION}}': grab.version || 'más reciente',
+  '{{GRAB_SIZE}}': grab.size || 'unos 5 MB',
+  '{{GRAB_URL}}': grab.url
 };
 for (const file of files) {
   const base = path.basename(file);
@@ -112,10 +116,12 @@ await fs.writeFile(path.join(OUT, 'version.json'), JSON.stringify({
   build: BUILD,
   fecha: new Date().toISOString(),
   airmix: airmix.ok ? airmix.version : null,
-  app: app.ok ? app.version : null
+  app: app.ok ? app.version : null,
+  grab: grab.ok ? grab.version : null
 }, null, 2) + '\n');
 
 console.log(`Claraboya ${VERSION} (build ${BUILD})`);
 console.log(`  ${all.length} archivos, ${precache.length} guardados para usar sin internet`);
 console.log(`  AirMix: ${airmix.ok ? airmix.version + ' · ' + airmix.size : 'no se pudo consultar GitHub, queda el texto genérico'}`);
 console.log(`  App Claraboya: ${app.ok ? app.version + ' · ' + app.size : 'todavía sin Release (o GitHub no respondió)'}`);
+console.log(`  Claraboya Grab: ${grab.ok ? grab.version + ' · ' + grab.size : 'todavía sin Release (o GitHub no respondió)'}`);

@@ -44,6 +44,12 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
 - En la app aparece entre las herramientas, pero se baja aparte (es otra app).
 - La web toma su último Release al publicarse cada lunes: descarga, versión y peso.
 
+## Claraboya Grab
+- Plugin VST3 para Cubase en Windows (y programa suelto), en su propio repo (`joaquinnachman/claraboyagrab`). No se copia acá.
+- Cada push a su `main` publica un Release con `ClaraboyaGrab-Windows.zip`; la web lo toma al publicarse cada lunes
+  (`/descargas/claraboya-grab.zip`, versión y peso), igual que AirMix.
+- Aparece en la app y en la web para todos (decisión de Joaquín), siempre con la aclaración de que es para escuchar referencias.
+
 ## Lo que NO va acá
 - Herramientas internas del estudio (presupuestos, luces, disponibilidad semanal, respuestas a clientes): quedan afuera.
 - Claves, tokens o datos de clientes: el repo es público.

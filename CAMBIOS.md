@@ -9,6 +9,7 @@ La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versió
 - La web instalada se abre con la misma interfaz de app.
 - En la app los archivos (PDF, copias) se guardan en Descargas/Claraboya y la pantalla queda prendida con el afinador y en el modo show.
 - Sección Estudio: contacto, AirMix (se baja aparte), copia de todo lo guardado y aviso de versión nueva.
+- Claraboya Grab (plugin de Cubase para bajar referencias de un link) aparece en la app y en la web y se baja aparte, siempre en su última versión.
 - La APK suelta del afinador queda reemplazada por la app de Claraboya.
 - Las versiones se juntan y salen solas los lunes: web, APK y AirMix al mismo tiempo.
 
