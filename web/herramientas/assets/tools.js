@@ -274,7 +274,8 @@
     'calentamiento-vocal': 'Calentamiento vocal',
     'afinador': 'Afinador',
     'metronomo': 'Metrónomo',
-    'buscador-de-bpm': 'Buscador de BPM'
+    'buscador-de-bpm': 'Buscador de BPM',
+    'piano': 'Piano'
   };
   function toolUrl(slug, query) {
     var qs = '';

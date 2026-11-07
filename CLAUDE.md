@@ -23,12 +23,13 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
 
 ## Qué hay
 - `web/index.html` + `style.css` + `main.js`: la página del estudio.
-- `web/herramientas/`: el selector y las 9 herramientas (01 Matriz de acordes … 09 Buscador de BPM).
+- `web/herramientas/`: el selector y las 10 herramientas (01 Matriz de acordes … 09 Buscador de BPM, 10 Piano).
+  Herramienta nueva: sumarla al menú `.tn__tools` de todas las páginas, al selector, a `TOOL_NAMES` (tools.js), a `TOOLS` (app.js), al inicio de la app, al sitemap y a los textos que dicen cuántas son.
   - `assets/tools.js`: guardado local, copias, avisos, parámetros entre herramientas y `CB.saveFile` (en la APK guarda en Descargas/Claraboya).
   - `assets/pwa.js`: service worker y botón Instalar de la web.
   - `assets/app.js` + `app.css`: la interfaz de app (barra de arriba, barra de abajo, transiciones, botón atrás, pantalla encendida, aviso de versión nueva). Solo actúa con `<html data-app>`.
   - `assets/vendor/`: librerías servidas desde la web (React, jsPDF, html2canvas). Nada de CDNs: tiene que andar sin internet.
-- `web/app/` (Inicio) y `web/app/estudio/` (Estudio): pantallas propias de la app.
+- `web/app/` (Inicio) y `web/app/estudio/` (Estudio): pantallas propias de la app. Barra de abajo: Inicio, Afinador, Piano, Metrónomo, Estudio.
 - Modo app: lo activa un script chico en el `<head>` de cada página si es la APK, la web instalada o `?app=1`.
   En modo app se esconden cabecera, pie, textos de presentación y bloques de descarga de la web.
 - `web/sw.js`: service worker. Con internet pide todo a la red; sin internet sirve la copia guardada.

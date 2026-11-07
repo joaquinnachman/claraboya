@@ -22,6 +22,7 @@
     'afinador': { name: 'Afinador', icon: 'afinador' },
     'metronomo': { name: 'Metrónomo', icon: 'metronomo' },
     'buscador-de-bpm': { name: 'Buscador de BPM', icon: 'bpm' },
+    'piano': { name: 'Piano', icon: 'piano' },
     'matriz-de-acordes': { name: 'Matriz de acordes', icon: 'matriz' },
     'brujula-armonica': { name: 'Brújula armónica', icon: 'brujula' },
     'hoja-de-ruta': { name: 'Hoja de ruta', icon: 'ruta' },
@@ -40,6 +41,7 @@
     afinador: '<path d="M3.5 17a8.5 8.5 0 0 1 17 0"/><path d="M12 17l4.2-6.4"/><path d="M6 11.3l1.2 1M12 8.3v1.6M18 11.3l-1.2 1"/><circle cx="12" cy="17" r="1.4" fill="currentColor"/>',
     metronomo: '<path d="M9.3 3.5h5.4L19 20.5H5z"/><path d="M12 16.5l5.2-9.5"/><path d="M7 16.5h10"/>',
     bpm: '<path d="M3 12h4l2.2-6 4.4 12 2.2-6H21"/>',
+    piano: '<rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M7.5 13v6.5M12 13v6.5M16.5 13v6.5"/><path d="M6.3 4.5h2.4v8.5H6.3zM10.8 4.5h2.4v8.5h-2.4zM15.3 4.5h2.4v8.5h-2.4z" fill="currentColor"/>',
     matriz: '<path d="M6 4h12M6 4v16M10 4v16M14 4v16M18 4v16M6 9h12M6 14h12M6 20h12"/><circle cx="10" cy="11.5" r="1.6" fill="currentColor"/><circle cx="14" cy="6.5" r="1.6" fill="currentColor"/><circle cx="18" cy="16.8" r="1.6" fill="currentColor"/>',
     brujula: '<circle cx="12" cy="12" r="9"/><path d="M15.6 8.4l-2.1 5.1-5.1 2.1 2.1-5.1z"/>',
     ruta: '<path d="M5.5 19.5c5 0 2-7 6.5-7s1.5-7 6.5-7"/><circle cx="5.5" cy="19.5" r="2"/><circle cx="18.5" cy="5.5" r="2"/>',
@@ -176,6 +178,7 @@
     var tabs = [
       { id: 'inicio', label: 'Inicio', href: HOME, icon: 'inicio' },
       { id: 'afinador', label: 'Afinador', href: '/herramientas/afinador/', icon: 'afinador' },
+      { id: 'piano', label: 'Piano', href: '/herramientas/piano/', icon: 'piano' },
       { id: 'metronomo', label: 'Metrónomo', href: '/herramientas/metronomo/', icon: 'metronomo' },
       { id: 'estudio', label: 'Estudio', href: '/app/estudio/', icon: 'estudio' }
     ];
@@ -197,7 +200,7 @@
 
     var a = e.target.closest('a[href]');
     if (!a || e.defaultPrevented) return;
-    if (a.matches('.quick__tile, .tile, .resume, .list__row, [data-cb-tab]')) haptic();
+    if (a.matches('.quick__tile, .tile, .hrow, .resume, .list__row, [data-cb-tab], .hchips a')) haptic();
     var href = a.getAttribute('href');
     if (!href || href.charAt(0) === '#' || /^(mailto:|tel:|blob:|data:|javascript:)/i.test(href) || a.hasAttribute('download')) return;
     var u;
@@ -227,7 +230,7 @@
     var show = document.getElementById('showMode');
     if (show && show.classList.contains('active')) { var c = document.getElementById('showCloseBtn'); if (c) c.click(); return true; }
     var dlg = document.querySelector('.cb-confirm, [role="dialog"][aria-modal="true"]:not([hidden])');
-    if (dlg && dlg.offsetParent !== null) {
+    if (dlg && dlg.getClientRects().length) {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
       return true;
     }
@@ -393,6 +396,32 @@
       }
     });
   }
+  function initChips() {
+    var nav = document.querySelector('[data-cb-chips]');
+    if (!nav) return;
+    var links = Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]'));
+    var lock = 0;
+    function mark(id) {
+      links.forEach(function (a) { a.setAttribute('aria-current', a.getAttribute('href') === '#' + id ? 'true' : 'false'); });
+      var cur = nav.querySelector('[aria-current="true"]');
+      if (cur && cur.scrollIntoView) { var l = cur.offsetLeft - 16; nav.scrollTo({ left: l, behavior: 'smooth' }); }
+    }
+    nav.addEventListener('click', function (e) {
+      var a = e.target.closest('a[href^="#"]'); if (!a) return;
+      e.preventDefault();
+      var sec = document.getElementById(a.getAttribute('href').slice(1)); if (!sec) return;
+      lock = Date.now() + 700; mark(sec.id);
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      if (Date.now() < lock) return;
+      var best = null;
+      entries.forEach(function (en) { if (en.isIntersecting && (!best || en.boundingClientRect.top < best.boundingClientRect.top)) best = en; });
+      if (best) mark(best.target.id);
+    }, { rootMargin: '-70px 0px -55% 0px', threshold: 0 });
+    links.forEach(function (a) { var sec = document.getElementById(a.getAttribute('href').slice(1)); if (sec) io.observe(sec); });
+  }
   function initEstudio() {
     var v = document.querySelector('[data-cb-version]');
     if (v) v.textContent = VERSION;
@@ -424,7 +453,7 @@
     injectSprite();
     buildAppBar();
     buildTabBar();
-    if (isHome) initHome();
+    if (isHome) { initHome(); initChips(); }
     if (page === 'estudio') initEstudio();
     // los links que vienen escritos en las páginas también se corrigen en la APK
     if (NATIVE) document.querySelectorAll('a[href]').forEach(function (a) {

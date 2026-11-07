@@ -32,41 +32,58 @@
     <a class="btn" href="#">Bajarla</a>
   </div>
 
-  <p class="home__label">A mano</p>
-  <div class="quick">
-    <a class="quick__tile" href="../herramientas/afinador/" style="--i:0"><svg aria-hidden="true"><use href="#i-afinador"/></svg><span class="quick__name">Afinador</span></a>
-    <a class="quick__tile" href="../herramientas/metronomo/" style="--i:1"><svg aria-hidden="true"><use href="#i-metronomo"/></svg><span class="quick__name">Metrónomo</span></a>
-    <a class="quick__tile" href="../herramientas/buscador-de-bpm/" style="--i:2"><svg aria-hidden="true"><use href="#i-bpm"/></svg><span class="quick__name">BPM de un tema</span></a>
-  </div>
+  <nav class="hchips" aria-label="Ir a una sección" data-cb-chips>
+    <a href="#sec-mano" aria-current="true">A mano</a><a href="#sec-componer">Componer</a><a href="#sec-producir">Producir</a><a href="#sec-tocar">Salir a tocar</a><a href="#sec-aparte">Aparte</a>
+  </nav>
 
-  <a class="resume" href="#" data-cb-resume hidden style="margin-top:12px;--i:3">
-    <span class="tile__icon"><svg aria-hidden="true"><use href="#i-ruta"/></svg></span>
-    <span><small>Seguí donde quedaste</small><b data-cb-resume-name></b></span>
-    <span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span>
-  </a>
+  <section class="hsec hsec--mano" id="sec-mano" aria-labelledby="sec-mano-t">
+    <h2 class="visually-hidden" id="sec-mano-t">A mano</h2>
+    <div class="quick">
+      <a class="quick__tile" href="../herramientas/afinador/" style="--i:0"><svg aria-hidden="true"><use href="#i-afinador"/></svg><span class="quick__name">Afinador</span></a>
+      <a class="quick__tile" href="../herramientas/piano/" style="--i:1"><svg aria-hidden="true"><use href="#i-piano"/></svg><span class="quick__name">Piano</span></a>
+      <a class="quick__tile" href="../herramientas/metronomo/" style="--i:2"><svg aria-hidden="true"><use href="#i-metronomo"/></svg><span class="quick__name">Metrónomo</span></a>
+      <a class="quick__tile" href="../herramientas/buscador-de-bpm/" style="--i:3"><svg aria-hidden="true"><use href="#i-bpm"/></svg><span class="quick__name">BPM de un tema</span></a>
+    </div>
+    <a class="resume" href="#" data-cb-resume hidden style="--i:4">
+      <span class="tile__icon"><svg aria-hidden="true"><use href="#i-ruta"/></svg></span>
+      <span><small>Seguí donde quedaste</small><b data-cb-resume-name></b></span>
+      <span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span>
+    </a>
+  </section>
 
-  <p class="home__label">Componer</p>
-  <div class="tiles">
-      <a class="tile" href="../herramientas/matriz-de-acordes/" style="--i:4"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-matriz"/></svg></span><span class="tile__name">Matriz de acordes</span><span class="tile__short">La canción, sección por sección</span></a>
-      <a class="tile" href="../herramientas/brujula-armonica/" style="--i:5"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-brujula"/></svg></span><span class="tile__name">Brújula armónica</span><span class="tile__short">Progresiones por clima</span></a>
-  </div>
+  <div class="hgrid">
+  <section class="hsec" id="sec-componer" aria-labelledby="sec-componer-t">
+    <header class="hsec__head"><span class="hsec__num">01</span><div><h2 id="sec-componer-t">Componer</h2><p>De la idea a la canción</p></div></header>
+    <div class="hsec__list">
+      <a class="hrow" href="../herramientas/matriz-de-acordes/" style="--i:5"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-matriz"/></svg></span><span class="hrow__txt"><b>Matriz de acordes</b><small>La canción, sección por sección</small></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
+      <a class="hrow" href="../herramientas/brujula-armonica/" style="--i:6"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-brujula"/></svg></span><span class="hrow__txt"><b>Brújula armónica</b><small>Progresiones por clima</small></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
+    </div>
+  </section>
 
-  <p class="home__label">Producir</p>
-  <div class="tiles">
-      <a class="tile tile--wide" href="../herramientas/hoja-de-ruta/" style="--i:6"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-ruta"/></svg></span><span><span class="tile__name">Hoja de ruta</span><span class="tile__short" style="display:block">Producción, grabación, mezcla y máster de cada tema</span></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
-  </div>
+  <section class="hsec" id="sec-producir" aria-labelledby="sec-producir-t">
+    <header class="hsec__head"><span class="hsec__num">02</span><div><h2 id="sec-producir-t">Producir</h2><p>Cada tema, de la toma al máster</p></div></header>
+    <div class="hsec__list">
+      <a class="hrow" href="../herramientas/hoja-de-ruta/" style="--i:7"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-ruta"/></svg></span><span class="hrow__txt"><b>Hoja de ruta</b><small>Producción, grabación, mezcla y máster</small></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
+    </div>
+  </section>
 
-  <p class="home__label">Salir a tocar</p>
-  <div class="tiles">
-      <a class="tile" href="../herramientas/armador-de-setlists/" style="--i:7"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-setlist"/></svg></span><span class="tile__name">Setlists</span><span class="tile__short">Orden del show y modo escenario</span></a>
-      <a class="tile" href="../herramientas/rider-tecnico/" style="--i:8"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-rider"/></svg></span><span class="tile__name">Rider técnico</span><span class="tile__short">Stage plot, input list y PDF</span></a>
-      <a class="tile tile--wide" href="../herramientas/calentamiento-vocal/" style="--i:9"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-voz"/></svg></span><span><span class="tile__name">Calentamiento vocal</span><span class="tile__short" style="display:block">Calentamientos en video antes de cantar</span></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
-  </div>
+  <section class="hsec" id="sec-tocar" aria-labelledby="sec-tocar-t">
+    <header class="hsec__head"><span class="hsec__num">03</span><div><h2 id="sec-tocar-t">Salir a tocar</h2><p>Todo listo para el show</p></div></header>
+    <div class="hsec__list">
+      <a class="hrow" href="../herramientas/armador-de-setlists/" style="--i:8"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-setlist"/></svg></span><span class="hrow__txt"><b>Setlists</b><small>Orden del show y modo escenario</small></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
+      <a class="hrow" href="../herramientas/rider-tecnico/" style="--i:9"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-rider"/></svg></span><span class="hrow__txt"><b>Rider técnico</b><small>Stage plot, input list y PDF</small></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
+      <a class="hrow" href="../herramientas/calentamiento-vocal/" style="--i:10"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-voz"/></svg></span><span class="hrow__txt"><b>Calentamiento vocal</b><small>Rutinas en video antes de cantar</small></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-chev"/></svg></span></a>
+    </div>
+  </section>
 
-  <p class="home__label">Se bajan aparte</p>
-  <div class="tiles">
-    <a class="tile tile--wide" data-cb-android-only href="https://claraboyaestudio.netlify.app/descargas/airmix.apk" style="--i:10"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-airmix"/></svg></span><span><span class="tile__name">AirMix</span><span class="tile__short" style="display:block">Tu Behringer X Air desde la tablet. Es otra app de Android.</span></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-guardar"/></svg></span></a>
-    <a class="tile tile--wide" href="https://claraboyaestudio.netlify.app/descargas/claraboya-grab.zip" style="--i:11"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-grab"/></svg></span><span><span class="tile__name">Claraboya Grab</span><span class="tile__short" style="display:block">Para Cubase en la compu: pegás un link y te baja la referencia como WAV.</span></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-guardar"/></svg></span></a>
+  <section class="hsec" id="sec-aparte" aria-labelledby="sec-aparte-t">
+    <header class="hsec__head"><span class="hsec__num">04</span><div><h2 id="sec-aparte-t">Aparte</h2><p>Otras apps de Claraboya: se bajan por separado</p></div></header>
+    <div class="hsec__list">
+      <a class="hrow" data-cb-android-only href="https://claraboyaestudio.netlify.app/descargas/airmix.apk" style="--i:11"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-airmix"/></svg></span><span class="hrow__txt"><b>AirMix</b><small>Tu Behringer X Air desde la tablet</small></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-guardar"/></svg></span></a>
+      <a class="hrow" href="https://claraboyaestudio.netlify.app/descargas/claraboya-grab.zip" style="--i:12"><span class="tile__icon"><svg aria-hidden="true"><use href="#i-grab"/></svg></span><span class="hrow__txt"><b>Claraboya Grab</b><small>Para Cubase en la compu: referencias de un link a WAV</small></span><span class="tile__chev"><svg aria-hidden="true"><use href="#i-guardar"/></svg></span></a>
+    </div>
+  </section>
+
   </div>
 </main>
 </body>

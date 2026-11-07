@@ -2,7 +2,7 @@
   "id": "/herramientas/",
   "name": "Claraboya · Herramientas para músicos",
   "short_name": "Claraboya",
-  "description": "Las herramientas de Claraboya Estudio para músicos: acordes, progresiones, hoja de ruta, rider, setlists, calentamiento vocal, afinador, metrónomo y BPM.",
+  "description": "Las herramientas de Claraboya Estudio para músicos: acordes, progresiones, hoja de ruta, rider, setlists, calentamiento vocal, afinador, metrónomo, BPM y piano.",
   "lang": "es-AR",
   "dir": "ltr",
   "start_url": "/app/?desde=app",
@@ -40,6 +40,16 @@
     {
       "name": "Afinador",
       "url": "/herramientas/afinador/?desde=app",
+      "icons": [
+        {
+          "src": "/img/app-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Piano",
+      "url": "/herramientas/piano/?desde=app",
       "icons": [
         {
           "src": "/img/app-192.png",
