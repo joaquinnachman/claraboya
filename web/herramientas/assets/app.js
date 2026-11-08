@@ -9,6 +9,8 @@
   if (!html.hasAttribute('data-app')) return;
 
   var VERSION = '{{VERSION}}';
+  var COMMIT = '{{COMMIT}}';
+  var BUILT = '{{BUILD_TIME}}';
   var REPO = 'joaquinnachman/claraboya';
   var WEB = 'https://claraboyaestudio.netlify.app';
   var cap = window.Capacitor;
@@ -56,6 +58,7 @@
     cafe: '<path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 10.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5c-.6 1 .6 1.6 0 2.8M11.5 3.5c-.6 1 .6 1.6 0 2.8"/>',
     guardar: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/>',
     recuperar: '<path d="M12 20V9M7.5 13.5L12 9l4.5 4.5M5 4.5h14"/>',
+    prueba: '<path d="M9 3h6M10 3v6l-5.2 9.1A2 2 0 0 0 6.5 21h11a2 2 0 0 0 1.7-2.9L14 9V3"/><path d="M7.4 15h9.2"/>',
     nuevo: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><circle cx="12" cy="12" r="9.5"/>'
   };
   function svg(name, cls) {
@@ -305,23 +308,117 @@
     for (var i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); }
     return false;
   }
-  function checkUpdate(force) {
-    if (!NATIVE || !window.fetch) return Promise.resolve(null);
-    var cached = null;
-    try { cached = JSON.parse(store.getItem('cb.app.update') || 'null'); } catch (e) { /* nada */ }
-    if (!force && cached && Date.now() - cached.t < 6 * 3600 * 1000) return Promise.resolve(cached.v);
-    return fetch('https://api.github.com/repos/' + REPO + '/releases/latest', { headers: { Accept: 'application/vnd.github+json' } })
+  // Canal: "oficial" (lo que sale los lunes) o "prueba" (cada cambio, para probar antes).
+  function canal() { try { return store && store.getItem('cb.app.canal') === 'prueba' ? 'prueba' : 'oficial'; } catch (e) { return 'oficial'; } }
+  function setCanal(c) { try { store.setItem('cb.app.canal', c); store.removeItem('cb.app.update.oficial'); store.removeItem('cb.app.update.prueba'); } catch (e) { /* nada */ } }
+  function getRelease(path) {
+    return fetch('https://api.github.com/repos/' + REPO + '/releases/' + path, { headers: { Accept: 'application/vnd.github+json' } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (rel) {
         if (!rel) return null;
         var m = String(rel.name || rel.tag_name || '').match(/\d+\.\d+\.\d+/);
-        var v = m ? m[0] : null;
-        try { store.setItem('cb.app.update', JSON.stringify({ t: Date.now(), v: v })); } catch (e) { /* nada */ }
-        return v;
+        var asset = (rel.assets || []).filter(function (a) { return a.name === 'Claraboya.apk'; })[0];
+        if (!m || !asset) return null;
+        return { version: m[0], sha: rel.target_commitish || '', url: asset.browser_download_url, notes: rel.body || '', fecha: rel.published_at || '', prueba: !!rel.prerelease };
       })
       .catch(function () { return null; });
   }
-  var APK_URL = 'https://github.com/' + REPO + '/releases/latest/download/Claraboya.apk';
+  // Devuelve la versión para instalar si es más nueva que la que está corriendo; si no, null.
+  function checkUpdate(force) {
+    if (!NATIVE || !window.fetch || !store) return Promise.resolve(null);
+    var c = canal(), key = 'cb.app.update.' + c, cached = null;
+    try { cached = JSON.parse(store.getItem(key) || 'null'); } catch (e) { /* nada */ }
+    if (!force && cached && Date.now() - cached.t < 3600 * 1000) return Promise.resolve(cached.info);
+    var oficial = getRelease('latest').then(function (r) { return r && newer(r.version, VERSION) ? r : null; });
+    var todo = c !== 'prueba' ? oficial : getRelease('tags/prueba').then(function (r) {
+      var esNueva = r && r.sha && r.sha !== COMMIT && COMMIT !== 'local' && (!BUILT || r.fecha > BUILT);
+      return esNueva ? r : oficial;
+    });
+    return todo.then(function (info) {
+      try { store.setItem(key, JSON.stringify({ t: Date.now(), info: info })); } catch (e) { /* nada */ }
+      return info;
+    });
+  }
+  function updLabel(info) { return info.version + (info.prueba ? ' · prueba' : ''); }
+  function updKey(info) { return info.prueba ? info.sha : info.version; }
+
+  // Novedades del Release (las líneas "- ..." de CAMBIOS.md)
+  function notesHtml(md) {
+    var items = String(md || '').split(/\r?\n/).filter(function (l) { return /^\s*[-*]\s+/.test(l); }).map(function (l) { return l.replace(/^\s*[-*]\s+/, ''); });
+    if (!items.length) return '';
+    var more = items.length > 6 ? '<li>…y más cosas.</li>' : '';
+    return '<ul class="cb-notes">' + items.slice(0, 6).map(function (t) { return '<li>' + escapeHtml(t) + '</li>'; }).join('') + more + '</ul>';
+  }
+
+  var pendingUpdate = null;
+  function promptUpdate(info) {
+    var el = openSheet(
+      '<p class="cb-sheet__kicker">Hay una versión nueva</p>' +
+      '<h2 class="cb-sheet__title">Claraboya ' + escapeHtml(updLabel(info)) + '</h2>' +
+      (notesHtml(info.notes) ? '<p class="cb-sheet__text" style="margin-bottom:6px">Qué trae:</p>' + notesHtml(info.notes) : '') +
+      '<div class="cb-upd" data-cb-upd hidden><div class="cb-upd__bar"><i></i></div><p class="cb-sheet__text" data-cb-upd-txt></p></div>' +
+      '<div class="cb-sheet__actions" data-cb-upd-actions>' +
+        '<button class="btn primary" type="button" data-cb-upd-go>Actualizar ahora</button>' +
+        '<button class="btn ghost" type="button" data-cb-upd-later>Más tarde</button>' +
+      '</div>'
+    );
+    el.querySelector('[data-cb-upd-go]').addEventListener('click', function () { haptic(); startUpdate(info, el); });
+    el.querySelector('[data-cb-upd-later]').addEventListener('click', function () {
+      try { store.setItem('cb.app.updSnooze', JSON.stringify({ k: updKey(info), until: Date.now() + 12 * 3600 * 1000 })); } catch (e) { /* nada */ }
+      closeSheet();
+    });
+  }
+  function startUpdate(info, el) {
+    // APK viejas sin el puente de actualización: se baja con el navegador
+    if (!nativo || !nativo.actualizar) { location.href = info.url; return; }
+    var box = el && el.querySelector('[data-cb-upd]'), txt = el && el.querySelector('[data-cb-upd-txt]'), bar = el && el.querySelector('.cb-upd__bar i');
+    var actions = el && el.querySelector('[data-cb-upd-actions]');
+    function say(t, pct) { if (box) box.hidden = false; if (txt) txt.textContent = t; if (bar && pct != null) bar.style.width = pct + '%'; }
+    if (nativo.puedeInstalar && !nativo.puedeInstalar()) {
+      pendingUpdate = info;
+      say('La primera vez, Android te pide permiso: activá «Permitir de esta fuente» para Claraboya y volvé. La descarga arranca sola.', 0);
+      if (actions) actions.innerHTML = '<button class="btn primary" type="button" data-cb-perm>Abrir el permiso</button>';
+      if (actions) actions.querySelector('[data-cb-perm]').addEventListener('click', function () { nativo.pedirPermisoInstalar(); });
+      return;
+    }
+    pendingUpdate = null;
+    var r = nativo.actualizar(info.url);
+    if (r !== 'bajando') { say(r, 0); return; }
+    if (actions) actions.hidden = true;
+    say('Bajando la versión nueva…', 2);
+    var poll = setInterval(function () {
+      var st = {};
+      try { st = JSON.parse(nativo.estadoActualizacion()); } catch (e) { st = { estado: 'error' }; }
+      if (st.estado === 'bajando') { say('Bajando la versión nueva… ' + (st.progreso || 0) + '%', Math.max(2, st.progreso || 0)); return; }
+      clearInterval(poll);
+      if (st.estado === 'listo') {
+        say('Listo. Tocá «Instalar» en la ventana de Android: tus cosas guardadas no se pierden.', 100);
+        var res = nativo.instalarActualizacion();
+        if (res !== 'ok') say(res, 100);
+      } else {
+        say('No se pudo bajar. Revisá la conexión y probá de nuevo.', 0);
+        if (actions) { actions.hidden = false; }
+      }
+    }, 400);
+  }
+  // Al volver del ajuste de permisos, si ya está dado, arranca sola
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState !== 'visible' || !pendingUpdate || !nativo || !nativo.puedeInstalar || !nativo.puedeInstalar()) return;
+    var info = pendingUpdate; pendingUpdate = null;
+    startUpdate(info, sheet);
+  });
+  // Al abrir la app: si hay versión nueva, avisa una vez por sesión (salvo "Más tarde")
+  function autoPrompt() {
+    if (!NATIVE || !session || session.getItem('cbUpdAsked')) return;
+    checkUpdate(false).then(function (info) {
+      if (!info) return;
+      var snooze = null;
+      try { snooze = JSON.parse(store.getItem('cb.app.updSnooze') || 'null'); } catch (e) { /* nada */ }
+      if (snooze && snooze.k === updKey(info) && Date.now() < snooze.until) return;
+      try { session.setItem('cbUpdAsked', '1'); } catch (e) { /* nada */ }
+      setTimeout(function () { if (!sheet) promptUpdate(info); }, 900);
+    });
+  }
 
   /* ---------- copia de todo (Estudio) ---------- */
   function allKeys() {
@@ -388,12 +485,14 @@
     }
     if (!NATIVE || IOS) document.querySelectorAll('[data-cb-android-only]').forEach(function (el) { if (IOS) el.hidden = true; });
     var banner = document.querySelector('[data-cb-update]');
-    if (banner) checkUpdate(false).then(function (v) {
-      if (v && newer(v, VERSION)) {
-        banner.querySelector('[data-cb-update-v]').textContent = v;
-        banner.querySelector('a').href = APK_URL;
-        banner.hidden = false;
-      }
+    if (banner) checkUpdate(false).then(function (info) {
+      if (!info) return;
+      banner.querySelector('[data-cb-update-v]').textContent = updLabel(info);
+      var a = banner.querySelector('a');
+      a.href = '#';
+      a.textContent = 'Actualizar';
+      a.addEventListener('click', function (e) { e.preventDefault(); promptUpdate(info); });
+      banner.hidden = false;
     });
   }
   function initChips() {
@@ -427,23 +526,34 @@
     if (v) v.textContent = VERSION;
     var status = document.querySelector('[data-cb-update-status]');
     var btn = document.querySelector('[data-cb-check]');
+    var found = null;
+    if (v && NATIVE && canal() === 'prueba' && COMMIT.length > 7) v.textContent = VERSION + ' · prueba ' + COMMIT.slice(0, 7);
+    function paintStatus(info) {
+      found = info;
+      if (!status) return;
+      if (info) status.innerHTML = 'Hay una versión nueva: <b>' + escapeHtml(updLabel(info)) + '</b>. Tocá para actualizar.';
+      else status.textContent = 'Tenés la última versión. Tocá para buscar de nuevo.';
+    }
     if (status) {
       if (!NATIVE) status.textContent = 'Se actualiza sola cuando la abrís con internet.';
-      else checkUpdate(false).then(function (lv) { paintStatus(lv); });
-    }
-    function paintStatus(lv) {
-      if (!status) return;
-      if (lv && newer(lv, VERSION)) {
-        status.innerHTML = 'Hay una versión nueva: <b>' + escapeHtml(lv) + '</b>. Tocá para bajarla.';
-        if (btn) btn.setAttribute('data-cb-download', '');
-      } else status.textContent = lv ? 'Tenés la última versión.' : 'Tocá para buscar una versión nueva.';
+      else { status.textContent = 'Buscando…'; checkUpdate(false).then(paintStatus); }
     }
     if (btn) btn.addEventListener('click', function () {
-      if (btn.hasAttribute('data-cb-download')) { location.href = APK_URL; return; }
       if (!NATIVE) { location.reload(); return; }
+      if (found) { promptUpdate(found); return; }
       status.textContent = 'Buscando…';
-      checkUpdate(true).then(function (lv) { paintStatus(lv); if (lv && !newer(lv, VERSION)) toast('Ya tenés la última versión.'); });
+      checkUpdate(true).then(function (info) { paintStatus(info); if (info) promptUpdate(info); else toast('Ya tenés la última versión.'); });
     });
+    var canalBox = document.querySelector('[data-cb-canal]');
+    if (canalBox) {
+      if (!NATIVE) { var row = canalBox.closest('.list__row'); if (row) row.hidden = true; }
+      canalBox.checked = canal() === 'prueba';
+      canalBox.addEventListener('change', function () {
+        setCanal(canalBox.checked ? 'prueba' : 'oficial');
+        toast(canalBox.checked ? 'Listo: vas a recibir las versiones de prueba.' : 'Listo: solo las versiones de los lunes.');
+        if (status) { status.textContent = 'Buscando…'; checkUpdate(true).then(paintStatus); }
+      });
+    }
     document.querySelectorAll('[data-cb-backup-all]').forEach(function (b) { b.addEventListener('click', backupAll); });
     document.querySelectorAll('[data-cb-restore-all]').forEach(function (b) { b.addEventListener('click', restoreAll); });
     if (IOS) document.querySelectorAll('[data-cb-android-only]').forEach(function (el) { el.hidden = true; });
@@ -455,6 +565,7 @@
     buildTabBar();
     if (isHome) { initHome(); initChips(); }
     if (page === 'estudio') initEstudio();
+    autoPrompt();
     // los links que vienen escritos en las páginas también se corrigen en la APK
     if (NATIVE) document.querySelectorAll('a[href]').forEach(function (a) {
       var h = a.getAttribute('href');

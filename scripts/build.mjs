@@ -14,6 +14,13 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'web');
 const OUT = path.join(ROOT, 'dist');
 const VERSION = (await fs.readFile(path.join(ROOT, 'VERSION'), 'utf8')).trim();
+// commit del que sale este build (la app de prueba lo usa para saber si hay una más nueva)
+const COMMIT = await (async () => {
+  try {
+    const { execSync } = await import('node:child_process');
+    return execSync('git rev-parse HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+  } catch { return process.env.COMMIT_REF || process.env.GITHUB_SHA || 'local'; }
+})();
 const TEXT = new Set(['.html', '.js', '.css', '.webmanifest', '.json', '.txt', '.xml']);
 
 if (!/^\d+\.\d+\.\d+$/.test(VERSION)) {
@@ -65,6 +72,8 @@ const grab = await latestRelease('joaquinnachman/claraboyagrab', 'ClaraboyaGrab-
 const files = await walk(OUT);
 const values = {
   '{{VERSION}}': VERSION,
+  '{{COMMIT}}': COMMIT,
+  '{{BUILD_TIME}}': new Date().toISOString(),
   '{{AIRMIX_VERSION}}': airmix.version || 'más reciente',
   '{{AIRMIX_SIZE}}': airmix.size || '1 MB',
   '{{AIRMIX_URL}}': airmix.url,

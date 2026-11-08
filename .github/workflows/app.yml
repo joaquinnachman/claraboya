@@ -70,8 +70,8 @@ jobs:
           set -e
           cp native/MainActivity.java android/app/src/main/java/com/claraboya/app/MainActivity.java
           M=android/app/src/main/AndroidManifest.xml
-          sed -i 's#<uses-permission android:name="android.permission.INTERNET" />#<uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.RECORD_AUDIO" />\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />\n    <uses-permission android:name="android.permission.VIBRATE" />\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />#' $M
-          grep -q RECORD_AUDIO $M && grep -q VIBRATE $M
+          sed -i 's#<uses-permission android:name="android.permission.INTERNET" />#<uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.RECORD_AUDIO" />\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />\n    <uses-permission android:name="android.permission.VIBRATE" />\n    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />#' $M
+          grep -q RECORD_AUDIO $M && grep -q VIBRATE $M && grep -q REQUEST_INSTALL_PACKAGES $M
           G=android/app/build.gradle
           sed -i -E "s/versionCode [0-9]+/versionCode ${{ steps.v.outputs.code }}/; s/versionName \"[^\"]*\"/versionName \"${{ steps.v.outputs.version }}\"/" $G
           grep -E "versionCode|versionName" $G
@@ -106,9 +106,10 @@ jobs:
         if: env.OFICIAL == 'no'
         run: |
           gh release delete prueba --yes --cleanup-tag || true
+          awk '/^## Próxima versión/ {f=1; next} /^## / && f {exit} f' CAMBIOS.md > notas.md
+          [ -s notas.md ] || echo "Ajustes y arreglos." > notas.md
           gh release create prueba Claraboya.apk --prerelease --target ${{ steps.v.outputs.sha }} \
-            --title "Claraboya ${{ steps.v.outputs.version }} · prueba" \
-            --notes "APK de prueba con lo que se va juntando para la próxima versión (todavía no está en la web). Se instala encima de la anterior."
+            --title "Claraboya ${{ steps.v.outputs.version }} · prueba" --notes-file notas.md
 
       - name: Publicar APK oficial
         if: env.OFICIAL == 'si'
