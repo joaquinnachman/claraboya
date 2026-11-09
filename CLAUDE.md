@@ -16,6 +16,8 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
   1. cierra la versión (`scripts/cerrar-version.mjs`): número final y título en `CAMBIOS.md`;
   2. arma la APK oficial y crea el Release `vX.Y.Z` (marcado como último);
   3. pasa `proxima` a `main` y Netlify publica la web.
+- Ojo: GitHub corre lo programado (y el botón "Run workflow") con la versión de los workflows que está en `main`.
+  Un cambio en `publicar.yml` o `app.yml` recién vale para los lunes cuando llega a `main`.
 - La web toma, al publicarse, la AirMix vigente en ese momento (`_redirects` y textos), así cambia una vez por semana con todo lo demás.
 - Cada push a `proxima` arma una APK de prueba (Release `prueba`, preliminar). No llega a la web ni a nadie más.
 - Antes de subir: `node scripts/build.mjs && node scripts/check.mjs && node scripts/build-app.mjs` tiene que dar ok.
