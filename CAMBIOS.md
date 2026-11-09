@@ -3,7 +3,7 @@
 Una sola versión para todo: la web, las herramientas y las apps.
 La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versión" y sale los lunes.
 
-## Próxima versión
+## 7.1.0 — 9/11/2026
 - La app avisa sola cuando hay una versión nueva, muestra qué trae y se actualiza con un toque (baja la versión y abre el instalador de Android, sin pasar por el navegador).
 - En Estudio se pueden activar las versiones de prueba, para recibir lo nuevo antes de que salga los lunes.
 - Herramienta nueva, 10 · Piano: teclado para tocar con varios dedos y deslizar, sonidos de piano, eléctrico y órgano, pedal, calentamientos de voz que suben de a medio tono (de bajo a soprano), adivina en qué tonalidad está un tema según las notas que tocás, marca escalas y toca los acordes de la tonalidad.
