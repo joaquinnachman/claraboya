@@ -1,7 +1,7 @@
 # Claraboya — instrucciones para trabajar en este repo
 
 Web de Claraboya Estudio (claraboyaestudio.netlify.app) y sus herramientas gratis para músicos.
-Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web instalable y la APK de Android (iOS más adelante).
+Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web instalable (que en iPhone y iPad es la app) y la APK de Android.
 
 ## Regla principal: una sola versión, todo se actualiza junto
 - La versión está en `VERSION` (formato `7.1.0`) y vale para la web, la web instalada y la APK.
@@ -33,6 +33,8 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
   - `assets/vendor/`: librerías servidas desde la web (React, jsPDF, html2canvas). Nada de CDNs: tiene que andar sin internet.
 - `web/app/` (Inicio) y `web/app/estudio/` (Estudio): pantallas propias de la app. Barra de abajo: Inicio, Afinador, Piano, Metrónomo, Estudio.
 - Modo app: lo activa un script chico en el `<head>` de cada página si es la APK, la web instalada o `?app=1`.
+  En iPhone y iPad no hay APK: la app es la web agregada a inicio (misma interfaz que Android). En Safari, `pwa.js` muestra un aviso con los pasos (`window.CBInstalar`).
+  El `<meta name="viewport">` va antes de ese script, que le suma `viewport-fit=cover` en modo app. `?app=0` vuelve a la web común en esa pestaña.
   En modo app se esconden cabecera, pie, textos de presentación y bloques de descarga de la web.
 - `web/sw.js`: service worker. Con internet pide todo a la red; sin internet sirve la copia guardada.
 - `app/`: la APK (Capacitor 6). `scripts/build-app.mjs` arma `app/www` desde `dist/`:

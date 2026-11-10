@@ -2,6 +2,7 @@
    Corre en todas las páginas, pero solo hace algo con <html data-app> (APK, web instalada o ?app=1).
    - Barra superior (volver, título, info) y barra inferior (Inicio, Afinador, Metrónomo, Estudio).
    - Botón atrás de Android, volver deslizando en iPhone, transiciones entre pantallas.
+   - En iPhone se ve igual que en Android cuando está agregada a inicio; en una pestaña de Safari invita a agregarla.
    - En la APK: guardar archivos, pantalla encendida, links externos y aviso de versión nueva. */
 (function () {
   'use strict';
@@ -19,6 +20,7 @@
   var store = (function () { try { localStorage.setItem('cb.t', '1'); localStorage.removeItem('cb.t'); return localStorage; } catch (e) { return null; } })();
   var session = (function () { try { return sessionStorage; } catch (e) { return null; } })();
   var IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+  var STANDALONE = (function () { try { return navigator.standalone === true || matchMedia('(display-mode: standalone)').matches; } catch (e) { return false; } })();
 
   var TOOLS = {
     'afinador': { name: 'Afinador', icon: 'afinador' },
@@ -494,6 +496,15 @@
       a.addEventListener('click', function (e) { e.preventDefault(); promptUpdate(info); });
       banner.hidden = false;
     });
+    // Abierta en una pestaña de Safari (iPhone o iPad): invitar a agregarla a inicio
+    if (IOS && !NATIVE && !STANDALONE) {
+      var tip = document.createElement('div');
+      tip.className = 'cb-update cb-update--ios';
+      tip.innerHTML = '<img src="/img/app-180.png" alt="" width="36" height="36"><p><b>Agregala a inicio</b> y usala a pantalla completa, como en Android.</p><a class="btn" href="#">Ver cómo</a>';
+      tip.querySelector('a').addEventListener('click', function (e) { e.preventDefault(); if (window.CBInstalar) window.CBInstalar.abrir(); });
+      var ref = banner || document.querySelector('[data-cb-chips]');
+      if (ref) ref.parentNode.insertBefore(tip, ref);
+    }
   }
   function initChips() {
     var nav = document.querySelector('[data-cb-chips]');
@@ -557,6 +568,19 @@
     document.querySelectorAll('[data-cb-backup-all]').forEach(function (b) { b.addEventListener('click', backupAll); });
     document.querySelectorAll('[data-cb-restore-all]').forEach(function (b) { b.addEventListener('click', restoreAll); });
     if (IOS) document.querySelectorAll('[data-cb-android-only]').forEach(function (el) { el.hidden = true; });
+    var addRow = document.querySelector('[data-cb-ios-add]');
+    if (addRow && IOS && !NATIVE && !STANDALONE) {
+      addRow.hidden = false;
+      addRow.addEventListener('click', function () { if (window.CBInstalar) window.CBInstalar.abrir(); });
+    }
+    var webRow = document.querySelector('[data-cb-web]');
+    if (webRow && !NATIVE && !STANDALONE) {
+      webRow.hidden = false;
+      // la web común no tiene transiciones: se apagan antes de salir para que no quede una a medias
+      webRow.addEventListener('click', function () {
+        document.querySelectorAll('head style').forEach(function (st) { if (st.textContent.indexOf('@view-transition') >= 0) st.remove(); });
+      });
+    }
   }
 
   function init() {

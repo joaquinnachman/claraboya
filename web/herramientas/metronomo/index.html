@@ -2,8 +2,8 @@
 <html lang="es-AR">
 <head>
 <meta charset="UTF-8">
-<script>!function(d,w){var s,a,q=/[?&]app=1(&|$)/.test(location.search);try{s=w.sessionStorage;if(q)s.setItem('cbApp','1')}catch(e){}a=d.hasAttribute('data-app')||q||!!w.Capacitor||!!(s&&s.getItem('cbApp')==='1');try{a=a||matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){}if(!a)return;d.setAttribute('data-app','');var st=document.createElement('style');st.textContent='@view-transition{navigation:auto}';document.head.appendChild(st);function k(e,A){var t=s&&s.getItem('cbNav');if(!t&&A&&A.navigationType==='traverse'&&A.from&&A.entry&&A.entry.index<A.from.index)t='back';return t||'forward'}w.addEventListener('pageswap',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,e.activation))});w.addEventListener('pagereveal',function(e){if(e.viewTransition)e.viewTransition.types.add(k(e,w.navigation&&navigation.activation));try{s.removeItem('cbNav')}catch(x){}})}(document.documentElement,window)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>!function(d,w){var s,a,L=location.search,q=/[?&]app=1(&|$)/.test(L),n=navigator,u=n.userAgent;try{s=w.sessionStorage;if(q||d.hasAttribute('data-app'))s.setItem('cbApp','1');if(/[?&]app=0(&|$)/.test(L))s.removeItem('cbApp')}catch(e){}a=d.hasAttribute('data-app')||q||!!w.Capacitor||!!(s&&s.getItem('cbApp')==='1');try{a=a||matchMedia('(display-mode: standalone)').matches||n.standalone===true}catch(e){}if(!a)return;d.setAttribute('data-app','');var v=document.querySelector('meta[name=viewport]');if(v){var c=v.content;if(c.indexOf('viewport-fit')<0)c+=', viewport-fit=cover';if(/iP(hone|ad|od)/.test(u)||/Mac/.test(u)&&n.maxTouchPoints>1)c+=', maximum-scale=1';v.content=c}var st=document.createElement('style');st.textContent='@view-transition{navigation:auto}';document.head.appendChild(st);function k(e,A){var t=s&&s.getItem('cbNav');if(!t&&A&&A.navigationType==='traverse'&&A.from&&A.entry&&A.entry.index<A.from.index)t='back';return t||'forward'}function z(t,y){if(t){t.types.add(y);[t.ready,t.finished,t.updateCallbackDone].forEach(function(p){p&&p.catch(function(){})})}}w.addEventListener('pageswap',function(e){z(e.viewTransition,k(e,e.activation))});w.addEventListener('pagereveal',function(e){z(e.viewTransition,k(e,w.navigation&&navigation.activation));try{s.removeItem('cbNav')}catch(x){}})}(document.documentElement,window)</script>
 <title>Metrónomo online · Herramientas de producción | Claraboya Estudio</title>
 <meta name="description" content="Metrónomo online gratis: tempo de 30 a 300 BPM, compases, subdivisiones, acentos por pulso, tap tempo y subida automática de tempo para practicar. De Claraboya Estudio.">
 <link rel="canonical" href="https://claraboyaestudio.netlify.app/herramientas/metronomo/">
@@ -25,9 +25,9 @@
 <link rel="stylesheet" href="../../herramientas/assets/tools.css">
 <style>
   .met{ display:grid; grid-template-columns: 1.35fr 1fr; gap:16px; align-items:start; }
-  @media (max-width: 860px){ .met{ grid-template-columns:1fr; } }
-  .met__main{ background:var(--ink-2); border-radius:6px; padding:clamp(18px,3vw,30px); display:grid; gap:16px; }
-  .met__tempo{ display:grid; grid-template-columns:64px 1fr 64px; align-items:center; gap:10px; }
+  @media (max-width: 860px){ .met{ grid-template-columns:minmax(0,1fr); } }
+  .met__main{ background:var(--ink-2); border-radius:6px; padding:clamp(18px,3vw,30px); display:grid; grid-template-columns:minmax(0,1fr); gap:16px; }
+  .met__tempo{ display:grid; grid-template-columns:64px minmax(0,1fr) 64px; align-items:center; gap:10px; }
   .met__step{ width:64px; height:64px; border-radius:50%; border:0; background:var(--ink-3); color:var(--paper); font:500 2rem/1 var(--body); cursor:pointer; }
   .met__step:hover{ background:var(--ink-4); }
   .met__bpm{ display:grid; justify-items:center; gap:2px; }
@@ -37,6 +37,7 @@
   .met__word{ font:400 1.4rem/1 var(--display); letter-spacing:.06em; color:var(--rosa); margin-top:4px; }
   .met__slider, #volSlider{ width:100%; accent-color: var(--rosa); }
   .met__quick{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+  @media (max-width: 359px){ .met__main{ padding:14px; } .met__tempo{ grid-template-columns:52px minmax(0,1fr) 52px; gap:6px; } .met__step{ width:52px; height:52px; } }
 
   .beats{ list-style:none; margin:4px 0 0; padding:0; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
   .beat{ width:clamp(38px,6vw,52px); height:clamp(38px,6vw,52px); border-radius:50%; border:2px solid rgba(242,242,242,.28); background:transparent; cursor:pointer; position:relative; padding:0; transition: transform .06s ease, background .06s ease; }

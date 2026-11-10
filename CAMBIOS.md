@@ -3,6 +3,12 @@
 Una sola versión para todo: la web, las herramientas y las apps.
 La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versión" y sale los lunes.
 
+## Próxima versión
+- iPhone y iPad: al abrir las herramientas desde Safari aparece un aviso para tenerla como app, con los pasos para agregarla a inicio. Agregada, se ve y anda igual que la app de Android.
+- En iPhone la app usa toda la pantalla también dentro de las herramientas, no se agranda sola al escribir y no abre la vista previa al mantener apretado un botón.
+- «Probarla ahora» abre la interfaz de app en la misma pestaña, y desde Estudio se puede volver a ver la página web de siempre.
+- Metrónomo: en los celulares más angostos ya no se sale de la pantalla.
+
 ## 7.1.0 — 9/11/2026
 - La app avisa sola cuando hay una versión nueva, muestra qué trae y se actualiza con un toque (baja la versión y abre el instalador de Android, sin pasar por el navegador).
 - En Estudio se pueden activar las versiones de prueba, para recibir lo nuevo antes de que salga los lunes.
