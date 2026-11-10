@@ -4,6 +4,7 @@ Una sola versión para todo: la web, las herramientas y las apps.
 La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versión" y sale los lunes.
 
 ## Próxima versión
+- Ícono de la app con el logo más grande, en Android y en iPhone (en iPhone se ve al volver a agregarla a inicio).
 - Arreglado: recién actualizada, la app ya no sigue avisando que hay una versión nueva.
 
 ## 7.1.1 — 9/11/2026
