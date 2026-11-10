@@ -325,21 +325,32 @@
       })
       .catch(function () { return null; });
   }
+  // ¿Esa versión es más nueva que la que está corriendo ahora?
+  function esNueva(info) {
+    if (!info) return false;
+    if (info.prueba) return !!info.sha && info.sha !== COMMIT && COMMIT !== 'local' && (!BUILT || info.fecha > BUILT);
+    return newer(info.version, VERSION);
+  }
   // Devuelve la versión para instalar si es más nueva que la que está corriendo; si no, null.
+  // Lo consultado se guarda una hora, pero solo vale para la versión que lo guardó:
+  // recién actualizada, la app vuelve a preguntar y no sigue avisando de la que ya instaló.
+  var consultando = {};
   function checkUpdate(force) {
     if (!NATIVE || !window.fetch || !store) return Promise.resolve(null);
-    var c = canal(), key = 'cb.app.update.' + c, cached = null;
+    var c = canal(), key = 'cb.app.update.' + c, cached = null, yo = VERSION + ' ' + COMMIT;
     try { cached = JSON.parse(store.getItem(key) || 'null'); } catch (e) { /* nada */ }
-    if (!force && cached && Date.now() - cached.t < 3600 * 1000) return Promise.resolve(cached.info);
+    if (!force && cached && cached.v === yo && Date.now() - cached.t < 3600 * 1000) return Promise.resolve(esNueva(cached.info) ? cached.info : null);
+    if (!force && consultando[c]) return consultando[c];   // el Inicio y el aviso al abrir comparten la misma consulta
     var oficial = getRelease('latest').then(function (r) { return r && newer(r.version, VERSION) ? r : null; });
     var todo = c !== 'prueba' ? oficial : getRelease('tags/prueba').then(function (r) {
-      var esNueva = r && r.sha && r.sha !== COMMIT && COMMIT !== 'local' && (!BUILT || r.fecha > BUILT);
-      return esNueva ? r : oficial;
+      return r && esNueva(r) ? r : oficial;
     });
-    return todo.then(function (info) {
-      try { store.setItem(key, JSON.stringify({ t: Date.now(), info: info })); } catch (e) { /* nada */ }
+    consultando[c] = todo.then(function (info) {
+      try { store.setItem(key, JSON.stringify({ t: Date.now(), v: yo, info: info })); } catch (e) { /* nada */ }
+      consultando[c] = null;
       return info;
     });
+    return consultando[c];
   }
   function updLabel(info) { return info.version + (info.prueba ? ' · prueba' : ''); }
   function updKey(info) { return info.prueba ? info.sha : info.version; }

@@ -3,6 +3,9 @@
 Una sola versión para todo: la web, las herramientas y las apps.
 La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versión" y sale los lunes.
 
+## Próxima versión
+- Arreglado: recién actualizada, la app ya no sigue avisando que hay una versión nueva.
+
 ## 7.1.1 — 9/11/2026
 - iPhone y iPad: al abrir las herramientas desde Safari aparece un aviso para tenerla como app, con los pasos para agregarla a inicio. Agregada, se ve y anda igual que la app de Android.
 - En iPhone la app usa toda la pantalla también dentro de las herramientas, no se agranda sola al escribir y no abre la vista previa al mantener apretado un botón.
