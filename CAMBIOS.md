@@ -4,6 +4,8 @@ Una sola versión para todo: la web, las herramientas y las apps.
 La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versión" y sale los lunes.
 
 ## Próxima versión
+- Herramienta nueva, 11 · Grabador de ideas: grabás una melodía o un riff (con o sin click, con un compás de cuenta), te dice en qué tono y a qué tempo está, guardás la letra y las notas al lado, y la mandás por WhatsApp o la guardás como archivo para abrirla en la compu. Desde cada idea vas directo al metrónomo o al piano con su tono.
+- La lista de herramientas de la página del estudio suma el Piano y el Grabador de ideas.
 - Metrónomo rediseñado para el dedo: el tempo se cambia girando una rueda, deslizando el número o dejando apretados − y +. La rueda titila con cada pulso y, en la app, Arrancar y Tap quedan siempre a mano.
 - Afinador: en la app ocupa toda la pantalla, arranca solo si ya le diste permiso al micrófono y vibra cuando una cuerda queda afinada.
 - En iPhone, el metrónomo, el piano y las demás herramientas que suenan se escuchan aunque el teléfono esté en silencio (al arrancar, pausan la música de otras apps).

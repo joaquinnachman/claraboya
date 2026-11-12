@@ -319,7 +319,8 @@
     'afinador': 'Afinador',
     'metronomo': 'Metrónomo',
     'buscador-de-bpm': 'Buscador de BPM',
-    'piano': 'Piano'
+    'piano': 'Piano',
+    'grabador-de-ideas': 'Grabador de ideas'
   };
   function toolUrl(slug, query) {
     var qs = '';

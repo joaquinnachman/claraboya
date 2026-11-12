@@ -27,6 +27,7 @@
     'metronomo': { name: 'Metrónomo', icon: 'metronomo' },
     'buscador-de-bpm': { name: 'Buscador de BPM', icon: 'bpm' },
     'piano': { name: 'Piano', icon: 'piano' },
+    'grabador-de-ideas': { name: 'Grabador de ideas', icon: 'mic' },
     'matriz-de-acordes': { name: 'Matriz de acordes', icon: 'matriz' },
     'brujula-armonica': { name: 'Brújula armónica', icon: 'brujula' },
     'hoja-de-ruta': { name: 'Hoja de ruta', icon: 'ruta' },

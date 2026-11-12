@@ -25,13 +25,15 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
 
 ## Qué hay
 - `web/index.html` + `style.css` + `main.js`: la página del estudio.
-- `web/herramientas/`: el selector y las 10 herramientas (01 Matriz de acordes … 09 Buscador de BPM, 10 Piano).
+- `web/herramientas/`: el selector y las 11 herramientas (01 Matriz de acordes … 10 Piano, 11 Grabador de ideas).
   Herramienta nueva: sumarla al menú `.tn__tools` de todas las páginas, al selector, a `TOOL_NAMES` (tools.js), a `TOOLS` (app.js), al inicio de la app, al sitemap y a los textos que dicen cuántas son.
   - `assets/tools.js`: guardado local, copias, avisos, parámetros entre herramientas y `CB.saveFile` (en la APK guarda en Descargas/Claraboya).
   - `assets/pwa.js`: service worker y botón Instalar de la web.
   - `assets/app.js` + `app.css`: la interfaz de app (barra de arriba, barra de abajo, transiciones, botón atrás, pantalla encendida, aviso de versión nueva). Solo actúa con `<html data-app>`.
   - `assets/vendor/`: librerías servidas desde la web (React, jsPDF, html2canvas). Nada de CDNs: tiene que andar sin internet.
 - `web/app/` (Inicio) y `web/app/estudio/` (Estudio): pantallas propias de la app. Barra de abajo: Inicio, Afinador, Piano, Metrónomo, Estudio.
+- `web/bajar/`: la página para pasar la app (Android: APK; iPhone: agregar a inicio; compu: link). Es el link que comparte el botón «Pasale la app a un amigo» y el del QR del estudio. No va en la APK.
+- Grabador de ideas: las grabaciones van en IndexedDB (`claraboya-grabador`), no en la copia de «Tus datos». Tono y BPM se calculan en el teléfono (`grabador-de-ideas/analisis.js`).
 - Modo app: lo activa un script chico en el `<head>` de cada página si es la APK, la web instalada o `?app=1`.
   En iPhone y iPad no hay APK: la app es la web agregada a inicio (misma interfaz que Android). En Safari, `pwa.js` muestra un aviso con los pasos (`window.CBInstalar`).
   El `<meta name="viewport">` va antes de ese script, que le suma `viewport-fit=cover` en modo app. `?app=0` vuelve a la web común en esa pestaña.
@@ -40,7 +42,7 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
 - `app/`: la APK (Capacitor 6). `scripts/build-app.mjs` arma `app/www` desde `dist/`:
   marca las páginas con `data-app data-native` y cambia los links `carpeta/` por `carpeta/index.html`
   (el servidor interno de la APK no abre carpetas). En JS, para links entre herramientas usar `CB.toolUrl()`.
-  - `app/native/MainActivity.java`: puente `window.ClaraboyaNativo` (guardar archivos, pantalla encendida, vibrar).
+  - `app/native/MainActivity.java`: puente `window.ClaraboyaNativo` (guardar y compartir archivos, compartir texto, pantalla encendida, vibrar, actualizar). En JS, para compartir usar `CB.share()`.
   - Íconos: `scripts/iconos.py` (Python con Pillow y numpy) dibuja los cuatro cuadros y escribe `app/assets/icon-*.png` y `web/img/app-*.png`.
     El tamaño del logo se cambia en `ALTO` (en Android, 0,51 es lo máximo que entra en el recorte redondo).
   - `app/keystore/claraboya.jks`: llave de firma, pública (mismo criterio que AirMix). No cambiarla: si cambia, hay que desinstalar para actualizar.
