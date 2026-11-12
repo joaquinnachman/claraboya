@@ -6,6 +6,7 @@
 
   // ---------------------------------------------------------------- estado
   var KEY = 'claraboya-afinador-v1';
+  var MIC_OK = 'claraboya-afinador-mic';
   var S = {
     ins: 'guitarra', tun: {}, a4: 440, notation: 'en', tol: '3', sens: 'mid', speed: 'normal',
     capo: {}, custom: {}
@@ -352,6 +353,11 @@
         src.connect(hp); hp.connect(lp1); lp1.connect(lp2); lp2.connect(analyser);
         raw = new Float32Array(analyser.fftSize);
         configureRange();
+        try { localStorage.setItem(MIC_OK, '1'); } catch (e) { /* nada */ }
+        // sin un toque, algunos teléfonos dejan el audio en pausa: ahí se pide el toque
+        setTimeout(function () {
+          if (ctx.state !== 'running') { $('start').classList.remove('hide'); msg.textContent = 'Tocá para empezar a afinar.'; }
+        }, 400);
         $('start').classList.add('hide');
         s.getAudioTracks()[0].addEventListener('ended', function () { $('start').classList.remove('hide'); msg.textContent = 'Se cortó el micrófono. Tocá para volver a activarlo.'; });
       })
@@ -360,7 +366,10 @@
         console.warn(err);
       });
   }
-  $('btnStart').addEventListener('click', startAudio);
+  $('btnStart').addEventListener('click', function () {
+    if (stream && ctx && stream.active) { ctx.resume(); $('start').classList.add('hide'); return; }
+    startAudio();
+  });
   document.addEventListener('visibilitychange', function () {
     if (!ctx) return;
     if (document.hidden) ctx.suspend(); else ctx.resume();
@@ -497,7 +506,8 @@
             progress[i] = (progress[i] || 0) + dt / 0.6;
             if (progress[i] >= 1) {
               done[i] = true; progress[i] = 0;
-              if (t.notes.every(function (_, k) { return done[k]; })) toast(ins.name.toUpperCase() + ' AFINADA ✓');
+              buzz(18);
+              if (t.notes.every(function (_, k) { return done[k]; })) { toast(ins.name.toUpperCase() + ' AFINADA ✓'); setTimeout(function () { buzz(40); }, 160); }
             }
             paintStrings();
           }
@@ -531,9 +541,19 @@
     }
   }
 
+  // ---------------------------------------------------------------- vibración (en la app)
+  function buzz(ms) {
+    try {
+      var A = window.self !== window.top && window.parent.CBApp;
+      if (A && A.haptic) A.haptic(ms); else if (navigator.vibrate) navigator.vibrate(ms);
+    } catch (e) { /* nada */ }
+  }
+
   // ---------------------------------------------------------------- botón atrás de Android
+  // Dentro de la app de Claraboya el botón atrás lo maneja la página de afuera: le avisa acá para cerrar una hoja.
+  window.CBCerrarCapa = function () { if (openSheet) { closeSheet(); return true; } return false; };
   try {
-    var App = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
+    var App = window.self === window.top && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
     if (App) App.addListener('backButton', function () {
       if (openSheet) closeSheet(); else if (App.minimizeApp) App.minimizeApp(); else App.exitApp();
     });
@@ -543,5 +563,9 @@
   buildMeter();
   renderAll();
   requestAnimationFrame(frame);
+  // en la app: si ya diste permiso alguna vez, el micrófono arranca solo
+  try {
+    if (document.documentElement.classList.contains('en-app') && localStorage.getItem(MIC_OK)) startAudio();
+  } catch (e) { /* nada */ }
   window.__afinador = { S: S, targets: targets }; // para pruebas
 })();

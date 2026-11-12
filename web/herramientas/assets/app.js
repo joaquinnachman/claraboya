@@ -61,7 +61,9 @@
     guardar: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/>',
     recuperar: '<path d="M12 20V9M7.5 13.5L12 9l4.5 4.5M5 4.5h14"/>',
     prueba: '<path d="M9 3h6M10 3v6l-5.2 9.1A2 2 0 0 0 6.5 21h11a2 2 0 0 0 1.7-2.9L14 9V3"/><path d="M7.4 15h9.2"/>',
-    nuevo: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><circle cx="12" cy="12" r="9.5"/>'
+    nuevo: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><circle cx="12" cy="12" r="9.5"/>',
+    compartir: '<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1"/>',
+    mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/>'
   };
   function svg(name, cls) {
     return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
@@ -234,6 +236,10 @@
     if (closeSheet()) return true;
     var show = document.getElementById('showMode');
     if (show && show.classList.contains('active')) { var c = document.getElementById('showCloseBtn'); if (c) c.click(); return true; }
+    var frames = document.querySelectorAll('iframe');
+    for (var i = 0; i < frames.length; i++) {
+      try { var fw = frames[i].contentWindow; if (fw && fw.CBCerrarCapa && fw.CBCerrarCapa()) return true; } catch (e) { /* nada */ }
+    }
     var dlg = document.querySelector('.cb-confirm, [role="dialog"][aria-modal="true"]:not([hidden])');
     if (dlg && dlg.getClientRects().length) {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
@@ -441,6 +447,16 @@
     return keys;
   }
   function today() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  // Pasarle la app a alguien: un link que sirve para Android, iPhone y la compu
+  function shareApp() {
+    if (!window.CB || !CB.share) return;
+    CB.share({
+      title: 'Claraboya',
+      text: 'Te paso Claraboya: afinador, metrónomo, piano y más herramientas gratis para músicos. Se instala en Android y en iPhone:',
+      url: WEB + '/bajar/'
+    });
+  }
+
   function backupAll() {
     var data = {};
     allKeys().forEach(function (k) { data[k] = store.getItem(k); });
@@ -577,6 +593,7 @@
       });
     }
     document.querySelectorAll('[data-cb-backup-all]').forEach(function (b) { b.addEventListener('click', backupAll); });
+    document.querySelectorAll('[data-cb-share-app]').forEach(function (b) { b.addEventListener('click', shareApp); });
     document.querySelectorAll('[data-cb-restore-all]').forEach(function (b) { b.addEventListener('click', restoreAll); });
     if (IOS) document.querySelectorAll('[data-cb-android-only]').forEach(function (el) { el.hidden = true; });
     var addRow = document.querySelector('[data-cb-ios-add]');

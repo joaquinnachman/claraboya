@@ -106,7 +106,7 @@
       '<li><span>Tocá <b>Compartir</b>, ' + donde + '.</span><i class="cb-steps__ico">' + ICO.compartir + '</i></li>' +
       '<li><span>Elegí <b>Agregar a inicio</b>. Si no aparece, bajá un poco en la lista.</span><i class="cb-steps__ico">' + ICO.agregar + '</i></li>' +
       '<li><span>Tocá <b>Agregar</b>. Si ves <b>Abrir como app web</b>, dejalo prendido.</span><i class="cb-steps__ico cb-steps__ico--ok">' + ICO.listo + '</i></li>' +
-      '<li><span>Abrila desde el ícono nuevo. Se ve y anda igual que en Android.</span><img class="cb-steps__app" src="/img/app-180.png" alt="" width="40" height="40"></li>' +
+      '<li><span>Abrila desde el ícono nuevo: se abre a pantalla completa, como cualquier app.</span><img class="cb-steps__app" src="/img/app-180.png" alt="" width="40" height="40"></li>' +
       '</ol>';
   }
 
@@ -159,7 +159,7 @@
     }, 1200);
   }
 
-  window.CBInstalar = { ios: isIOS, standalone: standalone, abrir: iosSheet };
+  window.CBInstalar = { ios: isIOS, standalone: standalone, abrir: iosSheet, pasos: iosSteps };
 
   /* ---------- versiones en vivo de las apps (GitHub Releases) ---------- */
   function formatSize(bytes) {

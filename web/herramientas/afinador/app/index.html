@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#121516">
 <title>Afinador online · Claraboya Estudio</title>
 <meta name="robots" content="noindex">
+<script>try{if(self!==top&&parent.document.documentElement.hasAttribute('data-app'))document.documentElement.className+=' en-app'}catch(e){}</script>
 <link rel="icon" href="../../../favicon.ico" sizes="any">
 <style>
 @font-face{font-family:'Bebas Neue';src:url(fonts/bebas.woff2) format('woff2');font-weight:400;font-display:block}
@@ -26,6 +27,8 @@
 html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:var(--body);font-weight:500;overflow:hidden;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+[hidden]{display:none!important}
+a.iconbtn{color:inherit}
 svg{display:block}
 
 /* ---------- layout ---------- */
@@ -212,6 +215,11 @@ header{display:flex;align-items:center;gap:12px;order:0}
   .brand{font-size:36px}
 }
 @media (max-height:640px) and (orientation:portrait){ .str{height:62px} .str .n{font-size:26px} .hint{font-size:24px} }
+
+/* ---------- adentro de la app de Claraboya: la barra de arriba ya dice Afinador ---------- */
+.en-app .brand{display:none}
+.en-app #app{padding-top:10px}
+.en-app #start .logo,.en-app #start .foot{display:none}
 </style>
 </head>
 <body>

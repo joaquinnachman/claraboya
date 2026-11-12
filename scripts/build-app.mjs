@@ -16,7 +16,7 @@ try { await fs.access(path.join(DIST, 'version.json')); }
 catch { console.error('Falta dist/: corré antes node scripts/build.mjs'); process.exit(1); }
 
 const SKIP = [
-  /^descargas\//, /^_headers$/, /^_redirects$/, /^sw\.js$/, /^404\.html$/, /^robots\.txt$/, /^sitemap\.xml$/,
+  /^descargas\//, /^bajar\//, /^_headers$/, /^_redirects$/, /^sw\.js$/, /^404\.html$/, /^robots\.txt$/, /^sitemap\.xml$/,
   /^index\.html$/, /^style\.css$/, /^main\.js$/,
   /^img\/(?!(logo|app-|cuadros|icon-|favicon))/   // de img/ solo logo e íconos
 ];

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{if(matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||window.Capacitor)location.replace('/app/')}catch(e){}</script>
+<title>Bajá la app de Claraboya · Herramientas gratis para músicos</title>
+<meta name="description" content="La app de Claraboya Estudio: afinador, metrónomo, piano, armador de setlists, rider técnico y más herramientas gratis para músicos. Para Android y iPhone, anda sin internet.">
+<link rel="canonical" href="https://claraboyaestudio.netlify.app/bajar/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#000000">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Claraboya Estudio">
+<meta property="og:title" content="La app de Claraboya · Herramientas gratis para músicos">
+<meta property="og:description" content="Afinador, metrónomo, piano, setlists, rider y más. Para Android y iPhone, anda sin internet.">
+<meta property="og:url" content="https://claraboyaestudio.netlify.app/bajar/">
+<meta property="og:image" content="https://claraboyaestudio.netlify.app/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../img/icon-32.png">
+<link rel="apple-touch-icon" href="../img/app-180.png">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="preload" href="../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../herramientas/assets/tools.css">
+<link rel="stylesheet" href="../herramientas/assets/app.css">
+<style>
+  body{ margin:0; min-height:100svh; background:#000; color:var(--paper); font-family:var(--body); }
+  .bj{ max-width:520px; margin:0 auto; padding:calc(20px + env(safe-area-inset-top,0px)) 18px calc(28px + env(safe-area-inset-bottom,0px)); display:grid; gap:18px; }
+  .bj__top{ display:flex; align-items:center; gap:14px; }
+  .bj__icon{ width:64px; height:64px; border-radius:16px; flex:none; }
+  .bj__top b{ display:block; font:400 2rem/1 var(--display); letter-spacing:.04em; }
+  .bj__top span{ display:block; margin-top:3px; font-size:.86rem; color:var(--soft); }
+  .bj h1{ margin:4px 0 0; font:400 clamp(2.4rem,11vw,3.2rem)/.95 var(--display); letter-spacing:.01em; }
+  .bj__lead{ margin:0; color:var(--soft); font-size:1rem; line-height:1.5; }
+  .bj__tools{ display:flex; flex-wrap:wrap; gap:6px; margin:0; padding:0; list-style:none; }
+  .bj__tools li{ padding:6px 10px; border-radius:999px; background:#171B1D; border:1px solid rgba(242,242,242,.08); font-size:.8rem; font-weight:600; color:var(--soft); }
+  .bj__card{ background:#121516; border:1px solid rgba(242,242,242,.08); border-radius:22px; padding:18px; display:grid; gap:14px; }
+  .bj__card[hidden]{ display:none; }
+  .bj__card h2{ margin:0; font:400 1.7rem/1 var(--display); letter-spacing:.03em; }
+  .bj__go{ display:flex; align-items:center; justify-content:center; gap:10px; min-height:58px; border-radius:16px; background:var(--bordo); color:var(--paper); text-decoration:none; font:700 1.02rem/1.2 var(--body); text-align:center; padding:10px 16px; }
+  .bj__go:active{ background:var(--bordo-2); }
+  .bj__go svg{ width:22px; height:22px; flex:none; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+  .bj__go small{ display:block; font-weight:600; font-size:.78rem; opacity:.8; margin-top:3px; }
+  .bj__alt{ display:flex; align-items:center; justify-content:center; min-height:48px; border-radius:14px; background:#1E2426; color:var(--paper); text-decoration:none; font-weight:700; font-size:.92rem; }
+  .bj__steps{ margin:0; padding:0 0 0 1.2em; display:grid; gap:6px; color:var(--soft); font-size:.92rem; line-height:1.45; }
+  .bj__steps b{ color:var(--paper); }
+  .bj__note{ margin:0; font-size:.8rem; line-height:1.45; color:var(--faint); }
+  .bj__other{ text-align:center; font-size:.86rem; color:var(--faint); margin:0; }
+  .bj__other a{ color:var(--soft); font-weight:700; }
+  .bj__foot{ text-align:center; font-size:.8rem; color:var(--faint); margin:6px 0 0; }
+  .bj__foot a{ color:var(--soft); }
+  .bj__url{ font:400 1.5rem/1.1 var(--display); letter-spacing:.03em; color:var(--paper); word-break:break-all; }
+</style>
+</head>
+<body>
+<main class="bj">
+  <div class="bj__top">
+    <img class="bj__icon" src="../img/app-180.png" alt="" width="64" height="64">
+    <div><b>Claraboya</b><span>Herramientas gratis para músicos</span></div>
+  </div>
+  <div>
+    <h1>Todo lo que usás para tocar, en una app</h1>
+  </div>
+  <p class="bj__lead">Las herramientas que usamos en Claraboya Estudio, juntas y gratis. Andan sin internet.</p>
+  <ul class="bj__tools">
+    <li>Afinador</li><li>Metrónomo</li><li>Piano</li><li>BPM de un tema</li><li>Setlists</li><li>Rider técnico</li><li>Calentamiento vocal</li><li>Matriz de acordes</li><li>Y más</li>
+  </ul>
+
+  <section class="bj__card" data-os="android" hidden>
+    <h2>Para Android</h2>
+    <a class="bj__go" href="../descargas/claraboya.apk">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+      <span>Bajar la app<small>Versión {{APP_VERSION}} · {{APP_SIZE}}</small></span>
+    </a>
+    <ol class="bj__steps">
+      <li>Cuando termine de bajar, <b>abrí el archivo</b>.</li>
+      <li>Si el teléfono pregunta, <b>permití instalar apps</b> desde el navegador.</li>
+      <li>Tocá <b>Instalar</b>. Las versiones nuevas te las avisa la app.</li>
+    </ol>
+    <p class="bj__note">Puede aparecer un aviso de seguridad porque no viene de Play Store. Es normal: la app es la misma que ofrecemos en nuestra web.</p>
+  </section>
+
+  <section class="bj__card" data-os="ios" hidden>
+    <h2 data-ios-title>Para iPhone</h2>
+    <div data-ios-steps></div>
+    <a class="bj__alt" href="../app/?app=1">Probarla antes de agregarla</a>
+    <p class="bj__note" data-ios-safari hidden>Abrí este link en <b>Safari</b>: es el que permite agregarla a inicio.</p>
+  </section>
+
+  <section class="bj__card" data-os="compu" hidden>
+    <h2>Desde el celular</h2>
+    <p class="bj__lead">Abrí esta dirección en tu teléfono, Android o iPhone:</p>
+    <p class="bj__url">claraboyaestudio.netlify.app/bajar</p>
+    <a class="bj__alt" href="../herramientas/">Usar las herramientas en la compu</a>
+  </section>
+
+  <p class="bj__other" data-otros></p>
+  <p class="bj__foot">Hecho por <a href="../">Claraboya Estudio</a> · Vicente López</p>
+</main>
+<script src="../herramientas/assets/pwa.js" defer></script>
+<script>
+(function () {
+  var ua = navigator.userAgent;
+  var ios = /iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  var ipad = /ipad/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  var android = /android/i.test(ua);
+  var OTROS = [['android', '#android', 'Android'], ['ios', '#iphone', 'iPhone'], ['compu', '#compu', 'Compu']];
+  function ver(os) {
+    document.querySelectorAll('[data-os]').forEach(function (s) { s.hidden = s.getAttribute('data-os') !== os; });
+    document.querySelector('[data-otros]').innerHTML = (os === 'compu' ? '¿Lo querés ver para un teléfono? ' : '¿Otro teléfono? ') +
+      OTROS.filter(function (o) { return o[0] !== os; }).map(function (o) { return '<a href="' + o[1] + '" data-ver="' + o[0] + '">' + o[2] + '</a>'; }).join(' · ');
+  }
+  var h = location.hash.slice(1);
+  ver(h === 'android' ? 'android' : h === 'iphone' ? 'ios' : h === 'compu' ? 'compu' : ios ? 'ios' : android ? 'android' : 'compu');
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-ver]'); if (!a) return;
+    e.preventDefault(); ver(a.getAttribute('data-ver')); history.replaceState(null, '', a.getAttribute('href'));
+  });
+  document.addEventListener('DOMContentLoaded', function () {
+    if (ipad) document.querySelector('[data-ios-title]').textContent = 'Para iPad';
+    if (ios && /CriOS|FxiOS|EdgiOS/.test(ua)) document.querySelector('[data-ios-safari]').hidden = false;
+    var box = document.querySelector('[data-ios-steps]');
+    if (window.CBInstalar && CBInstalar.pasos) box.innerHTML = CBInstalar.pasos();
+  });
+})();
+</script>
+</body>
+</html>

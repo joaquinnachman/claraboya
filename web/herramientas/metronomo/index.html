@@ -27,17 +27,33 @@
   .met{ display:grid; grid-template-columns: 1.35fr 1fr; gap:16px; align-items:start; }
   @media (max-width: 860px){ .met{ grid-template-columns:minmax(0,1fr); } }
   .met__main{ background:var(--ink-2); border-radius:6px; padding:clamp(18px,3vw,30px); display:grid; grid-template-columns:minmax(0,1fr); gap:16px; }
-  .met__tempo{ display:grid; grid-template-columns:64px minmax(0,1fr) 64px; align-items:center; gap:10px; }
-  .met__step{ width:64px; height:64px; border-radius:50%; border:0; background:var(--ink-3); color:var(--paper); font:500 2rem/1 var(--body); cursor:pointer; }
-  .met__step:hover{ background:var(--ink-4); }
-  .met__bpm{ display:grid; justify-items:center; gap:2px; }
-  .met__num{ width:100%; max-width:4.2ch; padding:0; background:transparent !important; border:0 !important; text-align:center; font:400 clamp(5.5rem,14vw,8.5rem)/.85 var(--display) !important; color:var(--paper); letter-spacing:.01em; }
-  .met__num:focus{ outline:none; color:#fff; }
+  /* rueda de tempo: se gira con el dedo (o el mouse); 1 BPM cada 6° */
+  .met__dial{ position:relative; width:min(300px, 100%); aspect-ratio:1; margin:0 auto; -webkit-user-select:none; user-select:none; }
+  .met__ring{ position:absolute; inset:0; width:100%; height:100%; display:block; clip-path:circle(50%); touch-action:none; cursor:grab; }
+  .met__ring:active{ cursor:grabbing; }
+  .met__ring .band{ fill:none; stroke:rgba(242,242,242,.05); stroke-width:40; }
+  .met__ring .disc{ fill:var(--ink-3); }
+  .met__ring .glow{ fill:var(--paper); opacity:0; transition:opacity .22s ease-out; }
+  .met__ring .glow.on{ opacity:.09; transition:none; }
+  .met__ring .glow.on2{ fill:var(--rosa); opacity:.3; transition:none; }
+  .met__ring .tick{ stroke:rgba(242,242,242,.28); stroke-width:2; stroke-linecap:round; }
+  .met__ring .tick.big{ stroke:rgba(242,242,242,.62); stroke-width:3; }
+  .met__ring .mark{ fill:var(--rosa); }
+  .met__bpm{ position:absolute; left:50%; top:50%; width:62%; aspect-ratio:1; transform:translate(-50%,-50%); border-radius:50%;
+    display:grid; place-content:center; justify-items:center; gap:2px; touch-action:pan-y; cursor:ew-resize; }
+  .met__num{ width:100%; max-width:3.6ch; padding:0; background:transparent !important; border:0 !important; text-align:center; font:400 clamp(4.6rem,15vw,6.4rem)/.85 var(--display) !important; color:var(--paper); letter-spacing:.01em; pointer-events:none; }
+  .met__num:focus{ outline:none; color:#fff; pointer-events:auto; }
   .met__unit{ font:700 .78rem/1 var(--body); letter-spacing:.08em; color:var(--faint); }
-  .met__word{ font:400 1.4rem/1 var(--display); letter-spacing:.06em; color:var(--rosa); margin-top:4px; }
+  .met__word{ font:400 1.3rem/1 var(--display); letter-spacing:.06em; color:var(--rosa); margin-top:4px; }
+  .met__step{ position:absolute; bottom:0; width:58px; height:58px; border-radius:50%; border:0; background:var(--ink-4); color:var(--paper); font:500 2rem/1 var(--body); cursor:pointer; touch-action:manipulation; box-shadow:0 0 0 6px var(--ink-2); }
+  .met__step:hover{ background:#3a4245; }
+  .met__step:active{ transform:scale(.94); }
+  .met__step--minus{ left:0; } .met__step--plus{ right:0; }
+  .met__dial-hint{ text-align:center; margin:-4px 0 0; }
   .met__slider, #volSlider{ width:100%; accent-color: var(--rosa); }
+  @media (hover: none){ .met__slider{ display:none; } }
   .met__quick{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
-  @media (max-width: 359px){ .met__main{ padding:14px; } .met__tempo{ grid-template-columns:52px minmax(0,1fr) 52px; gap:6px; } .met__step{ width:52px; height:52px; } }
+  @media (max-width: 359px){ .met__main{ padding:14px; } .met__step{ width:50px; height:50px; } }
 
   .beats{ list-style:none; margin:4px 0 0; padding:0; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
   .beat{ width:clamp(38px,6vw,52px); height:clamp(38px,6vw,52px); border-radius:50%; border:2px solid rgba(242,242,242,.28); background:transparent; cursor:pointer; position:relative; padding:0; transition: transform .06s ease, background .06s ease; }
@@ -62,6 +78,7 @@
   .met__keys{ text-align:center; margin:0; }
   kbd{ font:600 .72rem/1 var(--body); padding:2px 6px; border-radius:3px; background:var(--ink-3); color:var(--soft); }
   @media (hover: none){ .met__keys{ display:none; } }
+  html[data-app] .met__actions{ position:sticky; z-index:3; bottom:calc(var(--tab-bar) + var(--safe-b) + 10px); background:var(--ink-2); box-shadow:0 -14px 14px -2px var(--ink-2), 0 14px 0 0 var(--ink-2); }
 
   .met__side{ display:grid; gap:16px; }
   .met__side .panel{ display:grid; gap:8px; }
@@ -128,16 +145,24 @@
 
   <section class="met" aria-label="Metrónomo">
     <div class="met__main">
-      <div class="met__tempo">
-        <button class="met__step" type="button" data-step="-1" aria-label="Bajar 1 BPM">−</button>
-        <div class="met__bpm">
+      <div class="met__dial" id="dial">
+        <svg class="met__ring" id="dialRing" viewBox="0 0 300 300" role="slider" aria-label="Rueda de tempo" aria-valuemin="30" aria-valuemax="300" aria-valuenow="100" tabindex="-1">
+          <circle class="band" cx="150" cy="150" r="130"/>
+          <g id="dialTicks"></g>
+          <circle class="disc" cx="150" cy="150" r="104"/>
+          <circle class="glow" id="dialGlow" cx="150" cy="150" r="104"/>
+          <path class="mark" d="M150 22l-7-12h14z"/>
+        </svg>
+        <div class="met__bpm" id="dialCenter">
           <label class="visually-hidden" for="bpmInput">Tempo en BPM</label>
           <input id="bpmInput" class="met__num" type="text" inputmode="numeric" value="100" maxlength="3" autocomplete="off">
           <span class="met__unit">BPM <span id="unitNote"></span></span>
           <span class="met__word" id="tempoWord">Moderato</span>
         </div>
-        <button class="met__step" type="button" data-step="1" aria-label="Subir 1 BPM">+</button>
+        <button class="met__step met__step--minus" type="button" data-step="-1" aria-label="Bajar 1 BPM">−</button>
+        <button class="met__step met__step--plus" type="button" data-step="1" aria-label="Subir 1 BPM">+</button>
       </div>
+      <p class="hint met__dial-hint">Girá la rueda para cambiar el tempo. Tocá el número para escribirlo.</p>
       <input id="bpmSlider" class="met__slider" type="range" min="30" max="300" value="100" aria-label="Tempo">
       <div class="met__quick" aria-label="Ajuste rápido">
         <button class="btn small ghost" type="button" data-step="-10">−10</button>
@@ -287,6 +312,8 @@
     if (!fromInput) $('bpmInput').value = S.bpm;
     $('bpmSlider').value = S.bpm;
     $('tempoWord').textContent = word(S.bpm);
+    $('dialTicks').setAttribute('transform', 'rotate(' + ((S.bpm * DEG) % 360) + ' 150 150)');
+    $('dialRing').setAttribute('aria-valuenow', S.bpm);
     save();
   }
   $('bpmInput').addEventListener('input', function () {
@@ -302,8 +329,66 @@
   });
   $('bpmInput').addEventListener('focus', function () { this.select(); });
   $('bpmSlider').addEventListener('input', function () { setBpm(this.value); });
-  document.querySelectorAll('[data-step]').forEach(function (b) {
+  document.querySelectorAll('.met__quick [data-step]').forEach(function (b) {
     b.addEventListener('click', function () { setBpm(S.bpm + parseInt(b.dataset.step, 10)); });
+  });
+
+  // ---------- rueda de tempo ----------
+  var DEG = 6; // grados de giro por BPM
+  (function () {
+    var g = $('dialTicks'), out = '';
+    for (var i = 0; i < 60; i++) {
+      var big = i % 5 === 0, a = i * 6 * Math.PI / 180, r1 = big ? 118 : 122, r2 = 140;
+      out += '<line class="tick' + (big ? ' big' : '') + '" x1="' + (150 + r1 * Math.sin(a)).toFixed(1) + '" y1="' + (150 - r1 * Math.cos(a)).toFixed(1) +
+        '" x2="' + (150 + r2 * Math.sin(a)).toFixed(1) + '" y2="' + (150 - r2 * Math.cos(a)).toFixed(1) + '"/>';
+    }
+    g.innerHTML = out;
+  })();
+  function buzz() {
+    var n = performance.now(); if (n - (buzz.t || 0) < 35) return; buzz.t = n;
+    try { if (window.CBApp && CBApp.haptic) CBApp.haptic(6); else if (navigator.vibrate) navigator.vibrate(6); } catch (e) { /* nada */ }
+  }
+  function nudge(n) { var b = S.bpm; setBpm(n); if (S.bpm !== b) buzz(); }
+  var ring = $('dialRing'), center = $('dialCenter'), drag = null;
+  function angleAt(e) { var r = ring.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI; }
+  ring.addEventListener('pointerdown', function (e) {
+    e.preventDefault(); ring.setPointerCapture(e.pointerId);
+    drag = { a: angleAt(e), acc: 0, base: S.bpm };
+  });
+  ring.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    var a = angleAt(e), d = a - drag.a; if (d > 180) d -= 360; if (d < -180) d += 360;
+    drag.a = a; drag.acc += d;
+    var raw = drag.base + drag.acc / DEG;
+    if (raw > MAX || raw < MIN) { drag.base = clamp(raw); drag.acc = 0; }
+    nudge(raw);
+  });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(function (ev) { ring.addEventListener(ev, function () { drag = null; }); });
+  // el número: deslizar a los costados cambia el tempo; un toque deja escribirlo
+  var swipe = null;
+  center.addEventListener('pointerdown', function (e) { if (document.activeElement === $('bpmInput')) return; swipe = { x: e.clientX, base: S.bpm, moved: false }; });
+  center.addEventListener('pointermove', function (e) {
+    if (!swipe) return;
+    var dx = e.clientX - swipe.x;
+    if (!swipe.moved && Math.abs(dx) > 6) { swipe.moved = true; try { center.setPointerCapture(e.pointerId); } catch (x) { /* nada */ } }
+    if (swipe.moved) nudge(swipe.base + Math.round(dx / 8));
+  });
+  center.addEventListener('pointerup', function () {
+    if (swipe && !swipe.moved) { $('bpmInput').focus(); }
+    swipe = null;
+  });
+  center.addEventListener('pointercancel', function () { swipe = null; });
+  $('dial').addEventListener('wheel', function (e) { e.preventDefault(); nudge(S.bpm + (e.deltaY < 0 ? 1 : -1)); }, { passive: false });
+  // − y +: un toque suma 1; apretados, siguen solos
+  document.querySelectorAll('.met__step').forEach(function (b) {
+    var step = parseInt(b.dataset.step, 10), t1 = 0, t2 = 0;
+    function stopRep() { clearTimeout(t1); clearInterval(t2); }
+    b.addEventListener('pointerdown', function (e) {
+      e.preventDefault(); nudge(S.bpm + step);
+      t1 = setTimeout(function () { t2 = setInterval(function () { nudge(S.bpm + step); }, 70); }, 420);
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) { b.addEventListener(ev, stopRep); });
+    b.addEventListener('click', function (e) { if (e.detail === 0) setBpm(S.bpm + step); }); // teclado
   });
   $('halfBtn').addEventListener('click', function () { setBpm(S.bpm / 2); });
   $('dblBtn').addEventListener('click', function () { setBpm(S.bpm * 2); });
@@ -428,12 +513,13 @@
     if (!playing) return;
     var now = ctx.currentTime;
     while (queue.length && queue[0].t <= now) {
-      var ev = queue.shift(), els = document.querySelectorAll('#beats .beat');
+      var ev = queue.shift(), els = document.querySelectorAll('#beats .beat'), lvl = accents()[ev.beat];
       if (lit) lit.classList.remove('on');
       lit = els[ev.beat] || null;
       if (lit) lit.classList.add('on');
+      if (lvl > 0) $('dialGlow').setAttribute('class', 'glow ' + (lvl === 2 ? 'on2' : 'on'));
       clearTimeout(draw.off);
-      draw.off = setTimeout(function () { if (lit) lit.classList.remove('on'); }, Math.min(140, 60000 / S.bpm * 0.6));
+      draw.off = setTimeout(function () { if (lit) lit.classList.remove('on'); $('dialGlow').setAttribute('class', 'glow'); }, Math.min(140, 60000 / S.bpm * 0.6));
     }
     requestAnimationFrame(draw);
   }
@@ -458,6 +544,7 @@
   function stop() {
     playing = false; clearInterval(timer); queue = [];
     if (lit) lit.classList.remove('on');
+    $('dialGlow').setAttribute('class', 'glow');
     $('playBtn').setAttribute('aria-pressed', 'false'); $('playTxt').textContent = 'Arrancar';
     if (wake) { wake.release().catch(function () {}); wake = null; }
   }

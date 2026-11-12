@@ -20,6 +20,8 @@ import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
+
 import com.getcapacitor.BridgeActivity;
 
 import java.io.File;
@@ -77,6 +79,50 @@ public class MainActivity extends BridgeActivity {
                 if (Build.VERSION.SDK_INT >= 26) v.vibrate(VibrationEffect.createOneShot(Math.max(1, ms), VibrationEffect.DEFAULT_AMPLITUDE));
                 else v.vibrate(Math.max(1, ms));
             } catch (Exception ignored) { }
+        }
+
+        /* ---------- compartir ---------- */
+
+        /** Abre el menú de compartir de Android con un texto (por ejemplo, el link de la app). */
+        @JavascriptInterface
+        public void compartir(final String titulo, final String texto) {
+            runOnUiThread(() -> {
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    if (titulo != null && !titulo.isEmpty()) i.putExtra(Intent.EXTRA_SUBJECT, titulo);
+                    i.putExtra(Intent.EXTRA_TEXT, texto);
+                    startActivity(Intent.createChooser(i, titulo == null || titulo.isEmpty() ? "Compartir" : titulo));
+                } catch (Exception e) {
+                    Toast.makeText(ctx, "No se pudo abrir el menú para compartir", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        /** Comparte un archivo (por ejemplo, una idea grabada) por WhatsApp u otra app. Devuelve "ok" o el error. */
+        @JavascriptInterface
+        public String compartirArchivo(String base64, String nombre, String mime, final String texto) {
+            try {
+                File dir = new File(ctx.getCacheDir(), "compartir");
+                if (!dir.exists()) dir.mkdirs();
+                File[] viejos = dir.listFiles();
+                if (viejos != null) for (File f : viejos) f.delete();
+                File archivo = new File(dir, nombre.replaceAll("[\\\\/:*?\"<>|]", "-"));
+                try (OutputStream out = new FileOutputStream(archivo)) { out.write(Base64.decode(base64, Base64.DEFAULT)); }
+                final Uri uri = FileProvider.getUriForFile(ctx, ctx.getPackageName() + ".fileprovider", archivo);
+                final String tipo = mime == null || mime.isEmpty() ? "application/octet-stream" : mime;
+                runOnUiThread(() -> {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType(tipo);
+                    i.putExtra(Intent.EXTRA_STREAM, uri);
+                    if (texto != null && !texto.isEmpty()) i.putExtra(Intent.EXTRA_TEXT, texto);
+                    i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(Intent.createChooser(i, "Compartir"));
+                });
+                return "ok";
+            } catch (Exception e) {
+                return "No se pudo compartir: " + e.getMessage();
+            }
         }
 
         /* ---------- actualización ---------- */

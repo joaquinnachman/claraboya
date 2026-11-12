@@ -7,6 +7,12 @@
   var TOOL = document.body.getAttribute('data-tool') || 'herramientas';
   var PREFIX = 'cb.' + TOOL + '.';
 
+  // iPhone: que suene aunque la tecla de silencio esté puesta, como en Android.
+  // (Al arrancar pausa la música de otras apps.) El afinador no: usa el micrófono.
+  try {
+    if (navigator.audioSession && TOOL !== 'afinador' && TOOL !== 'herramientas') navigator.audioSession.type = 'playback';
+  } catch (e) { /* nada */ }
+
   /* ---------- almacenamiento ---------- */
   var hasLS = (function () {
     try { var k = '__cb_test'; localStorage.setItem(k, '1'); localStorage.removeItem(k); return true; }
@@ -174,6 +180,44 @@
     return Promise.resolve();
   }
 
+  /* ---------- compartir ----------
+     Abre el menú de compartir del teléfono (WhatsApp, Instagram, etc.).
+     En la APK usa el puente nativo; en iPhone y en Chrome, el de la web; si no hay ninguno,
+     copia el link (o, si es un archivo, lo guarda). */
+  function blobToBase64(blob) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(String(r.result).split(',')[1] || ''); };
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    });
+  }
+  function share(o) {
+    var nativo = window.ClaraboyaNativo;
+    var cancel = function (e) { if (e && e.name === 'AbortError') return 'cancelado'; throw e; };
+    if (o.file) {
+      var name = safeFilename(o.name || 'archivo');
+      if (nativo && nativo.compartirArchivo) {
+        return blobToBase64(o.file).then(function (b64) {
+          var r = nativo.compartirArchivo(b64, name, o.file.type || 'application/octet-stream', o.text || '');
+          if (r !== 'ok') return saveFile(o.file, name);
+          return 'ok';
+        });
+      }
+      var f = null;
+      try { f = new File([o.file], name, { type: o.file.type }); } catch (e) { /* nada */ }
+      if (f && navigator.canShare && navigator.canShare({ files: [f] })) {
+        return navigator.share({ files: [f], title: o.title || name, text: o.text || '' }).then(function () { return 'ok'; }, cancel);
+      }
+      return saveFile(o.file, name).then(function () { toast('Lo guardé en el teléfono: mandalo desde ahí.'); return 'guardado'; });
+    }
+    var full = (o.text || '') + (o.url ? (o.text ? '\n' : '') + o.url : '');
+    if (nativo && nativo.compartir) { nativo.compartir(o.title || '', full); return Promise.resolve('ok'); }
+    if (navigator.share) return navigator.share({ title: o.title, text: o.text, url: o.url }).then(function () { return 'ok'; }, cancel);
+    var copy = navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(full) : Promise.reject();
+    return copy.then(function () { toast('Link copiado: pegalo donde quieras.'); return 'copiado'; }, function () { window.prompt('Copiá este link:', o.url || full); return 'copiado'; });
+  }
+
   /* ---------- copia de seguridad (exportar / importar) ---------- */
   function ownKeys() {
     var keys = [];
@@ -320,6 +364,7 @@
     persistent: hasLS,
     db: function () { return Promise.resolve(localDb); },
     saveFile: saveFile,
+    share: share,
     toast: toast,
     confirm: confirmBox,
     params: params,

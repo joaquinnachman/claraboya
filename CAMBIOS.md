@@ -3,6 +3,13 @@
 Una sola versión para todo: la web, las herramientas y las apps.
 La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versión" y sale los lunes.
 
+## Próxima versión
+- Metrónomo rediseñado para el dedo: el tempo se cambia girando una rueda, deslizando el número o dejando apretados − y +. La rueda titila con cada pulso y, en la app, Arrancar y Tap quedan siempre a mano.
+- Afinador: en la app ocupa toda la pantalla, arranca solo si ya le diste permiso al micrófono y vibra cuando una cuerda queda afinada.
+- En iPhone, el metrónomo, el piano y las demás herramientas que suenan se escuchan aunque el teléfono esté en silencio (al arrancar, pausan la música de otras apps).
+- Botón «Pasale la app a un amigo» en Estudio, y página nueva claraboyaestudio.netlify.app/bajar que muestra cómo instalarla según el teléfono.
+- Arreglado: adentro del afinador aparecía un botón de cerrar que no iba.
+
 ## 7.1.2 — 12/11/2026
 - Ícono de la app con el logo más grande, en Android y en iPhone (en iPhone se ve al volver a agregarla a inicio).
 - Arreglado: recién actualizada, la app ya no sigue avisando que hay una versión nueva.

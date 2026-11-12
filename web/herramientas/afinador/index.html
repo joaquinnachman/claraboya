@@ -34,6 +34,11 @@
   .feats span{ font-size:.84rem; color:var(--soft); line-height:1.5; }
   @media (max-width: 900px){ .feats{ grid-template-columns:1fr 1fr; } }
   @media (max-width: 520px){ .feats{ grid-template-columns:1fr; } .tuner__frame{ height:calc(100svh - 150px); min-height:560px; } }
+  /* en la app: el afinador ocupa toda la pantalla, entre la barra de arriba y la de abajo */
+  html[data-app] body{ overflow:hidden; }
+  html[data-app] .tuner{ position:fixed; z-index:1; left:0; right:0; top:calc(var(--app-bar) + var(--safe-t)); bottom:calc(var(--tab-bar) + var(--safe-b)); border-radius:0; box-shadow:none; }
+  html[data-app] .tuner__frame{ height:100%; min-height:0; }
+  html[data-app] .tuner__bar, html[data-app] .next{ display:none; }
 
   /* bloque de descarga de app (afinador) */
   .dl{ display:grid; grid-template-columns: 1.2fr 1fr; gap:18px 36px; align-items:start; background:var(--bordo); border-radius:6px; padding:clamp(20px,3vw,32px); }
