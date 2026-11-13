@@ -45,8 +45,9 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
   marca las páginas con `data-app data-native` y cambia los links `carpeta/` por `carpeta/index.html`
   (el servidor interno de la APK no abre carpetas). En JS, para links entre herramientas usar `CB.toolUrl()`.
   - `app/native/MainActivity.java`: puente `window.ClaraboyaNativo` (guardar y compartir archivos, compartir texto, pantalla encendida, vibrar, actualizar). En JS, para compartir usar `CB.share()`.
-  - Íconos: `scripts/iconos.py` (Python con Pillow y numpy) dibuja los cuatro cuadros y escribe `app/assets/icon-*.png` y `web/img/app-*.png`.
-    El tamaño del logo se cambia en `ALTO` (en Android, 0,51 es lo máximo que entra en el recorte redondo).
+  - Íconos: `scripts/iconos.py` (Python con Pillow y numpy) dibuja la claraboya hecha vúmetro (los cuatro cuadros apenas separados, partidos en segmentos, con el pico más claro) y escribe `app/assets/icon-*.png` y `web/img/app-*.png`.
+    El tamaño del logo se cambia en `ALTO` (en Android, 0,51 es lo máximo que entra en el recorte redondo); separación, segmentos y colores, arriba del archivo.
+    El logo de la marca (cabecera, pantalla de carga, sticker) sigue siendo la claraboya sola.
   - `app/keystore/claraboya.jks`: llave de firma, pública (mismo criterio que AirMix). No cambiarla: si cambia, hay que desinstalar para actualizar.
 - La APK la arma GitHub Actions (`.github/workflows/app.yml`); no hay SDK de Android local.
 
