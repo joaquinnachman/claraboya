@@ -4,6 +4,12 @@ Una sola versión para todo: la web, las herramientas y las apps.
 La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versión" y sale los lunes.
 
 ## Próxima versión
+- Rider técnico en otros idiomas: el PDF sale en castellano, inglés, portugués, francés, italiano o alemán (títulos, columnas, escenario y lo que vino de las plantillas, que se traduce solo; lo que escribiste vos queda igual). Con «Otro idioma…» escribís vos los textos, incluso con otros alfabetos (polaco, griego, ruso…).
+- Stage plot rediseñado: en el celular ya no se corta ni se encima (el escenario es más alto, los íconos se adaptan al tamaño y los carteles de fondo y público quedan afuera del área), se puede bajar la página con el dedo encima, los íconos se agarran desde donde tocás, se mueven con el teclado y muestran su número de canal.
+- En el PDF el stage plot sale claro (fondo blanco, para imprimir sin gastar tinta), siempre con la misma forma sin importar en qué pantalla lo armaste, con letras más grandes y los números de canal.
+- Rider: la barra de Guardar y Exportar ocupa menos en el celular y en la app queda arriba de la barra de abajo.
+- En la app, en el celular, el estado de guardado de arriba es solo un puntito, así entra el nombre de la herramienta.
+- Arreglado: el recorrido de herramientas del selector no mostraba el Piano ni el Grabador de ideas.
 - Herramienta nueva, 11 · Grabador de ideas: grabás una melodía o un riff (con o sin click, con un compás de cuenta), te dice en qué tono y a qué tempo está, guardás la letra y las notas al lado, y la mandás por WhatsApp o la guardás como archivo para abrirla en la compu. Desde cada idea vas directo al metrónomo o al piano con su tono.
 - La lista de herramientas de la página del estudio suma el Piano y el Grabador de ideas.
 - Metrónomo rediseñado para el dedo: el tempo se cambia girando una rueda, deslizando el número o dejando apretados − y +. La rueda titila con cada pulso y, en la app, Arrancar y Tap quedan siempre a mano.

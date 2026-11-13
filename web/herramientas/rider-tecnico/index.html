@@ -42,28 +42,79 @@
   .color-row{ display:flex; align-items:center; gap:12px; }
   input[type=color]{ width:42px; height:36px; padding:2px; border-radius:3px; background:var(--ink-3); border:0; cursor:pointer; flex:none; }
 
+  /* idioma del rider */
+  .lang-row{ display:grid; grid-template-columns:minmax(0,260px) minmax(0,1fr); gap:14px; align-items:end; margin-bottom:14px; }
+  .lang-row .hint{ margin:0 0 9px; }
+  @media (max-width: 760px){ .lang-row{ grid-template-columns:1fr; gap:6px; } .lang-row .hint{ margin:0; } }
+  .lang-texts{ margin:0 0 16px; background:var(--ink-3); border-radius:4px; padding:0 14px; }
+  .lang-texts > summary{ cursor:pointer; padding:12px 0; font-weight:700; font-size:13px; list-style:none; display:flex; align-items:center; gap:8px; }
+  .lang-texts > summary::-webkit-details-marker{ display:none; }
+  .lang-texts > summary::before{ content:'›'; font-size:18px; line-height:1; transition:transform .15s; color:var(--text-faint); }
+  .lang-texts[open] > summary::before{ transform:rotate(90deg); }
+  .lang-texts .hint{ margin:0 0 10px; }
+  .lang-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap:10px 12px; padding-bottom:12px; }
+  @media (min-width: 760px){ .lang-grid{ grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); } }
+  .lang-grid label{ display:grid; gap:4px; font-size:11px; font-weight:700; color:var(--text-faint); letter-spacing:.03em; }
+  .lang-grid input{ background:var(--ink-4); }
+  .lang-texts .btn{ margin-bottom:14px; }
+
   /* stage plot */
   .stage-toolbar{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
-  .palette-btn{ font: 600 12px/1 var(--body); background:var(--ink-3); color:var(--paper); border:0; border-radius:99px; padding:7px 12px 7px 9px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+  .palette-btn{ font: 600 12px/1 var(--body); background:var(--ink-3); color:var(--paper); border:0; border-radius:99px; min-height:36px; padding:0 13px 0 9px; cursor:pointer; display:inline-flex; align-items:center; gap:7px; flex:none; white-space:nowrap; }
   .palette-btn:hover{ background:var(--ink-4); }
-  .stage-surface{
-    position:relative; width:100%; aspect-ratio: 16/9; max-height:480px; background:
-      linear-gradient(var(--ink-3),var(--ink-3)),
-      repeating-linear-gradient(0deg, rgba(242,242,242,0.05) 0 1px, transparent 1px 40px),
-      repeating-linear-gradient(90deg, rgba(242,242,242,0.05) 0 1px, transparent 1px 40px);
-    border-radius: 4px; overflow:hidden; touch-action:none; border:1px solid var(--line);
+  .palette-btn svg{ width:20px; height:20px; display:block; }
+  @media (max-width: 620px){
+    .stage-toolbar{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin:0 -16px 12px; padding:0 16px 2px; scroll-padding:0 16px; }
+    .stage-toolbar::-webkit-scrollbar{ display:none; }
+    .palette-btn{ min-height:40px; }
   }
-  .stage-edge-label{ position:absolute; left:50%; transform:translateX(-50%); font: 400 13px/1 var(--display); letter-spacing:0.14em; color:var(--text-faint); pointer-events:none; }
-  .stage-edge-label.top{ top:9px; }
-  .stage-edge-label.bottom{ bottom:9px; color:var(--gold); }
-  .stage-item{ position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:3px; cursor:grab; user-select:none; touch-action:none; }
+  .stage-frame{ max-width:960px; margin:0 auto; border:1px solid var(--line); border-radius:6px; overflow:hidden; background:var(--ink-3); }
+  .stage-band{ font: 400 12px/1 var(--display); letter-spacing:0.16em; text-transform:uppercase; text-align:center; padding:8px 10px 7px; color:var(--text-faint); background:rgba(0,0,0,0.18); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .stage-band--front{ color:var(--gold); }
+  .stage-surface{
+    position:relative; width:100%; aspect-ratio:16/9; container-type:inline-size;
+    background:
+      repeating-linear-gradient(0deg, rgba(242,242,242,0.05) 0 1px, transparent 1px 40px),
+      repeating-linear-gradient(90deg, rgba(242,242,242,0.05) 0 1px, transparent 1px 40px),
+      var(--ink-3);
+    touch-action:pan-y;
+  }
+  @media (max-width: 620px){ .stage-surface{ aspect-ratio:4/3; } }
+  .stage-layer{ position:absolute; inset:0; }
+  .stage-item{ position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:2px; cursor:grab; user-select:none; -webkit-user-select:none; touch-action:none; -webkit-touch-callout:none; border-radius:6px; }
   .stage-item:active{ cursor:grabbing; }
-  .stage-item.selected .stage-icon-box{ outline:2px solid var(--rosa); outline-offset:2px; border-radius:6px; }
-  .stage-icon-box svg{ width:38px; height:38px; display:block; }
-  .stage-item-label{ font: 700 9.5px/1.3 var(--body); color:var(--paper); background:rgba(0,0,0,0.6); padding:1px 5px; border-radius:3px; white-space:nowrap; max-width:120px; overflow:hidden; text-overflow:ellipsis; }
-  .stage-inspector{ display:flex; gap:8px; margin-top:10px; align-items:center; flex-wrap:wrap; background:var(--ink-3); border-radius:3px; padding:10px 12px; }
-  .stage-inspector input{ flex:1; min-width:140px; background:var(--ink-4); }
-  .stage-empty-hint{ font-size:12px; color:var(--text-faint); margin-top:8px; }
+  .stage-item:focus{ outline:none; }
+  .stage-item:focus-visible .stage-icon-box{ outline:2px solid var(--paper); outline-offset:3px; }
+  .stage-item.selected .stage-icon-box{ outline:2px solid var(--rosa); outline-offset:3px; }
+  .stage-icon-box{ position:relative; width:clamp(26px, 4.6cqw, 46px); height:clamp(26px, 4.6cqw, 46px); border-radius:6px; }
+  .stage-icon{ width:100%; height:100%; }
+  .stage-icon svg{ width:100%; height:100%; display:block; }
+  .stage-badge{ position:absolute; top:-5px; left:-8px; min-width:16px; height:16px; padding:0 3px; box-sizing:border-box; border-radius:8px; background:var(--rosa); color:#141819; font:700 9px/1 var(--body); display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 1.5px var(--ink-3); }
+  .stage-badge.is-out{ background:#5AC8FA; }
+  .stage-num{ display:inline-block; margin:0 4px 0 -2px; padding:0 3px; border-radius:2px; background:var(--rosa); color:#141819; font-weight:800; }
+  .stage-num.is-out{ background:#5AC8FA; }
+  .stage-item-label{ font: 700 clamp(8.5px, 1.25cqw, 12px)/1.3 var(--body); color:var(--paper); background:rgba(0,0,0,0.62); padding:1px 5px; border-radius:3px; white-space:nowrap; max-width:clamp(100px, 20cqw, 170px); overflow:hidden; text-overflow:ellipsis; }
+  .stage-inspector{ display:flex; gap:8px; margin:10px auto 0; max-width:960px; align-items:center; flex-wrap:wrap; background:var(--ink-3); border-radius:4px; padding:10px 12px; box-sizing:border-box; }
+  .stage-inspector input{ flex:1; min-width:160px; background:var(--ink-4); }
+  .stage-inspector .btn{ min-height:40px; }
+  .stage-empty-hint{ font-size:12px; color:var(--text-faint); margin:8px auto 0; max-width:960px; }
+  .stage-tip{ font-size:12px; color:var(--text-faint); margin:8px auto 0; max-width:960px; }
+  @media (hover: none){ .stage-tip--mouse{ display:none; } }
+
+  /* versión para el PDF: clara, se arma fuera de la pantalla y se copia como imagen */
+  .sp{ position:fixed; left:-20000px; top:0; width:960px; background:#FFFFFF; color:#1F2426; font-family:var(--body); border:2px solid #1F2426; box-sizing:border-box; }
+  .sp .stage-band{ font: 700 14px/1 var(--body); letter-spacing:0.14em; padding:11px 10px; color:#3A4245; background:#EEF0F1; }
+  .sp .stage-band--front{ color:var(--sp-accent, #6E1618); border-top:1.5px solid #1F2426; }
+  .sp .stage-band:first-child{ border-bottom:1.5px solid #1F2426; }
+  .sp .stage-surface{ aspect-ratio:auto; height:540px; container-type:normal; background:
+      repeating-linear-gradient(0deg, #E6E9EB 0 1px, transparent 1px 40px),
+      repeating-linear-gradient(90deg, #E6E9EB 0 1px, transparent 1px 40px), #FFFFFF; }
+  .sp .stage-icon-box{ width:48px; height:48px; }
+  .sp .stage-item-label{ font: 700 13px/1.35 var(--body); color:#1F2426; background:#FFFFFF; border:1px solid #B8BEC1; padding:1px 7px; max-width:190px; }
+  .sp .stage-badge{ top:-7px; left:-11px; min-width:20px; height:20px; border-radius:10px; font:700 11px/1 var(--body); color:#FFFFFF; background:var(--sp-accent, #6E1618); box-shadow:0 0 0 2px #FFFFFF; }
+  .sp .stage-badge.is-out{ background:#1F6F9A; }
+  .sp .stage-num{ background:var(--sp-accent, #6E1618); color:#FFFFFF; margin:0 5px 0 -3px; padding:0 4px; }
+  .sp .stage-num.is-out{ background:#1F6F9A; }
 
   /* tablas */
   .rider-table{ width:100%; border-collapse:separate; border-spacing:0 5px; }
@@ -94,10 +145,15 @@
   .export-bar-text{ font-size:13px; color:var(--text-dim); }
   .export-bar-text strong{ color:var(--paper); }
 
+  .export-bar-actions{ display:flex; gap:8px; flex-wrap:wrap; }
   @media (max-width: 620px){
-    .export-bar{ flex-direction:column; align-items:stretch; }
-    .export-bar .btn{ flex:1; }
+    .export-bar{ flex-direction:column; align-items:stretch; gap:8px; padding:10px 12px; bottom:8px; }
+    .export-bar-text{ font-size:12px; }
+    .export-bar-actions{ flex-wrap:nowrap; }
+    .export-bar-actions .btn{ flex:1; min-height:44px; padding-left:8px; padding-right:8px; }
   }
+  /* en la app, arriba de la barra de abajo */
+  html[data-app] .export-bar{ bottom:calc(var(--tab-bar) + var(--safe-b) + 8px); }
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Rider técnico — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/rider-tecnico/", "description": "Armá el rider técnico de tu banda: stage plot arrastrable, input list, monitores, backline y energía. Exportalo en PDF con tu logo. Gratis, de Claraboya Estudio.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "publisher": {"@id": "https://claraboyaestudio.netlify.app/#estudio", "@type": "LocalBusiness", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
 <link rel="manifest" href="../../manifest.webmanifest">
@@ -136,7 +192,7 @@
     <div>
       <p class="tool-head__kicker"><b>04</b> · Salir a tocar</p>
       <h1>Rider técnico</h1>
-      <p class="tool-head__sub">Stage plot, input list, monitores y backline para mandarle a la sala en un PDF prolijo, con el logo de tu proyecto.</p>
+      <p class="tool-head__sub">Stage plot, input list, monitores y backline para mandarle a la sala en un PDF prolijo, con el logo de tu proyecto. Sale en castellano, inglés, portugués, francés, italiano, alemán o el idioma que escribas.</p>
     </div>
     <div class="tool-head__aside"><span class="status-pill" id="statusPill">cargando…</span></div>
   </header>
@@ -158,6 +214,16 @@
 
   <section class="panel">
     <h2>Datos generales</h2>
+    <div class="lang-row">
+      <div class="field"><label class="field-label" for="fLang">Idioma del rider</label><select id="fLang"></select></div>
+      <p class="hint" id="langHint">Cambia los títulos, las tablas y el escenario del PDF, y traduce lo que vino de las plantillas. Lo que escribiste vos queda como está.</p>
+    </div>
+    <details class="lang-texts" id="langTexts">
+      <summary>Cambiar los textos del PDF</summary>
+      <p class="hint" id="langTextsHint">Para un idioma que no está en la lista, o para ajustar alguna palabra. Lo que dejes vacío sale como en el ejemplo gris.</p>
+      <div class="lang-grid" id="langTextsGrid"></div>
+      <button class="btn small ghost" type="button" id="langTextsReset">Volver a los textos del idioma</button>
+    </details>
     <div class="grid-3" style="margin-bottom:14px;">
       <div class="field"><label class="field-label">Proyecto / banda</label><input type="text" id="fBandName" placeholder="Nombre de la banda" autocomplete="off"></div>
       <div class="field"><label class="field-label">Género</label><input type="text" id="fGenre" placeholder="Rock, pop, jazz..."></div>
@@ -194,16 +260,20 @@
     <div class="panel-head"><h2>Stage plot</h2></div>
     <p class="panel-sub">Tocá un ícono para agregarlo al escenario y arrastralo a su lugar. El público queda del lado inferior. Mics, amplis, teclados y DI se suman solos a la Input List; los monitores se suman a Monitores — después completá ahí los datos que falten.</p>
     <div class="stage-toolbar" id="stagePalette"></div>
-    <div class="stage-surface" id="stageSurface">
-      <div class="stage-edge-label top">Fondo de escenario</div>
-      <div class="stage-edge-label bottom">▼ Público / FOH ▼</div>
-      <div id="stageItemsLayer" style="position:absolute; inset:0;"></div>
+    <div class="stage-frame" id="stageFrame">
+      <div class="stage-band" id="stageBackLabel">Fondo de escenario</div>
+      <div class="stage-surface" id="stageSurface">
+        <div class="stage-layer" id="stageItemsLayer"></div>
+      </div>
+      <div class="stage-band stage-band--front" id="stageFrontLabel">▼ Público / FOH ▼</div>
     </div>
     <div class="stage-inspector" id="stageInspector" style="display:none;">
+      <label class="visually-hidden" for="stageItemLabel">Etiqueta</label>
       <input type="text" id="stageItemLabel" placeholder="Etiqueta (ej. Guitarra Juan)">
-      <button class="btn small" id="rotateStageItemBtn">↻ Rotar</button>
-      <button class="btn small ghost" id="deleteStageItemBtn">✕ Eliminar</button>
+      <button class="btn small" type="button" id="rotateStageItemBtn">↻ Rotar</button>
+      <button class="btn small ghost" type="button" id="deleteStageItemBtn">✕ Eliminar</button>
     </div>
+    <p class="stage-tip stage-tip--mouse">Con el teclado: elegí un ícono con Tab, movelo con las flechas (más rápido con Mayúscula) y borralo con Suprimir.</p>
     <p class="stage-empty-hint" id="stageEmptyHint">Todavía no agregaste nada al escenario — usá los íconos de arriba.</p>
   </section>
 
@@ -286,9 +356,9 @@
       Editando: <strong id="currentRiderLabel">Rider sin guardar</strong>
       <span id="exportStatusMsg" style="display:block; color:var(--brick); margin-top:2px;"></span>
     </div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-      <button class="btn ghost" id="saveRiderBtn">💾 Guardar</button>
-      <button class="btn primary" id="exportPdfBtn">⬇ Exportar PDF</button>
+    <div class="export-bar-actions">
+      <button class="btn ghost" type="button" id="saveRiderBtn">💾 Guardar</button>
+      <button class="btn primary" type="button" id="exportPdfBtn">⬇ Exportar PDF</button>
     </div>
   </div>
 
@@ -349,50 +419,72 @@
   <symbol id="wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.16 0 0 7.16 0 16c0 2.82.74 5.47 2.03 7.77L0 32l8.44-2.21A15.9 15.9 0 0 0 16 31.7c8.84 0 16-7.16 16-16S24.84 0 16 0zm0 29.02c-2.4 0-4.66-.65-6.6-1.78l-.47-.28-5.01 1.31 1.34-4.88-.31-.5A13 13 0 1 1 16 29.02zm7.13-9.74c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.62-.2-.88.2-.26.39-1.01 1.26-1.24 1.52-.23.26-.46.29-.85.1-.39-.2-1.65-.61-3.14-1.94-1.16-1.04-1.94-2.32-2.17-2.71-.23-.39-.02-.6.17-.79.18-.18.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.88-2.12-1.2-2.9-.32-.77-.64-.66-.88-.67l-.75-.01c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26 0 1.92 1.4 3.78 1.6 4.04.2.26 2.76 4.22 6.7 5.91.94.41 1.67.65 2.24.83.94.3 1.79.26 2.47.16.75-.11 2.3-.94 2.62-1.85.32-.91.32-1.69.23-1.85-.1-.16-.36-.26-.75-.46z"/></symbol>
 </svg>
 <script src="../assets/tools.js"></script>
+<script src="idiomas.js"></script>
 <script>
 (function(){
   "use strict";
 
+  /* ============ idioma del documento ============ */
+  var I18N = window.RIDER_I18N || { idiomas:[{code:'es',name:'Español'}], textos:{ es:{} }, editables:[] };
+  function lang(){ return (state && state.rider && state.rider.lang) || 'es'; }
+  function base(code){ code = code || lang(); return code === 'otro' ? 'en' : (I18N.textos[code] ? code : 'es'); }
+  // textos fijos del documento (con lo que hayas cambiado a mano)
+  function tx(key){
+    var own = state.rider.textos && state.rider.textos[key];
+    if (own && String(own).trim()) return String(own);
+    var t = I18N.textos[base()] || {}, es = I18N.textos.es || {};
+    return t[key] != null ? t[key] : (es[key] != null ? es[key] : key);
+  }
+  // lo que escriben las plantillas y los íconos, en el idioma elegido
+  function cx(key){ var t = I18N.textos[base()] || {}; return t[key] != null ? t[key] : ((I18N.textos.es || {})[key] || ''); }
+  // valores de las listas (se guardan en castellano)
+  function vx(value){ return tx('v_' + value) !== 'v_' + value ? tx('v_' + value) : value; }
+
   /* ============ icon set ============ */
   var STAGE_TYPES = [
-    { type:'mic', label:'Mic', defaultLabel:'Mic' },
-    { type:'ampGuitar', label:'Ampli guitarra', defaultLabel:'Ampli guitarra' },
-    { type:'ampBass', label:'Ampli bajo', defaultLabel:'Ampli bajo' },
-    { type:'drumKit', label:'Batería', defaultLabel:'Batería' },
-    { type:'keys', label:'Teclado', defaultLabel:'Teclado' },
-    { type:'monitor', label:'Monitor', defaultLabel:'Monitor' },
-    { type:'di', label:'DI', defaultLabel:'DI' },
-    { type:'power', label:'Energía', defaultLabel:'220V' },
-    { type:'riser', label:'Riser', defaultLabel:'Riser' }
+    { type:'mic', label:'Mic', key:'c_mic' },
+    { type:'ampGuitar', label:'Ampli guitarra', key:'c_ampGuitar' },
+    { type:'ampBass', label:'Ampli bajo', key:'c_ampBass' },
+    { type:'drumKit', label:'Batería', key:'c_drums' },
+    { type:'keys', label:'Teclado', key:'c_keys' },
+    { type:'monitor', label:'Monitor', key:'c_monitor' },
+    { type:'di', label:'DI', key:'c_di' },
+    { type:'power', label:'Energía', key:'c_power' },
+    { type:'riser', label:'Riser', key:'c_riser' }
   ];
+  function typeName(type){ var t = STAGE_TYPES.find(function(x){ return x.type === type; }); return t ? t.label : 'Ícono'; }
 
-  function iconSvg(type){
+  // print = versión clara para el PDF (líneas oscuras sobre blanco)
+  function iconSvg(type, print){
+    var ink = print ? '#1F2426' : '#F2F2F2', edge = print ? '#1F2426' : '#0B0B0D', hole = '#141819';
+    var sw = print ? ' stroke="'+edge+'" stroke-width="2"' : '';
     switch(type){
       case 'mic':
-        return '<svg viewBox="0 0 60 60"><line x1="30" y1="24" x2="30" y2="48" stroke="#f5f5f7" stroke-width="3"/><circle cx="30" cy="16" r="11" fill="#5ac8fa"/><circle cx="30" cy="16" r="11" fill="none" stroke="#0b0b0d" stroke-width="2"/></svg>';
+        return '<svg viewBox="0 0 60 60" aria-hidden="true"><line x1="30" y1="27" x2="30" y2="51" stroke="'+ink+'" stroke-width="3.2" stroke-linecap="round"/><circle cx="30" cy="17" r="10.5" fill="#5AC8FA" stroke="'+edge+'" stroke-width="2"/></svg>';
       case 'ampGuitar':
-        return '<svg viewBox="0 0 60 60"><rect x="9" y="14" width="42" height="32" rx="4" fill="#e8c14a"/><circle cx="22" cy="30" r="6" fill="#0b0b0d"/><circle cx="38" cy="30" r="6" fill="#0b0b0d"/></svg>';
+        return '<svg viewBox="0 0 60 60" aria-hidden="true"><rect x="8" y="14" width="44" height="32" rx="4" fill="#E8C14A"'+sw+'/><circle cx="22" cy="30" r="6.5" fill="'+hole+'"/><circle cx="38" cy="30" r="6.5" fill="'+hole+'"/></svg>';
       case 'ampBass':
-        return '<svg viewBox="0 0 60 60"><rect x="7" y="12" width="46" height="36" rx="4" fill="#b3223f"/><circle cx="30" cy="30" r="11" fill="#0b0b0d"/></svg>';
+        return '<svg viewBox="0 0 60 60" aria-hidden="true"><rect x="7" y="11" width="46" height="38" rx="4" fill="#C0304A"'+sw+'/><circle cx="30" cy="30" r="12" fill="'+hole+'"/></svg>';
       case 'drumKit':
-        return '<svg viewBox="0 0 60 60"><circle cx="30" cy="34" r="16" fill="#9a9aa0"/><circle cx="14" cy="18" r="8" fill="#e8c14a"/><circle cx="46" cy="18" r="8" fill="#e8c14a"/><circle cx="30" cy="12" r="7" fill="#5ac8fa"/></svg>';
+        return '<svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="35" r="15" fill="#9A9AA0"'+sw+'/><circle cx="13" cy="18" r="8" fill="#E8C14A"'+sw+'/><circle cx="47" cy="18" r="8" fill="#E8C14A"'+sw+'/><circle cx="30" cy="12" r="7" fill="#5AC8FA"'+sw+'/></svg>';
       case 'keys':
-        return '<svg viewBox="0 0 60 60"><rect x="5" y="22" width="50" height="18" rx="3" fill="#f5f5f7"/><line x1="14" y1="22" x2="14" y2="40" stroke="#0b0b0d" stroke-width="2"/><line x1="23" y1="22" x2="23" y2="40" stroke="#0b0b0d" stroke-width="2"/><line x1="32" y1="22" x2="32" y2="40" stroke="#0b0b0d" stroke-width="2"/><line x1="41" y1="22" x2="41" y2="40" stroke="#0b0b0d" stroke-width="2"/><line x1="50" y1="22" x2="50" y2="40" stroke="#0b0b0d" stroke-width="2"/></svg>';
+        return '<svg viewBox="0 0 60 60" aria-hidden="true"><rect x="4" y="21" width="52" height="19" rx="3" fill="#F2F2F2" stroke="'+(print ? edge : 'none')+'" stroke-width="2"/><path d="M14 21v19M23 21v19M32 21v19M41 21v19M50 21v19" stroke="'+hole+'" stroke-width="2"/><path d="M11.5 21v11M20.5 21v11M38.5 21v11M47.5 21v11" stroke="'+hole+'" stroke-width="3.5"/></svg>';
       case 'monitor':
-        return '<svg viewBox="0 0 60 60"><polygon points="10,42 50,42 40,18 20,18" fill="#5ac8fa"/></svg>';
+        return '<svg viewBox="0 0 60 60" aria-hidden="true"><polygon points="9,43 51,43 41,18 19,18" fill="#5AC8FA"'+sw+'/></svg>';
       case 'di':
-        return '<svg viewBox="0 0 60 60"><rect x="15" y="15" width="30" height="30" rx="4" fill="#3a3a3c" stroke="#f5f5f7" stroke-width="2"/><text x="30" y="35" font-size="13" font-weight="700" text-anchor="middle" fill="#f5f5f7" font-family="ui-monospace,monospace">DI</text></svg>';
+        return '<svg viewBox="0 0 60 60" aria-hidden="true"><rect x="14" y="14" width="32" height="32" rx="4" fill="#3A3A3C" stroke="'+ink+'" stroke-width="2"/><text x="30" y="35.5" font-size="13" font-weight="700" text-anchor="middle" fill="#F2F2F2" font-family="Montserrat, Arial, sans-serif">DI</text></svg>';
       case 'power':
-        return '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="18" fill="#3a3a3c" stroke="#e8c14a" stroke-width="2"/><text x="30" y="36" font-size="18" text-anchor="middle" fill="#e8c14a">⚡</text></svg>';
+        return '<svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="18" fill="#3A3A3C" stroke="#E8C14A" stroke-width="2.5"/><path d="M33 15L21 33h8l-3 13 13-19h-8z" fill="#E8C14A"/></svg>';
       case 'riser':
-        return '<svg viewBox="0 0 60 60"><rect x="6" y="16" width="48" height="28" rx="3" fill="none" stroke="#9a9aa0" stroke-width="2" stroke-dasharray="5,4"/></svg>';
+        return '<svg viewBox="0 0 60 60" aria-hidden="true"><rect x="5" y="15" width="50" height="30" rx="3" fill="none" stroke="'+(print ? '#5A6266' : '#9A9AA0')+'" stroke-width="2.4" stroke-dasharray="5,4"/></svg>';
       default:
-        return '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="16" fill="#9a9aa0"/></svg>';
+        return '<svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="15" fill="#9A9AA0"'+sw+'/></svg>';
     }
   }
 
   /* ============ templates ============ */
   function blankRider(){
+    var keep = (typeof state !== 'undefined' && state && state.rider) ? state.rider : null;
     return {
       bandName:'', genre:'', members:'', contactName:'', contactInfo:'', showDate:'',
       logoDataUrl:'', logoAspect:1, accentColor:'#6E1618',
@@ -401,7 +493,7 @@
       outputRows: [],
       backlineRows: [],
       power:'', loadIn:'', soundcheck:'', showLength:'', notes:''
-    };
+    , lang: keep && keep.lang ? keep.lang : 'es', textos: keep && keep.textos ? keep.textos : {} };
   }
 
   function inputRow(instrument, mic, stand, phantom, providedBy, notes){
@@ -420,124 +512,128 @@
   // Which list a given stage-plot icon feeds automatically, and how to seed that row.
   // Sources (mics, amps, DI, keys) go to the Input List; monitor wedges go to Monitores.
   // Power and risers don't carry audio, so they don't create a channel/mix row.
-  var STAGE_TYPE_ROW_LINK = {
-    mic:       { table:'input',  mic:'Shure SM58', stand:'Alto', providedBy:'Venue' },
-    ampGuitar: { table:'input',  mic:'Shure SM57', stand:'Boom', providedBy:'Venue' },
-    ampBass:   { table:'input',  mic:'DI Radial ProDI', stand:'Ninguno', providedBy:'Banda' },
-    drumKit:   { table:'input',  mic:'Kit completo — ver detalle de mics por pieza', stand:'Ninguno', providedBy:'Venue' },
-    keys:      { table:'input',  mic:'DI Radial ProDI', stand:'Ninguno', providedBy:'Banda' },
-    di:        { table:'input',  mic:'DI Radial ProDI', stand:'Ninguno', providedBy:'Banda' },
-    custom:    { table:'input',  mic:'', stand:'Ninguno', providedBy:'Venue' },
-    monitor:   { table:'output', kind:'Wedge' }
-  };
+  function rowLinkFor(type){
+    switch(type){
+      case 'mic':       return { table:'input', mic:'Shure SM58', stand:'Alto', providedBy:'Venue' };
+      case 'ampGuitar': return { table:'input', mic:'Shure SM57', stand:'Boom', providedBy:'Venue' };
+      case 'ampBass':   return { table:'input', mic:'DI Radial ProDI', stand:'Ninguno', providedBy:'Banda' };
+      case 'drumKit':   return { table:'input', mic:cx('c_kitMic'), stand:'Ninguno', providedBy:'Venue' };
+      case 'keys':
+      case 'di':        return { table:'input', mic:'DI Radial ProDI', stand:'Ninguno', providedBy:'Banda' };
+      case 'custom':    return { table:'input', mic:'', stand:'Ninguno', providedBy:'Venue' };
+      case 'monitor':   return { table:'output', kind:'Wedge' };
+      default: return null;
+    }
+  }
 
   function templateRock4(){
     var r = blankRider();
-    r.genre = 'Rock';
+    r.genre = cx('c_rock');
     r.members = '4';
     r.stagePlot = [
-      stageItem('drumKit', 50, 28, 'Batería'),
-      stageItem('ampGuitar', 22, 55, 'Ampli guitarra'),
-      stageItem('ampBass', 78, 55, 'Ampli bajo'),
-      stageItem('mic', 30, 78, 'Voz principal'),
-      stageItem('mic', 70, 78, 'Voz coro'),
-      stageItem('monitor', 30, 90, 'Mon. 1'),
-      stageItem('monitor', 70, 90, 'Mon. 2'),
-      stageItem('monitor', 50, 14, 'Mon. batería')
+      stageItem('drumKit', 50, 26, cx('c_drums')),
+      stageItem('ampGuitar', 18, 46, cx('c_ampGuitar')),
+      stageItem('ampBass', 82, 46, cx('c_ampBass')),
+      stageItem('mic', 34, 70, cx('c_leadVox')),
+      stageItem('mic', 66, 70, cx('c_backVox')),
+      stageItem('monitor', 34, 91, cx('c_mon1')),
+      stageItem('monitor', 66, 91, cx('c_mon2')),
+      stageItem('monitor', 74, 19, cx('c_monDrums'))
     ];
     r.inputRows = [
-      inputRow('Bombo','AKG D112 / Beta 52A','Ninguno',false,'Venue',''),
-      inputRow('Redoblante','Shure SM57','Ninguno',false,'Venue',''),
-      inputRow('Hi-Hat','Shure SM81','Boom',true,'Venue',''),
+      inputRow(cx('c_kick'),'AKG D112 / Beta 52A','Ninguno',false,'Venue',''),
+      inputRow(cx('c_snare'),'Shure SM57','Ninguno',false,'Venue',''),
+      inputRow(cx('c_hihat'),'Shure SM81','Boom',true,'Venue',''),
       inputRow('Tom 1','Sennheiser e604','Ninguno',false,'Venue',''),
       inputRow('Tom 2','Sennheiser e604','Ninguno',false,'Venue',''),
       inputRow('Overhead L','AKG C414','Boom',true,'Venue',''),
       inputRow('Overhead R','AKG C414','Boom',true,'Venue',''),
-      inputRow('Bajo','DI Radial ProDI','Ninguno',false,'Banda','Directo + mic ampli opcional'),
-      inputRow('Guitarra 1','Shure SM57','Boom',false,'Venue','Mic al ampli'),
-      inputRow('Guitarra 2','Shure SM57','Boom',false,'Venue','Mic al ampli'),
-      inputRow('Voz principal','Shure SM58','Alto',false,'Venue',''),
-      inputRow('Voz coro','Shure SM58','Alto',false,'Venue','')
+      inputRow(cx('c_bass'),'DI Radial ProDI','Ninguno',false,'Banda',cx('c_bassNote')),
+      inputRow(cx('c_gtr1'),'Shure SM57','Boom',false,'Venue',cx('c_ampMic')),
+      inputRow(cx('c_gtr2'),'Shure SM57','Boom',false,'Venue',cx('c_ampMic')),
+      inputRow(cx('c_leadVox'),'Shure SM58','Alto',false,'Venue',''),
+      inputRow(cx('c_backVox'),'Shure SM58','Alto',false,'Venue','')
     ];
     r.outputRows = [
-      outputRow('Batería','Todo un poco, énfasis en click si hay','Wedge'),
-      outputRow('Bajo','Bajo + voz principal','Wedge'),
-      outputRow('Guitarra 1','Guitarra propia + voz principal','Wedge'),
-      outputRow('Guitarra 2','Guitarra propia + voz principal','Wedge'),
-      outputRow('Voces','Mezcla general con énfasis en voces','Wedge')
+      outputRow(cx('c_drums'),cx('c_outDrums'),'Wedge'),
+      outputRow(cx('c_bass'),cx('c_outBass'),'Wedge'),
+      outputRow(cx('c_gtr1'),cx('c_outGtr'),'Wedge'),
+      outputRow(cx('c_gtr2'),cx('c_outGtr'),'Wedge'),
+      outputRow(cx('c_vocals'),cx('c_outVocals'),'Wedge')
     ];
     r.backlineRows = [
-      backlineRow('Batería completa','Venue','1','A confirmar con la banda — si no, la lleva la banda'),
-      backlineRow('Platillos y pedal de hi-hat propios','Banda','1',''),
-      backlineRow('Ampli de guitarra','Banda','2',''),
-      backlineRow('Ampli de bajo','Banda','1',''),
-      backlineRow('Pies de mic rectos','Venue','2',''),
-      backlineRow('Pie de mic boom','Venue','1','Para hi-hat')
+      backlineRow(cx('c_fullKit'),'Venue','1',cx('c_fullKitNote')),
+      backlineRow(cx('c_cymbals'),'Banda','1',''),
+      backlineRow(cx('c_gtrAmp'),'Banda','2',''),
+      backlineRow(cx('c_bassAmp'),'Banda','1',''),
+      backlineRow(cx('c_straightStands'),'Venue','2',''),
+      backlineRow(cx('c_boomStand'),'Venue','1',cx('c_forHihat'))
     ];
-    r.power = '2 tomas de 220V cerca del escenario — una para backline, otra para monitores/consola.';
+    r.power = cx('c_powerRock');
     r.loadIn = '18:00'; r.soundcheck = '19:30'; r.showLength = '60 min';
     return r;
   }
 
   function templateDuo(){
     var r = blankRider();
-    r.genre = 'Acústico';
+    r.genre = cx('c_acoustic');
     r.members = '2';
     r.stagePlot = [
-      stageItem('mic', 35, 55, 'Guitarra 1'),
-      stageItem('mic', 65, 55, 'Guitarra 2'),
-      stageItem('mic', 35, 78, 'Voz 1'),
-      stageItem('mic', 65, 78, 'Voz 2'),
-      stageItem('monitor', 35, 90, 'Mon. 1'),
-      stageItem('monitor', 65, 90, 'Mon. 2')
+      stageItem('mic', 32, 45, cx('c_gtr1')),
+      stageItem('mic', 68, 45, cx('c_gtr2')),
+      stageItem('mic', 32, 68, cx('c_vox1')),
+      stageItem('mic', 68, 68, cx('c_vox2')),
+      stageItem('monitor', 32, 90, cx('c_mon1')),
+      stageItem('monitor', 68, 90, cx('c_mon2'))
     ];
     r.inputRows = [
-      inputRow('Guitarra acústica 1','DI Radial J48 (activa)','Ninguno',true,'Banda',''),
-      inputRow('Guitarra acústica 2','DI Radial J48 (activa)','Ninguno',true,'Banda',''),
-      inputRow('Voz 1','Shure SM58','Alto',false,'Venue',''),
-      inputRow('Voz 2','Shure SM58','Alto',false,'Venue','')
+      inputRow(cx('c_acGtr1'),cx('c_j48'),'Ninguno',true,'Banda',''),
+      inputRow(cx('c_acGtr2'),cx('c_j48'),'Ninguno',true,'Banda',''),
+      inputRow(cx('c_vox1'),'Shure SM58','Alto',false,'Venue',''),
+      inputRow(cx('c_vox2'),'Shure SM58','Alto',false,'Venue','')
     ];
     r.outputRows = [
-      outputRow('Los dos','Mezcla general pareja de todo','Wedge')
+      outputRow(cx('c_both'),cx('c_outBoth'),'Wedge')
     ];
     r.backlineRows = [
-      backlineRow('Sillas altas (opcional)','Venue','2',''),
-      backlineRow('Pies de mic rectos','Venue','2','')
+      backlineRow(cx('c_stools'),'Venue','2',''),
+      backlineRow(cx('c_straightStands'),'Venue','2','')
     ];
-    r.power = '1 toma de 220V cerca del escenario alcanza.';
+    r.power = cx('c_powerDuo');
     r.loadIn = '19:00'; r.soundcheck = '20:00'; r.showLength = '45 min';
     return r;
   }
 
   function templateDj(){
     var r = blankRider();
-    r.genre = 'Electrónico / DJ set';
+    r.genre = cx('c_dj');
     r.members = '1';
     r.stagePlot = [
-      stageItem('di', 40, 55, 'Salida L'),
-      stageItem('di', 60, 55, 'Salida R'),
-      stageItem('mic', 50, 75, 'Mic para hablar'),
-      stageItem('monitor', 50, 90, 'Mon. cabina')
+      stageItem('di', 38, 50, cx('c_outL')),
+      stageItem('di', 62, 50, cx('c_outR')),
+      stageItem('mic', 50, 72, cx('c_talkMic')),
+      stageItem('monitor', 50, 90, cx('c_monBooth'))
     ];
     r.inputRows = [
-      inputRow('Controladora / mixer — L','DI Radial ProDI (o directo si hay entrada de línea)','Ninguno',false,'Banda','RCA o XLR según el equipo'),
-      inputRow('Controladora / mixer — R','DI Radial ProDI (o directo si hay entrada de línea)','Ninguno',false,'Banda',''),
-      inputRow('Mic para hablar al público','Shure SM58','Alto',false,'Venue','Opcional')
+      inputRow(cx('c_ctrlL'),cx('c_diOrLine'),'Ninguno',false,'Banda',cx('c_rcaXlr')),
+      inputRow(cx('c_ctrlR'),cx('c_diOrLine'),'Ninguno',false,'Banda',''),
+      inputRow(cx('c_talkMicFull'),'Shure SM58','Alto',false,'Venue',cx('c_optional'))
     ];
     r.outputRows = [
-      outputRow('Cabina','Mezcla general con algo más de graves para referencia','Wedge')
+      outputRow(cx('c_booth'),cx('c_outBooth'),'Wedge')
     ];
     r.backlineRows = [
-      backlineRow('Mesa / rack para controladora','Venue','1',''),
-      backlineRow('Cables RCA/XLR según equipo','Banda','1','')
+      backlineRow(cx('c_table'),'Venue','1',''),
+      backlineRow(cx('c_cables'),'Banda','1','')
     ];
-    r.power = '1 toma de 220V en la cabina, estable y sin ruido (idealmente circuito aparte del de luces).';
+    r.power = cx('c_powerDj');
     r.loadIn = '20:00'; r.soundcheck = '20:30'; r.showLength = '90 min';
     return r;
   }
 
   /* ============ state ============ */
-  var state = {
+  var state = { rider: null };
+  state = {
     rider: templateRock4(),
     currentRiderId: null,
     savedRiders: [],
@@ -585,7 +681,7 @@
   }
 
   function loadRider(doc){
-    state.rider = Object.assign(blankRider(), doc);
+    state.rider = Object.assign(blankRider(), { lang:'es', textos:{} }, doc);
     delete state.rider.id;
     state.currentRiderId = doc.id;
     state.selectedStageItemId = null;
@@ -688,21 +784,30 @@
     wrap.innerHTML = '';
     STAGE_TYPES.forEach(function(t){
       var btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'palette-btn';
-      btn.innerHTML = '<span style="width:18px;height:18px;display:inline-block;">'+iconSvg(t.type)+'</span>'+t.label;
-      btn.addEventListener('click', function(){ addStageItem(t.type, t.defaultLabel); });
+      btn.innerHTML = iconSvg(t.type)+'<span>'+t.label+'</span>';
+      btn.addEventListener('click', function(){ addStageItem(t.type, cx(t.key)); });
       wrap.appendChild(btn);
     });
     var customBtn = document.createElement('button');
+    customBtn.type = 'button';
     customBtn.className = 'palette-btn';
-    customBtn.innerHTML = '<span style="width:18px;height:18px;display:inline-block;">'+iconSvg('custom')+'</span>Personalizado';
+    customBtn.innerHTML = iconSvg('custom')+'<span>Personalizado</span>';
     customBtn.addEventListener('click', function(){ addStageItem('custom', '', true); });
     wrap.appendChild(customBtn);
   }
 
+  function renderStageLabels(){
+    document.getElementById('stageBackLabel').textContent = tx('stageBack');
+    document.getElementById('stageFrontLabel').textContent = '▼ ' + tx('audience') + ' ▼';
+  }
+
   function addStageItem(type, defaultLabel, focusLabel){
-    var jitter = (Math.random()*10-5);
-    var item = stageItem(type, 50 + jitter, 50 + jitter, defaultLabel);
+    // lo nuevo aparece en un lugar libre cerca del centro
+    var spots = [[50,50],[35,50],[65,50],[50,35],[50,65],[30,35],[70,35],[30,65],[70,65],[20,50],[80,50]];
+    var spot = spots.find(function(sp){ return !state.rider.stagePlot.some(function(i){ return Math.abs(i.x-sp[0]) < 9 && Math.abs(i.y-sp[1]) < 12; }); }) || [50 + (Math.random()*10-5), 50 + (Math.random()*10-5)];
+    var item = stageItem(type, spot[0], spot[1], defaultLabel);
     state.rider.stagePlot.push(item);
     linkStageItemToRow(item, defaultLabel);
     renderStagePlot();
@@ -715,10 +820,10 @@
   }
 
   // Creates the matching Input List / Monitores row for a newly-added stage icon
-  // (see STAGE_TYPE_ROW_LINK) and remembers the link on the item so a rename or
+  // (see rowLinkFor) and remembers the link on the item so a rename or
   // delete on the stage plot can keep that row in sync.
   function linkStageItemToRow(item, defaultLabel){
-    var cfg = STAGE_TYPE_ROW_LINK[item.type];
+    var cfg = rowLinkFor(item.type);
     if (!cfg) return;
     var name = item.label || defaultLabel || '';
     if (cfg.table === 'input'){
@@ -740,6 +845,51 @@
     return arr.find(function(r){ return r.id === item.linkedRowId; }) || null;
   }
 
+  // Número de canal (o de mezcla de monitor) que se ve sobre el ícono, para que la sala lo cruce con las listas
+  function badgeFor(item){
+    var norm = function(v){ return String(v || '').trim().toLowerCase(); };
+    var i;
+    if (item.linkedTable === 'output' || (!item.linkedRowId && item.type === 'monitor')){
+      i = state.rider.outputRows.findIndex(function(r){ return item.linkedRowId ? r.id === item.linkedRowId : (item.label && norm(r.who) === norm(item.label)); });
+      return i >= 0 ? { t:'M' + (i+1), out:true } : null;
+    }
+    if (item.type === 'power' || item.type === 'riser') return null;
+    i = state.rider.inputRows.findIndex(function(r){ return item.linkedRowId ? r.id === item.linkedRowId : (item.label && norm(r.instrument) === norm(item.label)); });
+    return i >= 0 ? { t:String(i+1) } : null;
+  }
+
+  function stageItemEl(item, print){
+    var el = document.createElement('div');
+    el.className = 'stage-item' + (!print && state.selectedStageItemId === item.id ? ' selected' : '');
+    el.style.left = item.x + '%';
+    el.style.top = item.y + '%';
+    el.setAttribute('data-id', item.id);
+    var badge = badgeFor(item);
+    // con etiqueta, el número va adelante del nombre; sin etiqueta, arriba del ícono
+    var num = badge ? '<span class="'+(item.label ? 'stage-num' : 'stage-badge')+(badge.out ? ' is-out' : '')+'">'+escapeHtml(badge.t)+'</span>' : '';
+    el.innerHTML =
+      '<div class="stage-icon-box"><div class="stage-icon" style="transform:rotate('+(item.rotation||0)+'deg);">'+iconSvg(item.type, print)+'</div>' +
+      (item.label ? '' : num) + '</div>' +
+      (item.label ? '<span class="stage-item-label">'+(num)+escapeHtml(item.label)+'</span>' : '');
+    if (!print){
+      el.tabIndex = 0;
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', (item.label || typeName(item.type)) + ' en el escenario');
+    }
+    return el;
+  }
+
+  // Que ningún ícono (con su etiqueta) quede cortado en los bordes. No cambia la posición guardada.
+  function clampToSurface(el, item, surface){
+    var W = surface.clientWidth, H = surface.clientHeight;
+    if (!W || !H) return;
+    var w = el.offsetWidth, h = el.offsetHeight, pad = 4;
+    var minX = (w/2 + pad) / W * 100, minY = (h/2 + pad) / H * 100;
+    var x = Math.max(minX, Math.min(100 - minX, item.x));
+    var y = Math.max(minY, Math.min(100 - minY, item.y));
+    el.style.left = x + '%'; el.style.top = y + '%';
+  }
+
   function selectStageItem(id){
     state.selectedStageItemId = id;
     var item = state.rider.stagePlot.find(function(i){ return i.id === id; });
@@ -752,19 +902,17 @@
 
   function renderStagePlot(){
     var layer = document.getElementById('stageItemsLayer');
+    var surface = document.getElementById('stageSurface');
+    var focusedId = document.activeElement && document.activeElement.closest && document.activeElement.closest('.stage-item') ? document.activeElement.getAttribute('data-id') : null;
     layer.innerHTML = '';
+    renderStageLabels();
     document.getElementById('stageEmptyHint').style.display = state.rider.stagePlot.length ? 'none' : 'block';
-
     state.rider.stagePlot.forEach(function(item){
-      var el = document.createElement('div');
-      el.className = 'stage-item' + (state.selectedStageItemId === item.id ? ' selected' : '');
-      el.style.left = item.x + '%';
-      el.style.top = item.y + '%';
-      el.innerHTML =
-        '<div class="stage-icon-box" style="transform:rotate('+(item.rotation||0)+'deg);">'+iconSvg(item.type)+'</div>' +
-        (item.label ? '<span class="stage-item-label">'+escapeHtml(item.label)+'</span>' : '');
+      var el = stageItemEl(item, false);
       makeDraggable(el, item);
       layer.appendChild(el);
+      clampToSurface(el, item, surface);
+      if (focusedId === item.id) el.focus();
     });
   }
 
@@ -784,11 +932,18 @@
 
   function makeDraggable(el, item){
     el.addEventListener('pointerdown', function(e){
+      if (e.button > 0) return;
       e.preventDefault();
+      el.focus({ preventScroll:true });
       selectStageItemLight(item.id, el);
       try { el.setPointerCapture(e.pointerId); } catch(err){}
-      var stage = document.getElementById('stageSurface');
-      var rect = stage.getBoundingClientRect();
+      var surface = document.getElementById('stageSurface');
+      var rect = surface.getBoundingClientRect();
+      var w = el.offsetWidth, h = el.offsetHeight;
+      var minX = (w/2 + 4) / rect.width * 100, minY = (h/2 + 4) / rect.height * 100;
+      // se agarra desde donde tocaste, sin que el ícono salte al dedo
+      var cur = el.getBoundingClientRect();
+      var offX = e.clientX - (cur.left + cur.width/2), offY = e.clientY - (cur.top + cur.height/2);
       var rafPending = false;
 
       function applyPosition(){
@@ -796,23 +951,52 @@
         el.style.top = item.y + '%';
         rafPending = false;
       }
-
       function onMove(ev){
-        var x = (ev.clientX - rect.left) / rect.width * 100;
-        var y = (ev.clientY - rect.top) / rect.height * 100;
-        x = Math.max(3, Math.min(97, x));
-        y = Math.max(5, Math.min(95, y));
-        item.x = x; item.y = y;
+        var x = (ev.clientX - offX - rect.left) / rect.width * 100;
+        var y = (ev.clientY - offY - rect.top) / rect.height * 100;
+        item.x = Math.round(Math.max(minX, Math.min(100 - minX, x)) * 10) / 10;
+        item.y = Math.round(Math.max(minY, Math.min(100 - minY, y)) * 10) / 10;
         if (!rafPending){ rafPending = true; requestAnimationFrame(applyPosition); }
       }
       function onUp(ev){
-        document.removeEventListener('pointermove', onMove);
-        document.removeEventListener('pointerup', onUp);
+        el.removeEventListener('pointermove', onMove);
+        el.removeEventListener('pointerup', onUp);
+        el.removeEventListener('pointercancel', onUp);
         try { el.releasePointerCapture(ev.pointerId); } catch(err){}
       }
-      document.addEventListener('pointermove', onMove);
-      document.addEventListener('pointerup', onUp);
+      el.addEventListener('pointermove', onMove);
+      el.addEventListener('pointerup', onUp);
+      el.addEventListener('pointercancel', onUp);
     });
+    // teclado: flechas para mover, Suprimir para borrar
+    el.addEventListener('keydown', function(e){
+      var step = e.shiftKey ? 5 : 1, moved = true;
+      if (e.key === 'ArrowLeft') item.x = Math.max(0, item.x - step);
+      else if (e.key === 'ArrowRight') item.x = Math.min(100, item.x + step);
+      else if (e.key === 'ArrowUp') item.y = Math.max(0, item.y - step);
+      else if (e.key === 'ArrowDown') item.y = Math.min(100, item.y + step);
+      else if (e.key === 'Delete' || e.key === 'Backspace'){ e.preventDefault(); selectStageItemLight(item.id, el); deleteSelectedStageItem(); return; }
+      else if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectStageItem(item.id); document.getElementById('stageItemLabel').focus(); return; }
+      else moved = false;
+      if (moved){ e.preventDefault(); selectStageItemLight(item.id, el); clampToSurface(el, item, document.getElementById('stageSurface')); }
+    });
+  }
+
+  function deleteSelectedStageItem(){
+    var item = state.rider.stagePlot.find(function(i){ return i.id === state.selectedStageItemId; });
+    if (item && item.linkedRowId){
+      if (item.linkedTable === 'output'){
+        state.rider.outputRows = state.rider.outputRows.filter(function(r){ return r.id !== item.linkedRowId; });
+        renderOutputTable();
+      } else {
+        state.rider.inputRows = state.rider.inputRows.filter(function(r){ return r.id !== item.linkedRowId; });
+        renderInputTable();
+      }
+    }
+    state.rider.stagePlot = state.rider.stagePlot.filter(function(i){ return i.id !== state.selectedStageItemId; });
+    state.selectedStageItemId = null;
+    document.getElementById('stageInspector').style.display = 'none';
+    renderStagePlot();
   }
 
   /* ============ input / output / backline tables ============ */
@@ -870,6 +1054,7 @@
       tr.appendChild(tdProvided); tr.appendChild(tdNotes); tr.appendChild(tdActions);
       body.appendChild(tr);
     });
+    renderStagePlot();
   }
 
   function swapRows(arr, i, j){ var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp; }
@@ -906,6 +1091,7 @@
       tr.appendChild(tdWho); tr.appendChild(tdContent); tr.appendChild(tdKind); tr.appendChild(tdActions);
       body.appendChild(tr);
     });
+    renderStagePlot();
   }
 
   function renderBacklineTable(){
@@ -946,7 +1132,76 @@
     });
   }
 
+  /* ============ idioma del rider ============ */
+  var MIC_KEYS = ['c_sm58','c_sm57','c_e604','c_e904','c_d112','c_beta91','c_c414','c_sm81','DI Radial ProDI','c_j48','c_direct'];
+  function renderMicSuggestions(){
+    var dl = document.getElementById('micSuggestions');
+    dl.innerHTML = MIC_KEYS.map(function(k){ return '<option value="'+escapeHtml(k.indexOf('c_') === 0 ? cx(k) : k)+'">'; }).join('');
+  }
+
+  function renderLang(){
+    var sel = document.getElementById('fLang');
+    if (!sel.options.length){
+      sel.innerHTML = I18N.idiomas.map(function(l){ return '<option value="'+l.code+'">'+escapeHtml(l.name)+'</option>'; }).join('');
+    }
+    sel.value = lang();
+    var otro = lang() === 'otro';
+    document.getElementById('langHint').textContent = otro
+      ? 'Escribí abajo los textos del PDF en el idioma que necesites (lo que dejes vacío sale en inglés). Las listas y el escenario los completás vos en ese idioma.'
+      : 'Cambia los títulos, las tablas y el escenario del PDF, y traduce lo que vino de las plantillas. Lo que escribiste vos queda como está.';
+    var det = document.getElementById('langTexts');
+    if (otro) det.open = true;
+    var grid = document.getElementById('langTextsGrid');
+    var t = I18N.textos[base()] || {};
+    var own = state.rider.textos || {};
+    grid.innerHTML = '';
+    I18N.editables.forEach(function(e){
+      var lab = document.createElement('label');
+      lab.textContent = e[1];
+      var inp = document.createElement('input');
+      inp.type = 'text'; inp.value = own[e[0]] || ''; inp.placeholder = t[e[0]] || '';
+      inp.setAttribute('data-key', e[0]);
+      lab.appendChild(inp);
+      grid.appendChild(lab);
+    });
+  }
+
+  // Al cambiar de idioma: traduce lo que vino de las plantillas y de los íconos (coincidencia exacta).
+  // Busca primero en el idioma de antes y después en los demás (así funciona también al volver de «Otro idioma»).
+  function translateContent(from, to){
+    var B = I18N.textos[to];
+    if (!B) return 0;
+    var map = {};
+    [from].concat(Object.keys(I18N.textos).filter(function(c){ return c !== from; })).forEach(function(code){
+      var A = I18N.textos[code]; if (!A) return;
+      Object.keys(A).forEach(function(k){ if (k.indexOf('c_') === 0 && A[k] && B[k] && !Object.prototype.hasOwnProperty.call(map, A[k])) map[A[k]] = B[k]; });
+    });
+    var n = 0;
+    function tr(v){ if (v && Object.prototype.hasOwnProperty.call(map, v) && map[v] !== v){ n++; return map[v]; } return v; }
+    var r = state.rider;
+    r.stagePlot.forEach(function(i){ i.label = tr(i.label); });
+    r.inputRows.forEach(function(x){ x.instrument = tr(x.instrument); x.mic = tr(x.mic); x.notes = tr(x.notes); });
+    r.outputRows.forEach(function(x){ x.who = tr(x.who); x.content = tr(x.content); });
+    r.backlineRows.forEach(function(x){ x.item = tr(x.item); x.notes = tr(x.notes); });
+    r.power = tr(r.power); r.genre = tr(r.genre);
+    return n;
+  }
+
+  function changeLang(code){
+    saveDraft();
+    var prev = lang();
+    if (code === prev) return;
+    var n = code === 'otro' ? 0 : translateContent(base(prev), base(code));
+    state.rider.lang = code;
+    renderEverything();
+    var name = (I18N.idiomas.find(function(l){ return l.code === code; }) || {}).name || code;
+    if (code === 'otro') CB.toast('Escribí los textos del PDF en tu idioma. Lo demás queda como está.');
+    else CB.toast('El PDF sale en ' + name.replace(/ \(.*\)$/, '') + (n ? '. Traduje ' + n + ' textos de la plantilla; lo que escribiste vos queda igual.' : '.'));
+  }
+
   function renderEverything(){
+    renderLang();
+    renderMicSuggestions();
     renderGeneralFields();
     renderPalette();
     renderStagePlot();
@@ -961,41 +1216,82 @@
     return m ? [parseInt(m[1],16), parseInt(m[2],16), parseInt(m[3],16)] : [179,34,63];
   }
 
+  // Versión del escenario para el PDF: siempre 16:9 y clara, sea cual sea la pantalla en la que lo armaste
+  function stagePrintNode(){
+    var host = document.createElement('div');
+    host.className = 'sp';
+    host.setAttribute('aria-hidden', 'true');
+    host.style.setProperty('--sp-accent', state.rider.accentColor || '#6E1618');
+    host.innerHTML = '<div class="stage-band"></div><div class="stage-surface"></div><div class="stage-band stage-band--front"></div>';
+    host.children[0].textContent = tx('stageBack');
+    host.children[2].textContent = '▼ ' + tx('audience') + ' ▼';
+    var surface = host.children[1];
+    document.body.appendChild(host);
+    state.rider.stagePlot.forEach(function(item){
+      var el = stageItemEl(item, true);
+      surface.appendChild(el);
+      clampToSurface(el, item, surface);
+    });
+    return host;
+  }
+
+  // jsPDF trae letras latinas comunes; para otros alfabetos (polaco, griego, ruso…) se carga una fuente que los tiene
+  var CP1252 = /^[\x00-\xFF\u0152\u0153\u0160\u0161\u0178\u017D\u017E\u0192\u02C6\u02DC\u2013\u2014\u2018-\u201E\u2020-\u2022\u2026\u2030\u2039\u203A\u20AC\u2122]*$/;
+  function needsUnicode(){
+    var all = JSON.stringify(Object.assign({}, state.rider, { logoDataUrl:'' }));
+    I18N.editables.forEach(function(e){ all += tx(e[0]); });
+    return !CP1252.test(all);
+  }
+  var fontsPromise = null;
+  function loadFonts(){
+    if (fontsPromise) return fontsPromise;
+    function b64(url){
+      return fetch(url).then(function(r){ if (!r.ok) throw new Error('fuente'); return r.arrayBuffer(); }).then(function(buf){
+        var bytes = new Uint8Array(buf), str = '', CH = 0x8000;
+        for (var i = 0; i < bytes.length; i += CH) str += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+        return btoa(str);
+      });
+    }
+    fontsPromise = Promise.all([b64('../assets/vendor/fonts/dejavu-sans.ttf'), b64('../assets/vendor/fonts/dejavu-sans-bold.ttf')])
+      .catch(function(e){ fontsPromise = null; throw e; });
+    return fontsPromise;
+  }
+
   function exportPdf(){
     if (typeof window.html2canvas !== 'function' || !(window.jspdf && window.jspdf.jsPDF)){
-      setExportMsg('El generador de PDF todavía está cargando (o no hay conexión). Probá en unos segundos.');
+      setExportMsg('El generador de PDF todavía está cargando. Probá en unos segundos.');
       return;
     }
+    saveDraft();
     var btn = document.getElementById('exportPdfBtn');
     btn.disabled = true;
     var originalText = btn.textContent;
     btn.textContent = 'Generando…';
+    function done(){ btn.disabled = false; btn.textContent = originalText; }
 
-    var inspector = document.getElementById('stageInspector');
-    var wasInspectorVisible = inspector.style.display !== 'none';
-    var prevSelected = state.selectedStageItemId;
-    state.selectedStageItemId = null;
-    renderStagePlot();
-    inspector.style.display = 'none';
-
-    var stageEl = document.getElementById('stageSurface');
-
-    html2canvas(stageEl, { backgroundColor: '#2F3639', scale: 2 }).then(function(canvas){
-      buildPdf(canvas.toDataURL('image/png'), canvas.width / canvas.height);
-      state.selectedStageItemId = prevSelected;
-      renderStagePlot();
-      if (wasInspectorVisible) inspector.style.display = 'flex';
-      btn.disabled = false; btn.textContent = originalText;
+    var fonts = needsUnicode() ? loadFonts().catch(function(){ return null; }) : Promise.resolve(null);
+    var node = stagePrintNode();
+    // html2canvas mide dónde va el texto con una imagen de prueba: la regla general «img { display:block }»
+    // le hace correr las letras para abajo. Mientras saca la foto, las imágenes vuelven a ser de línea.
+    var fix = document.createElement('style');
+    fix.textContent = 'img{display:inline!important;vertical-align:baseline!important;max-width:none!important;height:auto!important}';
+    document.head.appendChild(fix);
+    function cleanup(){ if (node.parentNode) node.parentNode.removeChild(node); if (fix.parentNode) fix.parentNode.removeChild(fix); }
+    var shot = html2canvas(node, { backgroundColor:'#FFFFFF', scale:2, logging:false })
+      .then(function(canvas){ return { url: canvas.toDataURL('image/png'), aspect: canvas.width / canvas.height }; })
+      .catch(function(){ return { url: null, aspect: 16/9 }; });
+    Promise.all([shot, fonts]).then(function(res){
+      cleanup();
+      buildPdf(res[0].url, res[0].aspect, res[1]);
+      done();
     }).catch(function(){
-      buildPdf(null, 16/9);
-      state.selectedStageItemId = prevSelected;
-      renderStagePlot();
-      if (wasInspectorVisible) inspector.style.display = 'flex';
-      btn.disabled = false; btn.textContent = originalText;
+      cleanup();
+      setExportMsg('No se pudo armar el PDF. Probá de nuevo.');
+      done();
     });
   }
 
-  function buildPdf(stageImageDataUrl, stageAspect){
+  function buildPdf(stageImageDataUrl, stageAspect, fonts){
     var jsPDFCtor = window.jspdf && window.jspdf.jsPDF;
     if (!jsPDFCtor){ setExportMsg('No se pudo cargar el generador de PDF. Revisá la conexión y probá de nuevo.'); return; }
     var doc = new jsPDFCtor({ unit:'mm', format:'a4' });
@@ -1007,11 +1303,21 @@
     var footerReserve = 12;
     var maxY = pageH - footerReserve;
     var cursorY = 0;
+    var fam = 'helvetica';
+    if (fonts){
+      try {
+        doc.addFileToVFS('DejaVuSans.ttf', fonts[0]); doc.addFont('DejaVuSans.ttf', 'DejaVu', 'normal');
+        doc.addFileToVFS('DejaVuSans-Bold.ttf', fonts[1]); doc.addFont('DejaVuSans-Bold.ttf', 'DejaVu', 'bold');
+        fam = 'DejaVu';
+      } catch(e){ fam = 'helvetica'; }
+    }
+    doc.setFont(fam, 'normal');
 
     function footer(){
       doc.setFontSize(8);
       doc.setTextColor(140,140,140);
-      doc.text('Hecho con Rider técnico · Herramientas de producción de Claraboya Estudio · claraboyaestudio.netlify.app', pageW/2, pageH-8, { align:'center' });
+      doc.setFont(fam, 'normal');
+      doc.text(tx('footer'), pageW/2, pageH-8, { align:'center' });
     }
 
     function ensureSpace(neededH){
@@ -1026,7 +1332,7 @@
     // never gets left behind while its table jumps to the next page.
     function sectionHeader(title, estimatedBodyH){
       ensureSpace(10 + (estimatedBodyH || 12));
-      doc.setFont(undefined,'bold'); doc.setFontSize(12.5); doc.setTextColor(20,20,20);
+      doc.setFont(fam,'bold'); doc.setFontSize(12.5); doc.setTextColor(20,20,20);
       doc.text(title, margin, cursorY);
       doc.setDrawColor(accent[0],accent[1],accent[2]); doc.setLineWidth(0.6);
       doc.line(margin, cursorY+2.2, pageW-margin, cursorY+2.2);
@@ -1039,7 +1345,7 @@
       return {
         theme: 'striped',
         headStyles: { fillColor: accent, textColor: 255, fontSize: 8.5, cellPadding: 2 },
-        styles: { fontSize: 8.5, cellPadding: 1.8 },
+        styles: { font: fam, fontSize: 8.5, cellPadding: 1.8 },
         margin: { left:margin, right:margin, top:18, bottom:18 },
         pageBreak: 'avoid', // move the WHOLE table to the next page if it can't fully fit on the current one — never start it and cut it off
         rowPageBreak: 'avoid' // if a table is taller than a full page, never split a single row's content across two pages either
@@ -1063,21 +1369,21 @@
     var headerBlockH = Math.max(logoH, 20);
 
     doc.setTextColor(20,20,20);
-    doc.setFont(undefined, 'bold');
+    doc.setFont(fam, 'bold');
     doc.setFontSize(19);
-    doc.text(r.bandName || 'Proyecto sin nombre', textX, cursorY + 7);
+    doc.text(r.bandName || tx('untitled'), textX, cursorY + 7);
 
     doc.setFontSize(10.5);
     doc.setTextColor(accent[0], accent[1], accent[2]);
-    doc.text('RIDER TÉCNICO', textX, cursorY + 13);
+    doc.text(tx('riderTitle'), textX, cursorY + 13);
 
     var infoBits = [];
     if (r.genre) infoBits.push(r.genre);
-    if (r.members) infoBits.push(r.members + ' integrantes');
-    if (r.showDate) infoBits.push('Fecha: ' + r.showDate);
-    if (r.contactName || r.contactInfo) infoBits.push('Contacto: ' + [r.contactName, r.contactInfo].filter(Boolean).join(' — '));
+    if (r.members) infoBits.push(/^\d+$/.test(String(r.members).trim()) ? tx('members').replace('{n}', String(r.members).trim()) : r.members);
+    if (r.showDate) infoBits.push(tx('date') + ': ' + r.showDate);
+    if (r.contactName || r.contactInfo) infoBits.push(tx('contact') + ': ' + [r.contactName, r.contactInfo].filter(Boolean).join(' — '));
     if (infoBits.length){
-      doc.setFont(undefined, 'normal');
+      doc.setFont(fam, 'normal');
       doc.setFontSize(9);
       doc.setTextColor(80,80,80);
       doc.text(doc.splitTextToSize(infoBits.join('   ·   '), pageW - textX - margin), textX, cursorY + 18.5);
@@ -1085,7 +1391,7 @@
 
     cursorY += headerBlockH + 9;
 
-    sectionHeader('Stage Plot');
+    sectionHeader(tx('stagePlot'), 60);
     if (stageImageDataUrl){
       var imgW = pageW - margin*2;
       var imgH = imgW / stageAspect;
@@ -1095,72 +1401,72 @@
       cursorY += imgH + 10;
     } else {
       doc.setFontSize(9.5); doc.setTextColor(140,140,140);
-      doc.text('(No se pudo generar la imagen del escenario — revisalo en la app.)', margin, cursorY);
+      doc.text(tx('noStage'), margin, cursorY);
       cursorY += 10;
     }
 
     /* --- continuous flow from here on: only breaks pages when content doesn't fit --- */
     if (r.inputRows.length){
-      sectionHeader('Input List', 8 + r.inputRows.length * ROW_H_ESTIMATE);
+      sectionHeader(tx('inputList'), 8 + r.inputRows.length * ROW_H_ESTIMATE);
       doc.autoTable(Object.assign({
         startY: cursorY,
-        head: [['#','Instrumento / fuente','Mic o DI sugerido','Pie','48V','Provisto por','Notas']],
+        head: [['#', tx('hInstrument'), tx('hMic'), tx('hStand'), '48V', tx('hProvided'), tx('hNotes')]],
         body: r.inputRows.map(function(row, idx){
-          return [ idx+1, row.instrument, row.mic, row.stand, row.phantom ? 'Sí' : '—', row.providedBy, row.notes ];
+          return [ idx+1, row.instrument, row.mic, vx(row.stand), row.phantom ? tx('yes') : '—', vx(row.providedBy), row.notes ];
         })
       }, tableStyles()));
       cursorY = doc.lastAutoTable.finalY + 9;
     }
 
     if (r.outputRows.length){
-      sectionHeader('Monitores', 8 + r.outputRows.length * ROW_H_ESTIMATE);
+      sectionHeader(tx('monitors'), 8 + r.outputRows.length * ROW_H_ESTIMATE);
       doc.autoTable(Object.assign({
         startY: cursorY,
-        head: [['Mix','Para quién','Contenido','Tipo']],
-        body: r.outputRows.map(function(row, idx){ return [ idx+1, row.who, row.content, row.kind ]; })
+        head: [[tx('hMix'), tx('hWho'), tx('hContent'), tx('hKind')]],
+        body: r.outputRows.map(function(row, idx){ return [ 'M' + (idx+1), row.who, row.content, vx(row.kind) ]; })
       }, tableStyles()));
       cursorY = doc.lastAutoTable.finalY + 9;
     }
 
     if (r.backlineRows.length || r.power){
-      sectionHeader('Backline y energía', 8 + r.backlineRows.length * ROW_H_ESTIMATE);
+      sectionHeader(tx('backline'), 8 + r.backlineRows.length * ROW_H_ESTIMATE);
       if (r.backlineRows.length){
         doc.autoTable(Object.assign({
           startY: cursorY,
-          head: [['Ítem','Provisto por','Cantidad','Notas']],
-          body: r.backlineRows.map(function(row){ return [ row.item, row.providedBy, row.qty, row.notes ]; })
+          head: [[tx('hItem'), tx('hProvided'), tx('hQty'), tx('hNotes')]],
+          body: r.backlineRows.map(function(row){ return [ row.item, vx(row.providedBy), row.qty, row.notes ]; })
         }, tableStyles()));
         cursorY = doc.lastAutoTable.finalY + 6;
       }
       if (r.power){
-        var powerLines = doc.splitTextToSize('Energía: ' + r.power, pageW - margin*2);
+        var powerLines = doc.splitTextToSize(tx('power') + ': ' + r.power, pageW - margin*2);
         ensureSpace(powerLines.length * 4.5 + 4);
-        doc.setFont(undefined,'normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
+        doc.setFont(fam,'normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
         doc.text(powerLines, margin, cursorY);
         cursorY += powerLines.length * 4.5 + 6;
       }
     }
 
     var scheduleBits = [];
-    if (r.loadIn) scheduleBits.push('Load-in: ' + r.loadIn);
-    if (r.soundcheck) scheduleBits.push('Soundcheck: ' + r.soundcheck);
-    if (r.showLength) scheduleBits.push('Duración del show: ' + r.showLength);
+    if (r.loadIn) scheduleBits.push(tx('loadIn') + ': ' + r.loadIn);
+    if (r.soundcheck) scheduleBits.push(tx('soundcheck') + ': ' + r.soundcheck);
+    if (r.showLength) scheduleBits.push(tx('showLength') + ': ' + r.showLength);
     if (scheduleBits.length || r.notes){
       var notesLineEstimate = r.notes ? doc.splitTextToSize(r.notes, pageW - margin*2).length : 0;
-      sectionHeader('Horarios y notas', (scheduleBits.length ? 8 : 0) + (notesLineEstimate ? 6 + notesLineEstimate * 4.5 : 0));
+      sectionHeader(tx('schedule'), (scheduleBits.length ? 8 : 0) + (notesLineEstimate ? 6 + notesLineEstimate * 4.5 : 0));
       if (scheduleBits.length){
         ensureSpace(8);
-        doc.setFont(undefined,'normal'); doc.setFontSize(9.5); doc.setTextColor(40,40,40);
+        doc.setFont(fam,'normal'); doc.setFontSize(9.5); doc.setTextColor(40,40,40);
         doc.text(scheduleBits.join('   ·   '), margin, cursorY);
         cursorY += 8;
       }
       if (r.notes){
         var notesLines = doc.splitTextToSize(r.notes, pageW - margin*2);
         ensureSpace(notesLines.length * 4.5 + 6);
-        doc.setFont(undefined,'bold'); doc.setFontSize(9.5); doc.setTextColor(20,20,20);
-        doc.text('Notas adicionales', margin, cursorY);
+        doc.setFont(fam,'bold'); doc.setFontSize(9.5); doc.setTextColor(20,20,20);
+        doc.text(tx('extraNotes'), margin, cursorY);
         cursorY += 5.5;
-        doc.setFont(undefined,'normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
+        doc.setFont(fam,'normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
         doc.text(notesLines, margin, cursorY);
         cursorY += notesLines.length * 4.5;
       }
@@ -1172,9 +1478,11 @@
       footer();
     }
 
-    var filename = (r.bandName || 'rider-tecnico').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'rider-tecnico';
+    var slug = function(v){ return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); };
+    var suffix = slug(tx('file')) || 'rider-tecnico';
+    var filename = slug(r.bandName);
     var blob = doc.output('blob');
-    offerPdfDownload(blob, filename + '-rider-tecnico.pdf');
+    offerPdfDownload(blob, (filename ? filename + '-' : '') + suffix + '.pdf');
   }
 
   function setExportMsg(text){
@@ -1200,7 +1508,7 @@
   }
 
   // Las plantillas reemplazan escenario y listas; los datos generales (banda, contacto, logo) se conservan.
-  var KEEP_ON_TEMPLATE = ['bandName','contactName','contactInfo','showDate','logoDataUrl','logoAspect','accentColor'];
+  var KEEP_ON_TEMPLATE = ['bandName','contactName','contactInfo','showDate','logoDataUrl','logoAspect','accentColor','lang','textos'];
   function applyTemplate(key, resetAll){
     var prev = state.rider;
     if (key === 'rock4') state.rider = templateRock4();
@@ -1231,22 +1539,7 @@
       var item = state.rider.stagePlot.find(function(i){ return i.id === state.selectedStageItemId; });
       if (item){ item.rotation = ((item.rotation||0) + 90) % 360; renderStagePlot(); }
     });
-    document.getElementById('deleteStageItemBtn').addEventListener('click', function(){
-      var item = state.rider.stagePlot.find(function(i){ return i.id === state.selectedStageItemId; });
-      if (item && item.linkedRowId){
-        if (item.linkedTable === 'output'){
-          state.rider.outputRows = state.rider.outputRows.filter(function(r){ return r.id !== item.linkedRowId; });
-          renderOutputTable();
-        } else {
-          state.rider.inputRows = state.rider.inputRows.filter(function(r){ return r.id !== item.linkedRowId; });
-          renderInputTable();
-        }
-      }
-      state.rider.stagePlot = state.rider.stagePlot.filter(function(i){ return i.id !== state.selectedStageItemId; });
-      state.selectedStageItemId = null;
-      document.getElementById('stageInspector').style.display = 'none';
-      renderStagePlot();
-    });
+    document.getElementById('deleteStageItemBtn').addEventListener('click', deleteSelectedStageItem);
     document.getElementById('stageItemLabel').addEventListener('input', function(e){
       var item = state.rider.stagePlot.find(function(i){ return i.id === state.selectedStageItemId; });
       if (item){
@@ -1267,6 +1560,20 @@
         renderStagePlot();
       }
     });
+
+    document.getElementById('fLang').addEventListener('change', function(e){ changeLang(e.target.value); });
+    document.getElementById('langTextsGrid').addEventListener('input', function(e){
+      var k = e.target.getAttribute('data-key'); if (!k) return;
+      if (!state.rider.textos) state.rider.textos = {};
+      if (e.target.value.trim()) state.rider.textos[k] = e.target.value; else delete state.rider.textos[k];
+      if (k === 'stageBack' || k === 'audience') renderStageLabels();
+    });
+    document.getElementById('langTextsReset').addEventListener('click', function(){ state.rider.textos = {}; renderLang(); renderStageLabels(); });
+    // al cambiar el tamaño de la pantalla, que nada quede cortado en los bordes del escenario
+    if (window.ResizeObserver){
+      var ro = 0;
+      new ResizeObserver(function(){ cancelAnimationFrame(ro); ro = requestAnimationFrame(renderStagePlot); }).observe(document.getElementById('stageSurface'));
+    }
 
     document.getElementById('addInputRowBtn').addEventListener('click', function(){ state.rider.inputRows.push(inputRow('')); renderInputTable(); });
     document.getElementById('addOutputRowBtn').addEventListener('click', function(){ state.rider.outputRows.push(outputRow('')); renderOutputTable(); });

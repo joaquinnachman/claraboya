@@ -56,6 +56,8 @@ html[data-app] .cb-toast { bottom: calc(var(--tab-bar) + var(--safe-b) + 14px); 
 }
 .cb-appbar__slot { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .cb-appbar__slot .status-pill { font-size: 11px; padding: 5px 9px; white-space: nowrap; }
+/* en celular el estado de guardado es solo el puntito, para que el título de la herramienta entre */
+@media (max-width: 560px) { .cb-appbar__slot .status-pill { font-size: 0; gap: 0; padding: 9px; } }
 .cb-iconbtn {
   flex: none; width: 44px; height: 44px; border-radius: 22px;
   display: grid; place-items: center;
