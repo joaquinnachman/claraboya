@@ -47,7 +47,8 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
   - `app/native/MainActivity.java`: puente `window.ClaraboyaNativo` (guardar y compartir archivos, compartir texto, pantalla encendida, vibrar, actualizar). En JS, para compartir usar `CB.share()`.
   - Íconos: `scripts/iconos.py` (Python con Pillow y numpy) dibuja la claraboya hecha vúmetro (los cuatro cuadros apenas separados, partidos en segmentos, con el pico más claro) y escribe `app/assets/icon-*.png` y `web/img/app-*.png`.
     El tamaño del logo se cambia en `ALTO` (en Android, 0,51 es lo máximo que entra en el recorte redondo); separación, segmentos y colores, arriba del archivo.
-    El logo de la marca (cabecera, pantalla de carga, sticker) sigue siendo la claraboya sola.
+    También escribe el logo de adentro de la app (`web/img/app-logo.svg`, en Inicio y Estudio) y la pantalla de carga de la APK (`app/assets/splash*.png`).
+    Toda la app usa el vúmetro; la web del estudio y el sticker siguen con la claraboya sola.
   - `app/keystore/claraboya.jks`: llave de firma, pública (mismo criterio que AirMix). No cambiarla: si cambia, hay que desinstalar para actualizar.
 - La APK la arma GitHub Actions (`.github/workflows/app.yml`); no hay SDK de Android local.
 

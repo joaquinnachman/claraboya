@@ -18,7 +18,7 @@ catch { console.error('Falta dist/: corré antes node scripts/build.mjs'); proce
 const SKIP = [
   /^descargas\//, /^bajar\//, /^_headers$/, /^_redirects$/, /^sw\.js$/, /^404\.html$/, /^robots\.txt$/, /^sitemap\.xml$/,
   /^index\.html$/, /^style\.css$/, /^main\.js$/,
-  /^img\/(?!(logo|app-|cuadros|icon-|favicon))/   // de img/ solo logo e íconos
+  /^img\/(?!(logo|app-|icon-|favicon))/   // de img/ solo logo e íconos
 ];
 
 async function walk(dir) {

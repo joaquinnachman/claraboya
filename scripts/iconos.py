@@ -8,6 +8,8 @@ Dibuja todo desde polígonos (bordes nítidos en cualquier tamaño) y escribe:
   app/assets/icon-only.png         ícono para Android viejos (fondo negro)
   web/img/app-180.png, app-192.png, app-512.png   iPhone (pantalla de inicio) y web instalada
   web/img/app-maskable-512.png     web instalada en Android (el sistema le recorta la forma)
+  web/img/app-logo.svg             el logo adentro de la app (Inicio, Estudio)
+  app/assets/splash.png y splash-dark.png   pantalla de carga de la APK
 
 Para agrandar o achicar el logo, cambiar ALTO (qué parte del alto del ícono ocupa).
 Uso: python3 scripts/iconos.py   (necesita Pillow y numpy)
@@ -111,6 +113,28 @@ def dibujar(lado, alto_rel, fondo):
     return Image.fromarray(np.clip(np.round(out), 0, 255).astype(np.uint8), 'RGBA')
 
 
+def svg():
+    """El mismo dibujo como SVG cuadrado (para usarlo nítido adentro de la app)."""
+    formas = piezas()
+    pts = [p for q, _ in formas for p in q]
+    x0, x1 = min(p[0] for p in pts), max(p[0] for p in pts)
+    y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
+    lado = y1 - y0
+    ox = x0 - (lado - (x1 - x0)) / 2
+    caja = f'{ox:.2f} {y0:.2f} {lado:.2f} {lado:.2f}'
+    hexa = lambda c: '#%02X%02X%02X' % c
+    polis = ''.join(f'<polygon fill="{hexa(c)}" points="' + ' '.join(f'{x:.2f},{y:.2f}' for x, y in q) + '"/>' for q, c in formas)
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{caja}">{polis}</svg>\n'
+
+
+def splash(lado=2732, alto_logo=437):
+    """Pantalla de carga: negro con el logo chico en el medio."""
+    base = Image.new('RGBA', (lado, lado), (0, 0, 0, 255))
+    logo = dibujar(alto_logo + 40, alto_logo / (alto_logo + 40), None)
+    base.alpha_composite(logo, ((lado - logo.size[0]) // 2, (lado - logo.size[1]) // 2))
+    return base
+
+
 def guardar(img, ruta, rgb=False):
     ruta = os.path.join(ROOT, ruta)
     (img.convert('RGB') if rgb else img).save(ruta, optimize=True)
@@ -125,3 +149,9 @@ if __name__ == '__main__':
     for lado in (180, 192, 512):
         guardar(dibujar(lado, ALTO['cuadrado'], NEGRO), f'web/img/app-{lado}.png', rgb=True)
     guardar(dibujar(512, ALTO['maskable'], NEGRO), 'web/img/app-maskable-512.png', rgb=True)
+    with open(os.path.join(ROOT, 'web/img/app-logo.svg'), 'w') as f:
+        f.write(svg())
+    print('  web/img/app-logo.svg')
+    pantalla = splash()
+    guardar(pantalla, 'app/assets/splash.png')
+    guardar(pantalla, 'app/assets/splash-dark.png')
