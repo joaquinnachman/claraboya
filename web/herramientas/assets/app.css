@@ -165,6 +165,7 @@ html.cb-inv-on .wa-dock { bottom: calc(var(--cb-inv-h, 64px) + 26px); }
 .home { width: min(100%, 1100px); margin: 0 auto; padding: 0 16px; view-transition-name: cb-main; }
 .home__top { display: flex; align-items: center; gap: 12px; padding: 10px 0 2px; }
 .home__logo { width: 34px; height: 34px; }
+.cb-vumetro { flex: none; display: block; -webkit-tap-highlight-color: transparent; }
 .home__brand { font-family: var(--display); font-size: 24px; letter-spacing: 0.08em; line-height: 1; }
 .home__hello { margin: 18px 0 2px; font-family: var(--display); font-weight: 400; font-size: clamp(40px, 11vw, 64px); line-height: 0.92; }
 .home__sub { margin: 0 0 22px; color: var(--soft); font-size: 15px; }
@@ -282,7 +283,7 @@ html.cb-inv-on .wa-dock { bottom: calc(var(--cb-inv-h, 64px) + 26px); }
   background: linear-gradient(160deg, #2A0A0B 0%, #171B1D 70%); border: 1px solid rgba(242, 242, 242, 0.08);
 }
 .studio-card__head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.studio-card__head img { width: 44px; height: 44px; }
+.studio-card__head img, .studio-card__head svg { width: 44px; height: 44px; }
 .studio-card h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 32px; line-height: 1; }
 .studio-card p { margin: 0 0 14px; color: var(--soft); font-size: 14.5px; line-height: 1.5; }
 .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }

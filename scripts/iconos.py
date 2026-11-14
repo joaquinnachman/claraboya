@@ -53,7 +53,8 @@ def lerp(a, b, t):
 
 
 def piezas():
-    """Lista de (cuadrilátero, color) en unidades del dibujo: los segmentos de los cuatro cuadros."""
+    """Lista de (cuadrilátero, color, columna, segmento) en unidades del dibujo: los segmentos de los cuatro cuadros.
+    columna: 0 izquierda, 1 derecha; segmento: 0 a 11 contando desde arriba."""
     salida = []
     for i, q in enumerate(CUADROS):
         dx = SEPARAR if i in (1, 3) else -SEPARAR
@@ -70,14 +71,14 @@ def piezas():
             n = fila * SEGMENTOS + j  # número de segmento en la columna, desde arriba
             p = PICO[col]
             color = APAGADO if n < p else COLOR_PICO if n == p else CALIENTE if n == p + 1 else PRENDIDO
-            salida.append(([lerp(tl, bl, t0), lerp(tr, br, t0), lerp(tr, br, t1), lerp(tl, bl, t1)], color))
+            salida.append(([lerp(tl, bl, t0), lerp(tr, br, t0), lerp(tr, br, t1), lerp(tl, bl, t1)], color, col, n))
     return salida
 
 
 def dibujar(lado, alto_rel, fondo):
     """Devuelve una imagen RGBA de lado x lado con el logo centrado."""
     formas = piezas()
-    pts = [p for q, _ in formas for p in q]
+    pts = [p for q, *_ in formas for p in q]
     x0, x1 = min(p[0] for p in pts), max(p[0] for p in pts)
     y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
     escala = alto_rel * lado / (y1 - y0)
@@ -85,7 +86,7 @@ def dibujar(lado, alto_rel, fondo):
     n = lado * SS
     rgb = np.zeros((n, n, 3))
     alfa = np.zeros((n, n))
-    for q, color in formas:
+    for q, color, *_ in formas:
         px = np.array([((x - cx) * escala + lado / 2) * SS for x, _ in q])
         py = np.array([((y - cy) * escala + lado / 2) * SS for _, y in q])
         bx0, bx1 = int(max(0, px.min() - 2)), int(min(n, px.max() + 3))
@@ -114,17 +115,21 @@ def dibujar(lado, alto_rel, fondo):
 
 
 def svg():
-    """El mismo dibujo como SVG cuadrado (para usarlo nítido adentro de la app)."""
+    """El mismo dibujo como SVG cuadrado (para usarlo nítido adentro de la app).
+    Cada segmento lleva su columna y número, y el SVG los colores y el pico de reposo:
+    con eso assets/app.js lo hace moverse cada tanto."""
     formas = piezas()
-    pts = [p for q, _ in formas for p in q]
+    pts = [p for q, *_ in formas for p in q]
     x0, x1 = min(p[0] for p in pts), max(p[0] for p in pts)
     y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
     lado = y1 - y0
     ox = x0 - (lado - (x1 - x0)) / 2
     caja = f'{ox:.2f} {y0:.2f} {lado:.2f} {lado:.2f}'
     hexa = lambda c: '#%02X%02X%02X' % c
-    polis = ''.join(f'<polygon fill="{hexa(c)}" points="' + ' '.join(f'{x:.2f},{y:.2f}' for x, y in q) + '"/>' for q, c in formas)
-    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{caja}">{polis}</svg>\n'
+    polis = ''.join(f'<polygon data-c="{col}" data-n="{n}" fill="{hexa(c)}" points="' + ' '.join(f'{x:.2f},{y:.2f}' for x, y in q) + '"/>' for q, c, col, n in formas)
+    colores = ','.join(hexa(c) for c in (APAGADO, PRENDIDO, CALIENTE, COLOR_PICO))
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{caja}" data-segmentos="{SEGMENTOS * 2}" '
+            f'data-pico="{PICO[0]},{PICO[1]}" data-colores="{colores}">{polis}</svg>\n')
 
 
 def splash(lado=2732, alto_logo=437):

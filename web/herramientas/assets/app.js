@@ -612,10 +612,89 @@
     }
   }
 
+  /* ---------- el logo: un vúmetro que cada tanto se mueve ----------
+     El SVG lo arma scripts/iconos.py: cada segmento trae su columna (data-c) y su número desde arriba
+     (data-n), y el SVG trae los colores y el pico de reposo, que es como se ve el ícono. Cada tanto
+     pasa "un golpe de música": los dos medidores suben y bajan un ratito y vuelven a quedar como el ícono.
+     Solo corre mientras se mueve (unos 2 segundos cada 7 a 13), no se mueve si el teléfono pide menos
+     movimiento y no gasta nada con la app en segundo plano. */
+  function initVumetro() {
+    var imgs = Array.prototype.slice.call(document.querySelectorAll('img[src$="app-logo.svg"]'));
+    if (!imgs.length || !window.fetch || !window.DOMParser) return;
+    fetch(imgs[0].src).then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); }).then(function (txt) {
+      var base = new DOMParser().parseFromString(txt, 'image/svg+xml').documentElement;
+      if (!base || base.nodeName.toLowerCase() !== 'svg') return;
+      var C = (base.getAttribute('data-colores') || '').split(',');  // apagado, prendido, caliente, pico
+      var N = +base.getAttribute('data-segmentos') || 12;
+      var reposo = (base.getAttribute('data-pico') || '2,4').split(',').map(function (p) { return N - +p; });  // altura prendida
+      var medidores = imgs.map(function (img) {
+        var s = document.importNode(base, true);
+        s.setAttribute('class', (img.getAttribute('class') || '') + ' cb-vumetro');
+        s.setAttribute('width', img.getAttribute('width') || '34');
+        s.setAttribute('height', img.getAttribute('height') || '34');
+        s.setAttribute('aria-hidden', 'true');
+        s.setAttribute('focusable', 'false');
+        img.parentNode.replaceChild(s, img);
+        var segs = [[], []];
+        Array.prototype.forEach.call(s.querySelectorAll('polygon'), function (p) { segs[+p.getAttribute('data-c')][+p.getAttribute('data-n')] = p; });
+        return { el: s, segs: segs, alto: reposo.slice() };
+      });
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var nivel = reposo.slice(), meta = reposo.slice(), corriendo = false, fin = 0, proximoGolpe = 0, antes = 0, espera = null;
+      function pintar() {
+        medidores.forEach(function (m) {
+          for (var c = 0; c < 2; c++) {
+            var h = Math.round(nivel[c]);
+            if (h === m.alto[c]) continue;
+            m.alto[c] = h;
+            var p = N - h;  // segmento del pico
+            for (var i = 0; i < N; i++) {
+              var seg = m.segs[c][i];
+              if (seg) seg.setAttribute('fill', i < p ? C[0] : i === p ? C[3] : i === p + 1 ? C[2] : C[1]);
+            }
+          }
+        });
+      }
+      function cuadro(t) {
+        var dt = antes ? Math.min(t - antes, 64) : 16;
+        antes = t;
+        if (t < fin && t >= proximoGolpe) {
+          // un golpe nuevo: los dos canales parecidos, con un poco de diferencia entre sí
+          var golpe = Math.random() < 0.12 ? 2 : Math.floor(Math.random() * 6) - 4;  // -4 a +1, a veces llega arriba de todo
+          for (var c = 0; c < 2; c++) meta[c] = Math.max(3, Math.min(N, reposo[c] + golpe + Math.round(Math.random() * 2 - 1)));
+          proximoGolpe = t + 120 + Math.random() * 120;
+        } else if (t >= fin) { meta[0] = reposo[0]; meta[1] = reposo[1]; }
+        for (var k = 0; k < 2; k++) {
+          if (meta[k] > nivel[k]) nivel[k] = meta[k];                                      // sube de golpe
+          else nivel[k] = Math.max(meta[k], nivel[k] - dt * 0.011);                         // baja despacio, como la aguja
+        }
+        pintar();
+        if (t >= fin && Math.round(nivel[0]) === reposo[0] && Math.round(nivel[1]) === reposo[1]) {
+          nivel[0] = reposo[0]; nivel[1] = reposo[1]; pintar(); corriendo = false; programar(7000 + Math.random() * 6000);
+          return;
+        }
+        requestAnimationFrame(cuadro);
+      }
+      function golpe() {
+        if (corriendo) return;
+        if (document.hidden) { programar(4000); return; }
+        clearTimeout(espera);
+        corriendo = true; antes = 0; proximoGolpe = 0;
+        fin = performance.now() + 1500 + Math.random() * 900;
+        requestAnimationFrame(cuadro);
+      }
+      function programar(ms) { clearTimeout(espera); espera = setTimeout(golpe, ms); }
+      medidores.forEach(function (m) { m.el.addEventListener('pointerdown', golpe); });  // si lo tocás, también suena
+      programar(1200);
+    }).catch(function () { /* queda el logo quieto */ });
+  }
+
   function init() {
     injectSprite();
     buildAppBar();
     buildTabBar();
+    initVumetro();
     if (isHome) { initHome(); initChips(); }
     if (page === 'estudio') initEstudio();
     autoPrompt();

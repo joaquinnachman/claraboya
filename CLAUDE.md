@@ -49,6 +49,7 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
     El tamaño del logo se cambia en `ALTO` (en Android, 0,51 es lo máximo que entra en el recorte redondo); separación, segmentos y colores, arriba del archivo.
     También escribe el logo de adentro de la app (`web/img/app-logo.svg`, en Inicio y Estudio) y la pantalla de carga de la APK (`app/assets/splash*.png`).
     Toda la app usa el vúmetro; la web del estudio y el sticker siguen con la claraboya sola.
+    En la app, `initVumetro()` (app.js) pone el SVG adentro de la página y cada 7 a 13 s lo hace moverse un par de segundos (también al tocarlo) y vuelve a quedar como el ícono; usa los `data-` que escribe `iconos.py` y no se mueve con «reducir movimiento».
   - `app/keystore/claraboya.jks`: llave de firma, pública (mismo criterio que AirMix). No cambiarla: si cambia, hay que desinstalar para actualizar.
 - La APK la arma GitHub Actions (`.github/workflows/app.yml`); no hay SDK de Android local.
 
