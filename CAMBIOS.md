@@ -3,7 +3,7 @@
 Una sola versión para todo: la web, las herramientas y las apps.
 La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versión" y sale los lunes.
 
-## Próxima versión
+## 7.2.0 — 16/11/2026
 - Ícono nuevo de la app: los cuatro cuadros de la claraboya ahora son un vúmetro, para que se note que es una app de música. Es también el logo de toda la app (Inicio, Estudio y la pantalla de carga), y cada tanto se mueve como un vúmetro de verdad (si lo tocás, también). En iPhone, para ver el ícono nuevo hay que borrar el acceso directo y volver a agregarlo a inicio.
 - Rider técnico en otros idiomas: el PDF sale en castellano, inglés, portugués, francés, italiano o alemán (títulos, columnas, escenario y lo que vino de las plantillas, que se traduce solo; lo que escribiste vos queda igual). Con «Otro idioma…» escribís vos los textos, incluso con otros alfabetos (polaco, griego, ruso…).
 - Stage plot rediseñado: en el celular ya no se corta ni se encima (el escenario es más alto, los íconos se adaptan al tamaño y los carteles de fondo y público quedan afuera del área), se puede bajar la página con el dedo encima, los íconos se agarran desde donde tocás, se mueven con el teclado y muestran su número de canal.
