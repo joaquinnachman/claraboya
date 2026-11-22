@@ -563,7 +563,90 @@
     }, { rootMargin: '-70px 0px -55% 0px', threshold: 0 });
     links.forEach(function (a) { var sec = document.getElementById(a.getAttribute('href').slice(1)); if (sec) io.observe(sec); });
   }
+  /* ---------- Estudio: lugares libres de la semana ----------
+     Una tarea diaria lee el calendario del estudio y publica solo lo libre en la rama `dispo` del repo
+     (scripts/dispo.mjs). Se guarda la última copia en el teléfono (fuera de la copia de «Tus datos»). */
+  var DISPO_URL = 'https://raw.githubusercontent.com/joaquinnachman/claraboya/dispo/dispo.json';
+  var DISPO_KEY = 'cbdev.dispo';
+  var WA_ESTUDIO = '5491168499750';
+  var DIAS_SEM = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  function dispoValida(d) {
+    if (!d || d.v !== 1 || !Array.isArray(d.dias) || d.dias.length > 14 || typeof d.generado !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(d.generado)) return null;
+    var hora = /^([01]\d|2[0-4]):[0-5]\d$/, dias = [];
+    for (var i = 0; i < d.dias.length; i++) {
+      var x = d.dias[i];
+      if (!x || !/^\d{4}-\d{2}-\d{2}$/.test(x.fecha) || !Array.isArray(x.libre) || x.libre.length > 8) return null;
+      for (var j = 0; j < x.libre.length; j++) {
+        var r = x.libre[j];
+        if (!Array.isArray(r) || r.length !== 2 || !hora.test(r[0]) || !hora.test(r[1]) || r[0] >= r[1]) return null;
+      }
+      dias.push({ fecha: x.fecha, libre: x.libre.map(function (r) { return [r[0], r[1]]; }) });
+    }
+    return { generado: d.generado.slice(0, 16), abre: hora.test(d.abre) ? d.abre : '10:00', cierra: hora.test(d.cierra) ? d.cierra : '22:00', dias: dias };
+  }
+  function ahoraAR() {   // fecha y hora de Argentina, aunque el teléfono esté en otra zona
+    try {
+      var p = {}; new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+        .formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+      return { fecha: p.year + '-' + p.month + '-' + p.day, min: Number(p.hour) * 60 + Number(p.minute) };
+    } catch (e) { var d = new Date(); return { fecha: d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2), min: d.getHours() * 60 + d.getMinutes() }; }
+  }
+  function aMin(h) { return Number(h.slice(0, 2)) * 60 + Number(h.slice(3, 5)); }
+  function hTexto(h) { return h.slice(3) === '00' ? String(Number(h.slice(0, 2))) : Number(h.slice(0, 2)) + ':' + h.slice(3); }
+  function rangosTexto(libre) {
+    return libre.map(function (r) { return 'de ' + hTexto(r[0]) + ' a ' + hTexto(r[1]); }).join(' y ') + ' h';
+  }
+  function diasEntre(a, b) { return Math.round((Date.parse(b + 'T00:00:00Z') - Date.parse(a + 'T00:00:00Z')) / 86400000); }
+  function pintarDispo(box, d) {
+    var ahora = ahoraAR(), lista = box.querySelector('[data-cb-dispo-lista]'), act = box.querySelector('[data-cb-dispo-act]');
+    var abre = aMin(d.abre), cierra = aMin(d.cierra), largo = cierra - abre;
+    var dias = d.dias.filter(function (x) { return x.fecha >= ahora.fecha; }).map(function (x) {
+      if (x.fecha !== ahora.fecha) return x;
+      var desde = Math.ceil((ahora.min + 30) / 30) * 30;   // hoy: desde la próxima media hora con margen
+      return { fecha: x.fecha, libre: x.libre.map(function (r) { return [Math.max(aMin(r[0]), desde), aMin(r[1])]; })
+        .filter(function (r) { return r[1] - r[0] > 120; })
+        .map(function (r) { return [('0' + Math.floor(r[0] / 60)).slice(-2) + ':' + ('0' + r[0] % 60).slice(-2), ('0' + Math.floor(r[1] / 60)).slice(-2) + ':' + ('0' + r[1] % 60).slice(-2)]; }) };
+    });
+    if (!dias.length) { box.hidden = true; return; }
+    var viejo = diasEntre(d.generado.slice(0, 10), ahora.fecha);
+    if (act) act.textContent = (viejo <= 0 ? 'Actualizado hoy a las ' : viejo === 1 ? 'Actualizado ayer a las ' : 'Actualizado el ' + d.generado.slice(8, 10) + '/' + d.generado.slice(5, 7) + ' a las ') + hTexto(d.generado.slice(11, 16)) + (viejo >= 2 ? ' · puede haber cambiado' : '');
+    var hayLibre = false;
+    lista.innerHTML = dias.map(function (x) {
+      var f = new Date(x.fecha + 'T12:00:00Z'), dow = DIAS_SEM[f.getUTCDay()], dm = x.fecha.slice(8, 10) + '/' + x.fecha.slice(5, 7);
+      var nombre = x.fecha === ahora.fecha ? 'Hoy' : diasEntre(ahora.fecha, x.fecha) === 1 ? 'Mañana' : dow.slice(0, 3);
+      var barra = x.libre.map(function (r) {
+        var a = Math.max(aMin(r[0]), abre), b = Math.min(aMin(r[1]), cierra);
+        return '<i style="left:' + ((a - abre) / largo * 100).toFixed(2) + '%;width:' + ((b - a) / largo * 100).toFixed(2) + '%"></i>';
+      }).join('');
+      var cabeza = '<span class="dispo__fecha"><b>' + escapeHtml(nombre) + '</b><span>' + dm + '</span></span>' +
+        '<span class="dispo__info"><span class="dispo__barra" aria-hidden="true">' + barra + '</span>';
+      if (!x.libre.length) return '<div class="list__row dispo__dia is-ocupado">' + cabeza + '<small>Ocupado</small></span><span class="dispo__wa is-vacio" aria-hidden="true"></span></div>';
+      hayLibre = true;
+      var msg = 'Hola! Vi en la app de Claraboya que el ' + dow + ' ' + dm + ' está libre ' + rangosTexto(x.libre) + '. ¿Puedo reservar una sesión?';
+      return '<a class="list__row dispo__dia" data-cb-reservar href="https://wa.me/' + WA_ESTUDIO + '?text=' + encodeURIComponent(msg) + '" aria-label="Reservar el ' + dow + ' ' + dm + ', libre ' + rangosTexto(x.libre) + '">' +
+        cabeza + '<small>Libre ' + rangosTexto(x.libre) + '</small></span><span class="dispo__wa"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg></span></a>';
+    }).join('');
+    var nota = box.querySelector('[data-cb-dispo-nota]');
+    if (nota) nota.textContent = hayLibre ? 'Tocá un día y reservá tu sesión por WhatsApp.' : 'Estos días ya están completos. Escribinos y buscamos un lugar en la semana que viene.';
+    box.hidden = false;
+  }
+  function initDispo() {
+    var box = document.querySelector('[data-cb-dispo]');
+    if (!box) return;
+    var guardada = null;
+    try { guardada = dispoValida(JSON.parse(localStorage.getItem(DISPO_KEY) || 'null')); } catch (e) { guardada = null; }
+    if (guardada) pintarDispo(box, guardada);
+    box.addEventListener('click', function (e) { if (e.target.closest('[data-cb-reservar]') && window.CBUso) window.CBUso('reservar'); });
+    if (!window.fetch || navigator.onLine === false) return;
+    fetch(DISPO_URL, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); }).then(function (j) {
+      var d = dispoValida(j);
+      if (!d || (guardada && d.generado < guardada.generado)) return;
+      try { localStorage.setItem(DISPO_KEY, JSON.stringify(j)); } catch (e) { /* sin lugar: se muestra igual */ }
+      pintarDispo(box, d);
+    }).catch(function () { /* sin internet o sin datos: queda la última copia, o nada */ });
+  }
   function initEstudio() {
+    initDispo();
     var v = document.querySelector('[data-cb-version]');
     if (v) v.textContent = VERSION;
     var status = document.querySelector('[data-cb-update-status]');

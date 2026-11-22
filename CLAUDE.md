@@ -49,6 +49,9 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
   Lo manda `tools.js` (al abrir cada página y con `CBUso('accion')`); no manda nada en localhost, en pruebas automáticas ni si se apagó en Estudio (`cb.app.sinEstadisticas`).
   Herramienta o acción nueva: sumarla también a las listas de `uso.mjs` y a los nombres de `web/uso/`.
   Los números se ven en `/uso/` (página escondida, sin clave por decisión de Joaquín, `noindex`, sin links, fuera de la APK y del sitemap).
+- Lugares libres (Estudio de la app): una tarea diaria lee el calendario, arma la lista de lo ocupado y corre `scripts/dispo.mjs`, que escribe solo lo libre
+  (7 días, sin domingos, de 10 a 22 h, huecos de 2 h o menos cuentan como ocupados) en `dispo.json` de la rama `dispo` (rama de datos: no se mergea, commits con `[skip ci]`).
+  La app lo lee de raw.githubusercontent.com, lo valida, guarda la última copia en `cbdev.dispo` y cada día abre WhatsApp con el mensaje para reservar (`CBUso('reservar')`).
 - `web/sw.js`: service worker. Con internet pide todo a la red; sin internet sirve la copia guardada.
 - `app/`: la APK (Capacitor 6). `scripts/build-app.mjs` arma `app/www` desde `dist/`:
   marca las páginas con `data-app data-native` y cambia los links `carpeta/` por `carpeta/index.html`
@@ -75,7 +78,8 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
 - Aparece en la app y en la web para todos (decisión de Joaquín), siempre con la aclaración de que es para escuchar referencias.
 
 ## Lo que NO va acá
-- Herramientas internas del estudio (presupuestos, luces, disponibilidad semanal, respuestas a clientes): quedan afuera.
+- Herramientas internas del estudio (presupuestos, luces, la ficha de disponibilidad semanal, respuestas a clientes): quedan afuera.
+  Qué calendarios y qué eventos cuentan para los lugares libres también queda afuera (vive en la tarea diaria); acá solo está el cálculo de huecos y lo libre.
 - Claves, tokens o datos de clientes: el repo es público.
 - Precios, políticas comerciales o la dirección exacta del estudio (solo "Vicente López").
 

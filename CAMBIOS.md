@@ -9,6 +9,7 @@ La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versió
 - Para que las capas queden justas, el grabador descuenta la demora del teléfono; con «Medí la demora» la mide con unos clicks por el parlante (o la ajustás a mano si usás auriculares bluetooth).
 - Botón «Grabala en Claraboya» en cada idea: abre el chat con el estudio con un mensaje listo (nombre, tono, tempo y capas) y después manda la mezcla y cada capa suelta, listas para la compu.
 - Guardar capas (.zip): todas las capas sueltas, del mismo largo y alineadas, para arrastrarlas a la compu.
+- En Estudio aparecen los lugares libres para grabar de los próximos días, que se actualizan solos todos los días. Tocás un día y se abre WhatsApp con el mensaje listo para reservar tu sesión.
 - La app cuenta, sin saber quién sos, qué herramientas se abren y desde dónde (web, Android o iPhone), para saber qué mejorar primero. No guarda nada tuyo ni lo que hacés adentro; si no querés mandarlo, se apaga en Estudio › «Mandar estadísticas anónimas».
 
 ## 7.2.0 — 16/11/2026
