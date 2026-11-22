@@ -4,6 +4,7 @@ Una sola versión para todo: la web, las herramientas y las apps.
 La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versión" y sale los lunes.
 
 ## Próxima versión
+- Herramienta nueva, 12 · Entrenamiento de oído: siete ejercicios cortos para reconocer intervalos, acordes, escalas y modos y progresiones, distinguir si una nota está alta o baja, sacar melodías en un teclado y cantar una nota afinada (te escucha con el micrófono). Cada uno tiene tres niveles y lleva la cuenta de tus aciertos y rachas.
 - Grabador de ideas con capas: grabás una voz, un coro u otra guitarra arriba de lo que ya grabaste, escuchándolo (con una cuenta de un compás si la idea tiene tempo). Cada capa tiene su volumen, se puede silenciar, nombrar, correr unos milisegundos o borrar, y la idea suena con todas juntas.
 - Para que las capas queden justas, el grabador descuenta la demora del teléfono; con «Medí la demora» la mide con unos clicks por el parlante (o la ajustás a mano si usás auriculares bluetooth).
 - Botón «Grabala en Claraboya» en cada idea: abre el chat con el estudio con un mensaje listo (nombre, tono, tempo y capas) y después manda la mezcla y cada capa suelta, listas para la compu.

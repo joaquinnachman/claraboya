@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>!function(d,w){var s,a,L=location.search,q=/[?&]app=1(&|$)/.test(L),n=navigator,u=n.userAgent;try{s=w.sessionStorage;if(q||d.hasAttribute('data-app'))s.setItem('cbApp','1');if(/[?&]app=0(&|$)/.test(L))s.removeItem('cbApp')}catch(e){}a=d.hasAttribute('data-app')||q||!!w.Capacitor||!!(s&&s.getItem('cbApp')==='1');try{a=a||matchMedia('(display-mode: standalone)').matches||n.standalone===true}catch(e){}if(!a)return;d.setAttribute('data-app','');var v=document.querySelector('meta[name=viewport]');if(v){var c=v.content;if(c.indexOf('viewport-fit')<0)c+=', viewport-fit=cover';if(/iP(hone|ad|od)/.test(u)||/Mac/.test(u)&&n.maxTouchPoints>1)c+=', maximum-scale=1';v.content=c}var st=document.createElement('style');st.textContent='@view-transition{navigation:auto}';document.head.appendChild(st);function k(e,A){var t=s&&s.getItem('cbNav');if(!t&&A&&A.navigationType==='traverse'&&A.from&&A.entry&&A.entry.index<A.from.index)t='back';return t||'forward'}function z(t,y){if(t){t.types.add(y);[t.ready,t.finished,t.updateCallbackDone].forEach(function(p){p&&p.catch(function(){})})}}w.addEventListener('pageswap',function(e){z(e.viewTransition,k(e,e.activation))});w.addEventListener('pagereveal',function(e){z(e.viewTransition,k(e,w.navigation&&navigation.activation));try{s.removeItem('cbNav')}catch(x){}})}(document.documentElement,window)</script>
+<title>Entrenamiento de oído · Herramientas de producción | Claraboya Estudio</title>
+<meta name="description" content="Entrenamiento de oído gratis para músicos: intervalos, acordes, afinación, escalas y modos, progresiones, dictado de melodías y cantá la nota con el micrófono. Ejercicios cortos que se ponen difíciles a medida que acertás. De Claraboya Estudio.">
+<link rel="canonical" href="https://claraboyaestudio.netlify.app/herramientas/entrenamiento-de-oido/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1F2426">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Claraboya Estudio">
+<meta property="og:title" content="Entrenamiento de oído · Herramientas de producción | Claraboya Estudio">
+<meta property="og:description" content="Entrenamiento de oído gratis para músicos: intervalos, acordes, afinación, escalas y modos, progresiones, dictado de melodías y cantá la nota con el micrófono. Ejercicios cortos que se ponen difíciles a medida que acertás. De Claraboya Estudio.">
+<meta property="og:url" content="https://claraboyaestudio.netlify.app/herramientas/entrenamiento-de-oido/">
+<meta property="og:image" content="https://claraboyaestudio.netlify.app/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/icon-32.png">
+<link rel="apple-touch-icon" href="../../img/app-180.png">
+<link rel="preload" href="../../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../herramientas/assets/tools.css">
+<style>
+  .oido{ display:grid; gap:14px; }
+  .oido [hidden]{ display:none !important; }
+  .ej{ display:flex; gap:8px; overflow-x:auto; scroll-snap-type:x proximity; margin:0; padding:0 0 4px; scrollbar-width:none; }
+  .ej::-webkit-scrollbar{ display:none; }
+  .ej__btn{ flex:none; width:150px; scroll-snap-align:start; display:grid; gap:4px; align-content:start; text-align:left; padding:11px 12px 10px; border:1px solid var(--line); border-radius:6px; background:var(--ink-2); color:var(--paper); cursor:pointer; font:inherit; min-height:60px; touch-action:manipulation; }
+  .ej__btn b{ font:400 1.25rem/1 var(--display); letter-spacing:.03em; }
+  .ej__btn small{ font-size:.74rem; color:var(--faint); font-weight:600; }
+  .ej__btn[aria-pressed="true"]{ background:var(--bordo); border-color:var(--bordo-3); }
+  .ej__btn[aria-pressed="true"] small{ color:#F1C9CA; }
+  .panel{ background:var(--ink-2); border-radius:6px; padding:16px; display:grid; gap:14px; }
+  .panel__head{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; }
+  .panel__head h2{ margin:0; font:400 1.9rem/1 var(--display); letter-spacing:.02em; }
+  .seg{ display:inline-flex; background:var(--ink-3); border-radius:999px; padding:3px; gap:2px; }
+  .seg button{ min-height:36px; padding:0 13px; border:0; border-radius:999px; background:transparent; color:var(--soft); font:700 .78rem/1 var(--body); cursor:pointer; touch-action:manipulation; }
+  .seg button[aria-pressed="true"]{ background:var(--paper); color:var(--ink); }
+  .panel__q{ margin:0; color:var(--soft); line-height:1.45; }
+  .panel__opts{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .panel__opts .hint{ margin:0; font-size:.78rem; }
+  .play{ display:flex; gap:8px; align-items:center; }
+  .play__btn{ flex:1; min-height:56px; border:0; border-radius:6px; background:var(--bordo-2); color:var(--paper); font:400 1.5rem/1 var(--display); letter-spacing:.05em; display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; touch-action:manipulation; }
+  .play__btn:active{ background:var(--bordo-3); }
+  .play__btn svg{ width:22px; height:22px; }
+  .play__btn--chico{ flex:none; width:auto; padding:0 16px; background:var(--ink-3); font:700 .82rem/1 var(--body); letter-spacing:0; }
+  .resp{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 128px), 1fr)); gap:8px; }
+  .resp__btn{ min-height:52px; padding:8px 10px; border:1px solid var(--line); border-radius:6px; background:var(--ink-3); color:var(--paper); font:700 .9rem/1.2 var(--body); cursor:pointer; touch-action:manipulation; position:relative; }
+  .resp__btn:disabled{ cursor:default; }
+  .resp__btn .k{ position:absolute; top:4px; right:6px; font-size:.62rem; color:var(--faint); font-weight:600; }
+  .resp__btn.bien{ background:#1d3f37; border-color:var(--green); }
+  .resp__btn.mal{ background:#4a1a1a; border-color:var(--brick); }
+  .resp--dos{ grid-template-columns:1fr 1fr; }
+  .resp--dos .resp__btn{ min-height:64px; font-size:1rem; }
+  .fb{ min-height:24px; margin:0; display:grid; gap:8px; }
+  .fb p{ margin:0; line-height:1.45; }
+  .fb .si{ color:var(--green); font-weight:700; }
+  .fb .no{ color:var(--brick); font-weight:700; }
+  .fb__comp{ display:flex; flex-wrap:wrap; gap:8px; }
+  .fb__comp .btn{ flex:1 1 auto; justify-content:center; gap:6px; }
+  .fb__comp svg{ width:16px; height:16px; flex:none; }
+  .marcador{ display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; padding-top:12px; border-top:1px solid var(--line); font-size:.82rem; color:var(--soft); line-height:1.5; }
+  .marcador__txt{ flex:1 1 220px; }
+  .marcador b{ color:var(--paper); font-variant-numeric:tabular-nums; }
+  .marcador .linklike{ margin-left:auto; }
+  .linklike{ border:0; background:none; padding:0; color:var(--rosa); font:inherit; font-weight:700; text-decoration:underline; cursor:pointer; }
+  /* dictado: un teclado de una octava y pico */
+  .slots{ display:flex; flex-wrap:wrap; gap:6px; }
+  .slot{ min-width:52px; height:42px; padding:0 8px; border-radius:6px; background:var(--ink-3); display:grid; place-items:center; font:700 .9rem/1 var(--body); color:var(--faint); border:1px solid transparent; }
+  .slot.lleno{ color:var(--paper); }
+  .slot.dada{ background:var(--ink-4); color:var(--soft); }
+  .slot.bien{ border-color:var(--green); background:#1d3f37; color:var(--paper); }
+  .slot.mal{ border-color:var(--brick); background:#4a1a1a; color:var(--paper); }
+  .teclado{ position:relative; height:150px; display:flex; user-select:none; -webkit-user-select:none; touch-action:none; }
+  .tecla{ flex:1; position:relative; border:1px solid #9aa1a4; border-radius:0 0 6px 6px; background:#F2F2F2; color:#1F2426; display:flex; align-items:flex-end; justify-content:center; padding-bottom:8px; font:700 .74rem/1 var(--body); cursor:pointer; }
+  .tecla + .tecla{ margin-left:-1px; }
+  .tecla.negra{ position:absolute; top:0; height:60%; width:calc(100% / var(--blancas) * .62); background:#1F2426; border-color:#000; color:var(--soft); z-index:2; border-radius:0 0 4px 4px; padding-bottom:6px; font-size:.6rem; }
+  .tecla.on{ background:#D9787A; }
+  .tecla.negra.on{ background:#86201F; }
+  .dictado{ display:grid; gap:10px; }
+  .dictado__acc{ display:flex; gap:8px; }
+  .dictado__acc .btn{ flex:1; justify-content:center; }
+  /* cantá la nota */
+  .cantar{ display:grid; gap:10px; justify-items:center; padding:8px 0; }
+  .cantar__nota{ font:400 3.4rem/1 var(--display); letter-spacing:.03em; }
+  .cantar__oido{ margin:0; font-size:.9rem; color:var(--soft); min-height:1.3em; text-align:center; }
+  .aguja{ position:relative; width:min(100%, 360px); height:44px; border-radius:6px; background:linear-gradient(90deg, rgba(236,106,97,.25), rgba(124,196,176,.3) 42%, rgba(124,196,176,.3) 58%, rgba(236,106,97,.25)); }
+  .aguja::before{ content:""; position:absolute; left:50%; top:0; bottom:0; width:2px; margin-left:-1px; background:var(--paper); opacity:.6; }
+  .aguja i{ position:absolute; top:6px; bottom:6px; left:50%; width:10px; margin-left:-5px; border-radius:5px; background:var(--paper); transition:left .08s linear, opacity .2s; opacity:.25; }
+  .aguja.oye i{ opacity:1; }
+  .aguja.justa i{ background:var(--green); }
+  .aguja__lab{ display:flex; justify-content:space-between; width:min(100%, 360px); font-size:.7rem; color:var(--faint); }
+  .aguante{ width:min(100%, 360px); height:6px; border-radius:3px; background:var(--ink-3); overflow:hidden; }
+  .aguante i{ display:block; height:100%; background:var(--green); transform-origin:left center; transform:scaleX(0); }
+  @media (min-width: 900px){
+    .oido{ grid-template-columns:minmax(260px, 320px) minmax(0, 1fr); align-items:start; }
+    .ej{ display:grid; grid-template-columns:1fr; overflow:visible; margin:0; padding:0; position:sticky; top:calc(var(--tn-h, 120px) + 16px); }
+    .ej__btn{ width:auto; }
+    .panel{ padding:22px; }
+  }
+  @media (max-width: 360px){ .seg button{ padding:0 10px; } .resp{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Entrenamiento de oído — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/entrenamiento-de-oido/", "description": "Entrenamiento de oído gratis para músicos: intervalos, acordes, afinación, escalas y modos, progresiones, dictado de melodías y cantá la nota con el micrófono. De Claraboya Estudio.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "provider": {"@type": "Organization", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
+
+<link rel="manifest" href="../../manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Claraboya">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../../herramientas/assets/pwa.js" defer></script>
+<link rel="stylesheet" href="../assets/app.css">
+<script src="../assets/app.js" defer></script>
+</head>
+<body class="tool" data-tool="entrenamiento-de-oido">
+<a class="skip" href="#app">Ir a la herramienta</a>
+<header class="tn">
+  <div class="tn__bar">
+    <a class="tn__logo" href="../../" aria-label="Claraboya Estudio, ir al inicio"><img src="../../img/logo.webp" alt="" width="120" height="128"></a>
+    <a class="tn__hub" href="../">Herramientas <span>de producción</span></a>
+    <a class="tn__studio" href="../../#servicios">El estudio</a>
+  </div>
+  <nav class="tn__tools" aria-label="Cambiar de herramienta">
+    <a href="../matriz-de-acordes/"><b>01</b>Matriz de acordes</a>
+    <a href="../brujula-armonica/"><b>02</b>Brújula armónica</a>
+    <a href="../hoja-de-ruta/"><b>03</b>Hoja de ruta</a>
+    <a href="../rider-tecnico/"><b>04</b>Rider técnico</a>
+    <a href="../armador-de-setlists/"><b>05</b>Armador de setlists</a>
+    <a href="../calentamiento-vocal/"><b>06</b>Calentamiento vocal</a>
+    <a href="../afinador/"><b>07</b>Afinador</a>
+    <a href="../metronomo/"><b>08</b>Metrónomo</a>
+    <a href="../buscador-de-bpm/"><b>09</b>Buscador de BPM</a>
+    <a href="../piano/"><b>10</b>Piano</a>
+    <a href="../grabador-de-ideas/"><b>11</b>Grabador de ideas</a>
+    <a href="../entrenamiento-de-oido/" aria-current="page"><b>12</b>Entrenamiento de oído</a>
+  </nav>
+</header>
+<main class="app app--oido" id="app">
+  <header class="tool-head">
+    <div>
+      <p class="tool-head__kicker"><b>12</b> · Para practicar</p>
+      <h1>Entrenamiento de oído</h1>
+      <p class="tool-head__sub">Ejercicios cortos para reconocer intervalos, acordes, escalas y progresiones, afinar mejor y sacar melodías de oído. Arrancan fáciles y vos elegís cuándo subir de nivel.</p>
+    </div>
+  </header>
+
+  <div class="oido">
+    <nav class="ej" id="ejList" aria-label="Elegí un ejercicio">
+      <button class="ej__btn" type="button" data-ej="intervalos" aria-pressed="true"><b>Intervalos</b><small data-prog>Dos notas: ¿qué distancia?</small></button>
+      <button class="ej__btn" type="button" data-ej="acordes" aria-pressed="false"><b>Acordes</b><small data-prog>Mayor, menor, séptima…</small></button>
+      <button class="ej__btn" type="button" data-ej="afinacion" aria-pressed="false"><b>Afinación</b><small data-prog>¿Está alta o baja?</small></button>
+      <button class="ej__btn" type="button" data-ej="escalas" aria-pressed="false"><b>Escalas y modos</b><small data-prog>Mayor, dórico, blues…</small></button>
+      <button class="ej__btn" type="button" data-ej="progresiones" aria-pressed="false"><b>Progresiones</b><small data-prog>I–IV–V, ii–V–I…</small></button>
+      <button class="ej__btn" type="button" data-ej="dictado" aria-pressed="false"><b>Dictado</b><small data-prog>Sacá la melodía</small></button>
+      <button class="ej__btn" type="button" data-ej="cantar" aria-pressed="false"><b>Cantá la nota</b><small data-prog>Con el micrófono</small></button>
+    </nav>
+
+    <section class="panel" id="panel" aria-labelledby="panelT">
+      <div class="panel__head">
+        <h2 id="panelT">Intervalos</h2>
+        <div class="seg" id="niveles" role="group" aria-label="Nivel">
+          <button type="button" data-nivel="facil" aria-pressed="true">Fácil</button>
+          <button type="button" data-nivel="medio" aria-pressed="false">Medio</button>
+          <button type="button" data-nivel="dificil" aria-pressed="false">Difícil</button>
+        </div>
+      </div>
+      <p class="panel__q" id="consigna">Suenan dos notas. ¿Qué distancia hay entre ellas?</p>
+      <div class="panel__opts" id="opciones"></div>
+      <div class="play">
+        <button class="play__btn" type="button" id="playBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span id="playTxt">Escuchar</span></button>
+        <button class="play__btn play__btn--chico" type="button" id="nextBtn" hidden>Siguiente</button>
+      </div>
+      <div class="resp" id="resp"></div>
+      <div class="dictado" id="dictado" hidden>
+        <div class="slots" id="slots" aria-live="polite"></div>
+        <div class="teclado" id="teclado" aria-label="Teclado: tocá las notas de la melodía"></div>
+        <div class="dictado__acc"><button class="btn small ghost" type="button" id="dicBorrar">Borrar la última</button><button class="btn small" type="button" id="dicTonica">Escuchar el Do</button></div>
+      </div>
+      <div class="cantar" id="cantar" hidden>
+        <div class="cantar__nota" id="cantNota">—</div>
+        <div class="aguja" id="aguja" aria-hidden="true"><i></i></div>
+        <div class="aguja__lab" aria-hidden="true"><span>Baja</span><span>Justa</span><span>Alta</span></div>
+        <div class="aguante" aria-hidden="true"><i id="aguante"></i></div>
+        <p class="cantar__oido" id="cantOido" aria-live="polite"></p>
+      </div>
+      <div class="fb" id="fb" aria-live="polite"></div>
+      <div class="marcador" id="marcador"></div>
+    </section>
+  </div>
+
+  <section class="next" aria-labelledby="next-t">
+    <h2 class="next__title" id="next-t">Seguí con</h2>
+    <div class="next__grid">
+    <a class="next__card" href="../calentamiento-vocal/">
+      <span class="next__why">Para la voz</span>
+      <span class="next__name">Calentamiento vocal</span>
+      <span class="next__desc">Rutinas en video de 5 a 40 minutos.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../piano/">
+      <span class="next__why">Para buscar a mano</span>
+      <span class="next__name">Piano</span>
+      <span class="next__desc">Escalas, acordes y adivinar la tonalidad.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    <a class="next__card" href="../afinador/">
+      <span class="next__why">Antes de tocar</span>
+      <span class="next__name">Afinador</span>
+      <span class="next__desc">Afiná con el micrófono del celular o la compu.</span>
+      <span class="next__go">Abrir</span>
+    </a>
+    </div>
+  </section>
+
+</main>
+<footer class="tf">
+  <div class="tf__band">
+    <div class="tf__cta">
+      <div>
+        <p class="tf__cta-title">¿Y cuando el tema esté listo?</p>
+        <p>Estas herramientas las usamos en Claraboya. Si querés grabar, producir, mezclar o masterizar, escribinos: te respondemos nosotros.</p>
+      </div>
+      <a class="btn big btn--wa" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Entrenamiento%20de%20o%C3%ADdo%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener"><svg class="btn__icon" viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg>Escribinos por WhatsApp</a>
+    </div>
+  </div>
+  <div class="tf__bottom">
+    <img src="../../img/logo.webp" alt="" width="40" height="43" loading="lazy">
+    <p>Claraboya Estudio · Vicente López, Buenos Aires · <span class="ver">v{{VERSION}}</span></p>
+    <nav class="tf__links" aria-label="Enlaces">
+      <a href="../../">Inicio</a>
+      <a href="https://www.instagram.com/claraboya.estudio" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://linktr.ee/claraboyaestudio" target="_blank" rel="noopener">Linktree</a>
+      <a href="https://cafecito.app/claraboyaestudio" target="_blank" rel="noopener">Invitanos un cafecito</a>
+    </nav>
+  </div>
+</footer>
+<div class="wa-dock" id="waDock">
+  <div class="wa-dock__bubble" id="waBubble">
+    <a class="wa-dock__text" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Entrenamiento%20de%20o%C3%ADdo%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener">¿Ese oído ya pide estudio? Grabemos tus temas.<span>Escribinos por WhatsApp</span></a>
+    <button class="wa-dock__close" type="button" id="waClose" aria-label="Ocultar este mensaje">×</button>
+  </div>
+  <a class="wa-dock__btn" href="https://wa.me/5491168499750?text=Hola!%20Vengo%20del%20Entrenamiento%20de%20o%C3%ADdo%20de%20Claraboya%20y%20quer%C3%ADa%20consultar%20por%20grabar." target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg></a>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.16 0 0 7.16 0 16c0 2.82.74 5.47 2.03 7.77L0 32l8.44-2.21A15.9 15.9 0 0 0 16 31.7c8.84 0 16-7.16 16-16S24.84 0 16 0zm0 29.02c-2.4 0-4.66-.65-6.6-1.78l-.47-.28-5.01 1.31 1.34-4.88-.31-.5A13 13 0 1 1 16 29.02zm7.13-9.74c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.62-.2-.88.2-.26.39-1.01 1.26-1.24 1.52-.23.26-.46.29-.85.1-.39-.2-1.65-.61-3.14-1.94-1.16-1.04-1.94-2.32-2.17-2.71-.23-.39-.02-.6.17-.79.18-.18.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.88-2.12-1.2-2.9-.32-.77-.64-.66-.88-.67l-.75-.01c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26 0 1.92 1.4 3.78 1.6 4.04.2.26 2.76 4.22 6.7 5.91.94.41 1.67.65 2.24.83.94.3 1.79.26 2.47.16.75-.11 2.3-.94 2.62-1.85.32-.91.32-1.69.23-1.85-.1-.16-.36-.26-.75-.46z"/></symbol>
+</svg>
+<script src="../assets/tools.js"></script>
+<script src="../afinador/app/pitch.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var KEY = 'cb.entrenamiento-de-oido.v1';
+  var S = { ej: 'intervalos', nivel: {}, stats: {}, modoInt: 'sube', arpegio: false, voz: 'media', cents: {} };
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object') for (var k in saved) if (k in S) S[k] = saved[k]; } catch (e) { /* nada */ }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* nada */ } }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function azar(l) { return l[Math.floor(Math.random() * l.length)]; }
+  function entre(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+
+  var NOTAS = ['Do', 'Do#', 'Re', 'Mib', 'Mi', 'Fa', 'Fa#', 'Sol', 'Lab', 'La', 'Sib', 'Si'];
+  var CIFRA_B = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+  var CIFRA_S = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  function pc(m) { return ((m % 12) + 12) % 12; }
+
+  /* ---------- sonido: el mismo piano de la herramienta Piano ---------- */
+  var ctx = null, master = null, W = {}, ruido = null;
+  function audio() {
+    if (!ctx) {
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+      try { ctx = new AC({ latencyHint: 'interactive' }); } catch (e) { ctx = new AC(); }
+      var comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -16; comp.knee.value = 14; comp.ratio.value = 5; comp.attack.value = 0.002; comp.release.value = 0.25;
+      master = ctx.createGain(); master.gain.value = 0.9; master.connect(comp); comp.connect(ctx.destination);
+      W.bright = onda([1, 0.55, 0.34, 0.22, 0.15, 0.1, 0.07, 0.05, 0.035, 0.025, 0.018]);
+      W.body = onda([1, 0.2, 0.07, 0.025]);
+      var len = Math.floor(ctx.sampleRate * 0.05), b = ctx.createBuffer(1, len, ctx.sampleRate), d = b.getChannelData(0);
+      for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      ruido = b;
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    try { if (navigator.audioSession && !escuchando) navigator.audioSession.type = 'playback'; } catch (e) { /* nada */ }
+    return ctx;
+  }
+  function onda(p) { var re = new Float32Array(p.length + 1), im = new Float32Array(p.length + 1); for (var i = 0; i < p.length; i++) im[i + 1] = p[i]; return ctx.createPeriodicWave(re, im); }
+  var sonando = [];
+  function callar() { var now = ctx ? ctx.currentTime : 0; sonando.forEach(function (v) { try { v.g.gain.cancelScheduledValues(now); v.g.gain.setTargetAtTime(0, now, 0.02); v.o.forEach(function (o) { o.stop(now + 0.15); }); } catch (e) { /* nada */ } }); sonando = []; }
+  // una nota de piano: m = MIDI (puede tener decimales para desafinar), t = cuándo, dur = cuánto
+  function nota(m, t, dur, vel) {
+    var f = 440 * Math.pow(2, (m - 69) / 12), v = vel == null ? 0.8 : vel;
+    var level = 0.2 * v * Math.max(0.6, Math.min(1.35, Math.pow(261.6 / f, 0.2)));
+    var T = Math.max(0.7, Math.min(7.5, 5.5 * Math.pow(261.6 / f, 0.6)));
+    var out = ctx.createGain(); out.gain.value = 1; out.connect(master);
+    var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.4;
+    lp.frequency.setValueAtTime(Math.min(16000, f * 12 + 2500 * v), t);
+    lp.frequency.setTargetAtTime(Math.min(9000, f * 3.2 + 400), t + 0.01, Math.min(0.6, T * 0.12));
+    var a = ctx.createOscillator(); a.setPeriodicWave(W.bright); a.frequency.value = f;
+    var b = ctx.createOscillator(); b.setPeriodicWave(W.body); b.frequency.value = f; b.detune.value = 2.5;
+    var gA = ctx.createGain(), gB = ctx.createGain();
+    gA.gain.setValueAtTime(0, t); gA.gain.linearRampToValueAtTime(level, t + 0.003);
+    gA.gain.setTargetAtTime(level * 0.22, t + 0.003, Math.max(0.05, T * 0.05));
+    gA.gain.setTargetAtTime(0.0001, t + 0.25, T * 0.22);
+    gB.gain.setValueAtTime(0, t); gB.gain.linearRampToValueAtTime(level * 0.85, t + 0.006);
+    gB.gain.setTargetAtTime(0.0001, t + 0.006, T * 0.3);
+    a.connect(gA); b.connect(gB); gA.connect(lp); gB.connect(lp); lp.connect(out);
+    var src = ctx.createBufferSource(); src.buffer = ruido;
+    var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = Math.max(1200, Math.min(4500, f * 4)); bp.Q.value = 1.2;
+    var gc = ctx.createGain(); gc.gain.setValueAtTime(0.05 * v, t); gc.gain.setTargetAtTime(0, t, 0.012);
+    src.connect(bp); bp.connect(gc); gc.connect(out); src.start(t); src.stop(t + 0.06);
+    var fin = t + (dur || 1.2);
+    out.gain.setValueAtTime(1, fin); out.gain.setTargetAtTime(0, fin, 0.08);
+    a.start(t); b.start(t); a.stop(fin + 0.6); b.stop(fin + 0.6);
+    var voz = { g: out, o: [a, b] }; sonando.push(voz);
+    if (sonando.length > 40) sonando.shift();
+    return voz;
+  }
+  function acorde(notas, t, dur, arpegio, vel) {
+    notas.forEach(function (m, i) { nota(m, t + (arpegio ? i * 0.22 : i * 0.012), dur + (arpegio ? (notas.length - i) * 0.22 : 0), vel == null ? 0.6 : vel); });
+  }
+
+  /* ---------- los ejercicios ---------- */
+  var INTERVALOS = { 1: '2ª menor', 2: '2ª mayor', 3: '3ª menor', 4: '3ª mayor', 5: '4ª justa', 6: 'Tritono', 7: '5ª justa', 8: '6ª menor', 9: '6ª mayor', 10: '7ª menor', 11: '7ª mayor', 12: 'Octava' };
+  var ACORDES = {
+    M: { n: 'Mayor', s: '', t: [0, 4, 7] }, m: { n: 'Menor', s: 'm', t: [0, 3, 7] }, dim: { n: 'Disminuido', s: '°', t: [0, 3, 6] },
+    aug: { n: 'Aumentado', s: '+', t: [0, 4, 8] }, sus2: { n: 'Sus2', s: 'sus2', t: [0, 2, 7] }, sus4: { n: 'Sus4', s: 'sus4', t: [0, 5, 7] },
+    '7': { n: 'Séptima (7)', s: '7', t: [0, 4, 7, 10] }, maj7: { n: 'Mayor 7 (maj7)', s: 'maj7', t: [0, 4, 7, 11] },
+    m7: { n: 'Menor 7 (m7)', s: 'm7', t: [0, 3, 7, 10] }, m7b5: { n: 'Semidisminuido (m7♭5)', s: 'm7♭5', t: [0, 3, 6, 10] }
+  };
+  var ESCALAS = {
+    mayor: { n: 'Mayor', p: [0, 2, 4, 5, 7, 9, 11, 12] }, menor: { n: 'Menor natural', p: [0, 2, 3, 5, 7, 8, 10, 12] },
+    penta_m: { n: 'Pentatónica menor', p: [0, 3, 5, 7, 10, 12] }, penta_M: { n: 'Pentatónica mayor', p: [0, 2, 4, 7, 9, 12] },
+    armonica: { n: 'Menor armónica', p: [0, 2, 3, 5, 7, 8, 11, 12] }, blues: { n: 'Blues', p: [0, 3, 5, 6, 7, 10, 12] },
+    dorico: { n: 'Dórico', p: [0, 2, 3, 5, 7, 9, 10, 12] }, frigio: { n: 'Frigio', p: [0, 1, 3, 5, 7, 8, 10, 12] },
+    lidio: { n: 'Lidio', p: [0, 2, 4, 6, 7, 9, 11, 12] }, mixolidio: { n: 'Mixolidio', p: [0, 2, 4, 5, 7, 9, 10, 12] }
+  };
+  var PROGRESIONES = {
+    'I–IV–V–I': [[0, 'M'], [5, 'M'], [7, 'M'], [0, 'M']],
+    'I–V–vi–IV': [[0, 'M'], [7, 'M'], [9, 'm'], [5, 'M']],
+    'I–vi–IV–V': [[0, 'M'], [9, 'm'], [5, 'M'], [7, 'M']],
+    'ii–V–I': [[2, 'm7'], [7, '7'], [0, 'maj7']],
+    'vi–IV–I–V': [[9, 'm'], [5, 'M'], [0, 'M'], [7, 'M']],
+    'I–IV–vi–V': [[0, 'M'], [5, 'M'], [9, 'm'], [7, 'M']],
+    'I–♭VII–IV–I': [[0, 'M'], [10, 'M'], [5, 'M'], [0, 'M']],
+    'i–♭VI–♭III–♭VII': [[0, 'm'], [8, 'M'], [3, 'M'], [10, 'M']],
+    'I–iii–IV–V': [[0, 'M'], [4, 'm'], [5, 'M'], [7, 'M']]
+  };
+  var NIVELES = {
+    intervalos: { facil: [4, 5, 7, 12], medio: [2, 3, 4, 5, 7, 9, 12], dificil: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+    acordes: { facil: ['M', 'm'], medio: ['M', 'm', 'dim', 'aug', 'sus4'], dificil: ['M', 'm', 'dim', 'aug', 'sus2', 'sus4', '7', 'maj7', 'm7', 'm7b5'] },
+    escalas: { facil: ['mayor', 'menor', 'penta_m'], medio: ['mayor', 'menor', 'penta_m', 'penta_M', 'armonica', 'blues'], dificil: ['mayor', 'menor', 'armonica', 'penta_m', 'penta_M', 'blues', 'dorico', 'frigio', 'lidio', 'mixolidio'] },
+    progresiones: { facil: ['I–IV–V–I', 'I–V–vi–IV', 'I–vi–IV–V'], medio: ['I–IV–V–I', 'I–V–vi–IV', 'I–vi–IV–V', 'ii–V–I', 'vi–IV–I–V', 'I–IV–vi–V'], dificil: Object.keys(PROGRESIONES) },
+    afinacion: { facil: [20, 100, 50], medio: [8, 60, 30], dificil: [2, 30, 12] },   // [mínimo, máximo, arranque] en cents
+    dictado: { facil: 3, medio: 4, dificil: 5 },
+    cantar: { facil: 35, medio: 20, dificil: 10 }                                     // tolerancia en cents
+  };
+  var EJ = {
+    intervalos: { t: 'Intervalos', q: 'Suenan dos notas. ¿Qué distancia hay entre ellas?' },
+    acordes: { t: 'Acordes', q: 'Suena un acorde. ¿De qué tipo es?' },
+    afinacion: { t: 'Afinación', q: 'Suena una nota y después otra apenas distinta. ¿La segunda está más alta o más baja?' },
+    escalas: { t: 'Escalas y modos', q: 'Suena una escala subiendo. ¿Cuál es?' },
+    progresiones: { t: 'Progresiones', q: 'Suenan unos acordes en una tonalidad al azar. ¿Qué progresión es?' },
+    dictado: { t: 'Dictado', q: 'Suena el acorde de Do y una melodía que arranca en Do. Tocala en el teclado, nota por nota.' },
+    cantar: { t: 'Cantá la nota', q: 'Suena una nota: cantala y aguantala hasta que la barra se llene. Vale en cualquier octava.' }
+  };
+  function nivel() { return S.nivel[S.ej] || 'facil'; }
+  function stats() { var s = S.stats[S.ej]; if (!s) s = S.stats[S.ej] = { ok: 0, n: 0, racha: 0, mejor: 0 }; return s; }
+
+  /* ---------- preguntas ---------- */
+  var q = null, respondida = false, tSiguiente = 0;
+  function nuevaPregunta() {
+    var nv = nivel(), ej = S.ej;
+    respondida = false; clearTimeout(tSiguiente);
+    if (ej === 'intervalos') {
+      var semi = azar(NIVELES.intervalos[nv]), modo = S.modoInt, raiz = modo === 'baja' ? entre(55, 79) : entre(48, 72 - Math.min(semi, 12) + 12);
+      if (modo === 'baja' && raiz - semi < 43) raiz = 43 + semi;
+      q = { r: semi, raiz: raiz, opciones: NIVELES.intervalos[nv].map(function (s) { return { id: s, n: INTERVALOS[s] }; }),
+        tocar: function (id) { tocarIntervalo(this.raiz, id == null ? this.r : id); }, nombre: function (id) { return INTERVALOS[id]; } };
+    } else if (ej === 'acordes') {
+      var tipo = azar(NIVELES.acordes[nv]);
+      q = { r: tipo, raiz: entre(48, 57), opciones: NIVELES.acordes[nv].map(function (t) { return { id: t, n: ACORDES[t].n }; }),
+        tocar: function (id) { var c = audio(); callar(); var r0 = this.raiz; acorde([r0 - 12].concat(ACORDES[id == null ? this.r : id].t.map(function (x) { return r0 + x; })), c.currentTime + 0.05, 1.8, S.arpegio); },
+        nombre: function (id) { return ACORDES[id].n; } };
+    } else if (ej === 'escalas') {
+      var esc0 = azar(NIVELES.escalas[nv]);
+      q = { r: esc0, raiz: entre(55, 64), opciones: NIVELES.escalas[nv].map(function (t) { return { id: t, n: ESCALAS[t].n }; }),
+        tocar: function (id) { var c = audio(); callar(); var t0 = c.currentTime + 0.05, r0 = this.raiz; ESCALAS[id == null ? this.r : id].p.forEach(function (x, i) { nota(r0 + x, t0 + i * 0.3, 0.32, 0.7); }); },
+        nombre: function (id) { return ESCALAS[id].n; } };
+    } else if (ej === 'progresiones') {
+      var pr = azar(NIVELES.progresiones[nv]), ton = entre(0, 11);
+      q = { r: pr, ton: ton, opciones: NIVELES.progresiones[nv].map(function (t) { return { id: t, n: t }; }),
+        tocar: function (id) { tocarProgresion(this.ton, id == null ? this.r : id); }, nombre: function (id) { return id; } };
+    } else if (ej === 'afinacion') {
+      var lim = NIVELES.afinacion[nv];
+      if (!S.cents[nv]) S.cents[nv] = lim[2];
+      var cents = Math.round(Math.max(lim[0], Math.min(lim[1], S.cents[nv]))), sube = Math.random() < 0.5;
+      q = { r: sube ? 'alta' : 'baja', cents: cents, raiz: entre(57, 72), opciones: [{ id: 'baja', n: '↓ Más baja' }, { id: 'alta', n: '↑ Más alta' }],
+        tocar: function () { var c = audio(); callar(); var t0 = c.currentTime + 0.05; nota(this.raiz, t0, 0.9, 0.75); nota(this.raiz + (this.r === 'alta' ? 1 : -1) * this.cents / 100, t0 + 1.05, 1.1, 0.75); },
+        nombre: function (id) { return id === 'alta' ? 'más alta' : 'más baja'; } };
+    } else if (ej === 'dictado') {
+      q = { r: melodia(NIVELES.dictado[nv]), puesto: [60] };
+      q.tocar = function () { tocarMelodia(this.r); };
+    } else if (ej === 'cantar') {
+      var rango = { grave: [43, 60], media: [48, 67], aguda: [55, 74] }[S.voz] || [48, 67];
+      q = { r: entre(rango[0], rango[1]), tol: NIVELES.cantar[nv] };
+      q.tocar = function () { var c = audio(); callar(); nota(this.r, c.currentTime + 0.05, 1.6, 0.8); };
+    }
+    pintarPregunta();
+  }
+  function tocarIntervalo(raiz, semi) {
+    var c = audio(); callar(); var t0 = c.currentTime + 0.05;
+    if (S.modoInt === 'juntas') { nota(raiz, t0, 1.6, 0.7); nota(raiz + semi, t0, 1.6, 0.7); }
+    else if (S.modoInt === 'baja') { nota(raiz, t0, 0.8, 0.75); nota(raiz - semi, t0 + 0.85, 1.2, 0.75); }
+    else { nota(raiz, t0, 0.8, 0.75); nota(raiz + semi, t0 + 0.85, 1.2, 0.75); }
+  }
+  function notasAcorde(raiz, tipo) { return ACORDES[tipo].t.map(function (x) { return raiz + x; }); }
+  function tocarProgresion(ton, id) {
+    var c = audio(); callar(); var t0 = c.currentTime + 0.05, base = 60 + ton;
+    if (base > 65) base -= 12;
+    PROGRESIONES[id].forEach(function (ch, i) {
+      var raiz = base + ch[0]; while (raiz > base + 6) raiz -= 12;   // que no se vaya muy arriba
+      var notas = notasAcorde(raiz, ch[1]);
+      notas.unshift(pc(base + ch[0]) + 36 + (pc(base + ch[0]) < 4 ? 12 : 0));  // el bajo
+      acorde(notas, t0 + i * 1.05, 0.95, false, 0.55);
+    });
+  }
+  function cifradoProgresion(ton, id) {
+    var pr = PROGRESIONES[id], menor = pr[0][0] === 0 && pr[0][1] === 'm';
+    var bemoles = [5, 10, 3, 8, 1].indexOf(pc(ton + (menor ? 3 : 0))) >= 0;   // tonalidades con bemoles (en menor, la relativa)
+    return pr.map(function (ch) { return (bemoles ? CIFRA_B : CIFRA_S)[pc(ton + ch[0])] + ACORDES[ch[1]].s; }).join(' – ');
+  }
+  // dictado: melodías en Do mayor que arrancan en Do; en fácil, por grados cercanos
+  var GRADOS = [60, 62, 64, 65, 67, 69, 71, 72, 74];
+  function melodia(n) {
+    var nv = nivel(), idx = 0, out = [60], maxSalto = nv === 'facil' ? 2 : nv === 'medio' ? 3 : 5, tope = nv === 'facil' ? 4 : GRADOS.length - 1;
+    for (var i = 1; i < n; i++) {
+      var opciones = [];
+      for (var j = Math.max(0, idx - maxSalto); j <= Math.min(tope, idx + maxSalto); j++) if (j !== idx) opciones.push(j);
+      idx = azar(opciones); out.push(GRADOS[idx]);
+    }
+    return out;
+  }
+  function tocarMelodia(mel) {
+    var c = audio(); callar(); var t0 = c.currentTime + 0.05;
+    acorde([48, 60, 64, 67], t0, 0.9, false, 0.45);
+    mel.forEach(function (m, i) { nota(m, t0 + 1.3 + i * 0.62, 0.55, 0.8); });
+  }
+
+  /* ---------- pantalla ---------- */
+  var ICO_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
+  function pintarLista() {
+    document.querySelectorAll('[data-ej]').forEach(function (b) {
+      var id = b.getAttribute('data-ej'), s = S.stats[id];
+      b.setAttribute('aria-pressed', String(id === S.ej));
+      if (id === S.ej && b.parentNode.scrollWidth > b.parentNode.clientWidth) { var l = b.offsetLeft - b.parentNode.offsetLeft - 16; if (l < b.parentNode.scrollLeft || l + b.offsetWidth > b.parentNode.scrollLeft + b.parentNode.clientWidth) b.parentNode.scrollLeft = l; }
+        if (s && s.n) b.querySelector('[data-prog]').textContent = Math.round(s.ok / s.n * 100) + ' % · ' + s.n + (s.n === 1 ? ' hecho' : ' hechos');
+    });
+  }
+  function pintarOpciones() {
+    var o = $('opciones'), h = '';
+    if (S.ej === 'intervalos') {
+      h = '<div class="seg" role="group" aria-label="Cómo suenan">' +
+        [['sube', 'Subiendo'], ['baja', 'Bajando'], ['juntas', 'Juntas']].map(function (x) { return '<button type="button" data-modo="' + x[0] + '" aria-pressed="' + (S.modoInt === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>';
+    } else if (S.ej === 'acordes') {
+      h = '<div class="seg" role="group" aria-label="Cómo suena el acorde">' +
+        '<button type="button" data-arp="0" aria-pressed="' + !S.arpegio + '">Junto</button><button type="button" data-arp="1" aria-pressed="' + S.arpegio + '">Arpegiado</button></div>';
+    } else if (S.ej === 'cantar') {
+      h = '<div class="seg" role="group" aria-label="Tu voz">' +
+        [['grave', 'Voz grave'], ['media', 'Media'], ['aguda', 'Aguda']].map(function (x) { return '<button type="button" data-voz="' + x[0] + '" aria-pressed="' + (S.voz === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>';
+    } else if (S.ej === 'afinacion') {
+      var nv = nivel(), c = Math.round(S.cents[nv] || NIVELES.afinacion[nv][2]);
+      h = '<p class="hint">Diferencia ahora: <b>' + c + ' cents</b> (100 cents = medio tono). Si acertás, se achica.</p>';
+    }
+    o.innerHTML = h; o.hidden = !h;
+  }
+  function pintarPregunta() {
+    $('panelT').textContent = EJ[S.ej].t;
+    $('consigna').textContent = EJ[S.ej].q;
+    document.querySelectorAll('[data-nivel]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-nivel') === nivel())); });
+    pintarOpciones();
+    var esDictado = S.ej === 'dictado', esCantar = S.ej === 'cantar';
+    $('dictado').hidden = !esDictado; $('cantar').hidden = !esCantar;
+    $('resp').hidden = esDictado || esCantar;
+    $('resp').className = 'resp' + (S.ej === 'afinacion' ? ' resp--dos' : '');
+    if (!esDictado && !esCantar) {
+      $('resp').innerHTML = q.opciones.map(function (op, i) {
+        return '<button class="resp__btn" type="button" data-r="' + esc(op.id) + '">' + esc(op.n) + (i < 9 ? '<span class="k" aria-hidden="true">' + (i + 1) + '</span>' : '') + '</button>';
+      }).join('');
+    }
+    if (esDictado) pintarSlots();
+    if (esCantar) { $('cantNota').textContent = NOTAS[pc(q.r)]; $('cantOido').textContent = 'Tocá Escuchar y después cantá.'; pintarAguja(null); }
+    $('playTxt').textContent = esCantar ? 'Escuchar y cantar' : 'Escuchar';
+    $('nextBtn').hidden = true;
+    $('fb').innerHTML = '';
+    pintarMarcador();
+  }
+  function pintarMarcador() {
+    var s = stats(), extra = '';
+    if (S.ej === 'afinacion' && S.stats.afinacion && S.stats.afinacion.fino) extra = ' · Lo más fino que acertaste: <b>' + S.stats.afinacion.fino + ' cents</b>';
+    $('marcador').innerHTML = '<span class="marcador__txt">Aciertos <b>' + s.ok + '</b> de <b>' + s.n + '</b> · Racha <b>' + s.racha + '</b> · Mejor racha <b>' + s.mejor + '</b>' + extra + '</span>' +
+      (s.n ? '<button class="linklike" type="button" id="resetBtn">Empezar de cero</button>' : '');
+    pintarLista();
+  }
+  function anotar(bien) {
+    var s = stats();
+    s.n++; if (bien) { s.ok++; s.racha++; if (s.racha > s.mejor) s.mejor = s.racha; } else s.racha = 0;
+    if (s.racha && s.racha % 5 === 0) CB.toast(s.racha + ' seguidas. ¿Y si probás el nivel siguiente?');
+    save(); pintarMarcador();
+  }
+  function responder(id) {
+    if (respondida || !q) return;
+    respondida = true;
+    var bien = String(id) === String(q.r), elegido = q.opciones.filter(function (o) { return String(o.id) === String(id); })[0];
+    var correcto = q.opciones.filter(function (o) { return String(o.id) === String(q.r); })[0];
+    document.querySelectorAll('.resp__btn').forEach(function (b) {
+      var r = b.getAttribute('data-r');
+      if (r === String(q.r)) b.classList.add('bien'); else if (r === String(id)) b.classList.add('mal');
+      b.disabled = true;
+    });
+    var menor = S.ej === 'progresiones' && PROGRESIONES[q.r][0][1] === 'm' && PROGRESIONES[q.r][0][0] === 0;
+    var extra = S.ej === 'progresiones' ? ' En ' + NOTAS[q.ton] + (menor ? ' menor: ' : ' mayor: ') + cifradoProgresion(q.ton, q.r) + '.' : '';
+    if (S.ej === 'afinacion') {
+      var nv = nivel(), lim = NIVELES.afinacion[nv];
+      if (bien) {
+        var st = stats();
+        if (!st.fino || q.cents < st.fino) st.fino = q.cents;
+      }
+      S.cents[nv] = Math.max(lim[0], Math.min(lim[1], q.cents * (bien ? 0.8 : 1.45)));
+      $('fb').innerHTML = bien ? '<p><span class="si">¡Bien!</span> La segunda estaba ' + q.cents + ' cents ' + q.nombre(q.r) + '.</p>'
+        : '<p><span class="no">No.</span> Estaba ' + q.cents + ' cents ' + q.nombre(q.r) + '. Escuchala de nuevo.</p>';
+    } else if (bien) {
+      $('fb').innerHTML = '<p><span class="si">¡Bien!</span> Era <b>' + esc(correcto.n) + '</b>.' + esc(extra) + '</p>';
+    } else {
+      $('fb').innerHTML = '<p><span class="no">Casi.</span> Era <b>' + esc(correcto.n) + '</b>, no ' + esc(elegido.n) + '.' + esc(extra) + ' Escuchalas:</p>' +
+        '<div class="fb__comp"><button class="btn small" type="button" data-comp="' + esc(q.r) + '">' + ICO_PLAY + ' ' + esc(correcto.n) + '</button>' +
+        '<button class="btn small ghost" type="button" data-comp="' + esc(id) + '">' + ICO_PLAY + ' ' + esc(elegido.n) + '</button></div>';
+    }
+    anotar(bien);
+    if (S.ej === 'afinacion') pintarOpciones();
+    terminarPregunta(bien);
+  }
+  function terminarPregunta(bien) {
+    var nb = $('nextBtn'); nb.hidden = false;
+    if (bien) tSiguiente = setTimeout(function () { nuevaPregunta(); if (S.ej !== 'cantar') q.tocar(); }, 1400);
+    else nb.focus();
+  }
+
+  /* ---------- dictado ---------- */
+  var TECLAS = [60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74];
+  var BLANCAS = TECLAS.filter(function (m) { return [1, 3, 6, 8, 10].indexOf(pc(m)) < 0; });
+  function armarTeclado() {
+    var t = $('teclado'), h = '', ancho = 100 / BLANCAS.length;
+    t.style.setProperty('--blancas', BLANCAS.length);
+    BLANCAS.forEach(function (m) { h += '<button class="tecla" type="button" data-m="' + m + '" aria-label="' + NOTAS[pc(m)] + '">' + NOTAS[pc(m)] + '</button>'; });
+    TECLAS.forEach(function (m) {
+      if ([1, 3, 6, 8, 10].indexOf(pc(m)) < 0) return;
+      var izq = BLANCAS.indexOf(m - 1);
+      h += '<button class="tecla negra" type="button" data-m="' + m + '" aria-label="' + NOTAS[pc(m)] + '" style="left:calc(' + ((izq + 1) * ancho) + '% - ' + (ancho * 0.31) + '%)">' + '</button>';
+    });
+    t.innerHTML = h;
+  }
+  function pintarSlots() {
+    var h = '';
+    q.r.forEach(function (m, i) {
+      var puesto = q.puesto[i], cls = 'slot' + (i === 0 ? ' dada' : '') + (puesto != null ? ' lleno' : '');
+      if (respondida && i > 0) cls += puesto === m ? ' bien' : ' mal';
+      h += '<span class="' + cls + '">' + (puesto != null ? NOTAS[pc(puesto)] : '?') + (respondida && i > 0 && puesto !== m ? ' → ' + NOTAS[pc(m)] : '') + '</span>';
+    });
+    $('slots').innerHTML = h;
+  }
+  function tocarTecla(m, el) {
+    var c = audio(); nota(m, c.currentTime + 0.005, 0.5, 0.8);
+    if (el) { el.classList.add('on'); setTimeout(function () { el.classList.remove('on'); }, 180); }
+    if (S.ej !== 'dictado' || respondida || !q) return;
+    q.puesto.push(m); pintarSlots();
+    if (q.puesto.length === q.r.length) {
+      respondida = true;
+      var bien = q.puesto.every(function (x, i) { return pc(x) === pc(q.r[i]) && Math.abs(x - q.r[i]) < 12; });
+      pintarSlots();
+      $('fb').innerHTML = bien ? '<p><span class="si">¡Bien!</span> Esa era la melodía.</p>'
+        : '<p><span class="no">Casi.</span> Abajo de cada nota que no iba está la que sonaba.</p><div class="fb__comp"><button class="btn small" type="button" data-mel="r">' + ICO_PLAY + ' La melodía</button><button class="btn small ghost" type="button" data-mel="p">' + ICO_PLAY + ' Lo que tocaste</button></div>';
+      anotar(bien); terminarPregunta(bien);
+    }
+  }
+
+  /* ---------- cantá la nota ---------- */
+  var escuchando = null;  // { stream, an, buf, desde, aguante, ultimo }
+  function pintarAguja(cents) {
+    var ag = $('aguja'), i = ag.querySelector('i');
+    ag.classList.toggle('oye', cents != null);
+    if (cents == null) { i.style.left = '50%'; ag.classList.remove('justa'); return; }
+    var c = Math.max(-60, Math.min(60, cents));
+    i.style.left = (50 + c / 60 * 47) + '%';
+    ag.classList.toggle('justa', Math.abs(cents) <= q.tol);
+  }
+  function dejarDeEscuchar() {
+    if (!escuchando) return;
+    var e = escuchando; escuchando = null;
+    try { e.fuente.disconnect(); } catch (er) { /* nada */ }
+    e.stream.getTracks().forEach(function (t) { t.stop(); });
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (er) { /* nada */ }
+  }
+  function cantar() {
+    if (!q || respondida) return;
+    var c = audio();
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.Pitch) { CB.toast('Este navegador no deja usar el micrófono.', true); return; }
+    dejarDeEscuchar();
+    q.tocar();
+    $('cantOido').textContent = 'Escuchá…';
+    try { if (navigator.audioSession) navigator.audioSession.type = 'play-and-record'; } catch (er) { /* nada */ }
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }).then(function (s) {
+      var fuente = c.createMediaStreamSource(s), an = c.createAnalyser(); an.fftSize = 2048; fuente.connect(an);
+      escuchando = { stream: s, fuente: fuente, an: an, buf: new Float32Array(2048), desde: performance.now() + 1700, aguante: 0, ultimo: 0, desvios: [] };
+      requestAnimationFrame(oir);
+    }).catch(function (err) {
+      $('cantOido').textContent = err && err.name === 'NotAllowedError' ? 'Sin permiso para el micrófono: dalo en los ajustes y probá de nuevo.' : 'No se pudo usar el micrófono.';
+    });
+  }
+  function oir(t) {
+    var e = escuchando; if (!e || !q || S.ej !== 'cantar') return;
+    var ahora = performance.now();
+    if (ahora < e.desde) { requestAnimationFrame(oir); return; }   // mientras suena la nota de referencia, no escucha
+    if (!e.ultimo) { e.ultimo = ahora; $('cantOido').textContent = '¡Cantá!'; }
+    var dt = Math.min(100, ahora - e.ultimo); e.ultimo = ahora;
+    e.an.getFloatTimeDomainData(e.buf);
+    var r = window.Pitch.detect(e.buf, ctx.sampleRate, 70, 1100), cents = null;
+    if (r && r.freq > 0 && r.clarity > 0.8 && r.rms > 0.008) {
+      var midi = 69 + 12 * Math.log2(r.freq / 440), dif = (midi - q.r) * 100;
+      dif = ((dif % 1200) + 1800) % 1200 - 600;   // vale cualquier octava
+      cents = Math.round(dif);
+      e.desvios.push(cents);
+      $('cantOido').textContent = 'Estás en ' + NOTAS[pc(Math.round(midi))] + (Math.abs(cents) <= q.tol ? ': ¡justa, aguantala!' : cents > 0 ? ': un poco alta' : ': un poco baja');
+    }
+    pintarAguja(cents);
+    if (cents != null && Math.abs(cents) <= q.tol) e.aguante += dt; else e.aguante = Math.max(0, e.aguante - dt * 1.5);
+    $('aguante').style.transform = 'scaleX(' + Math.min(1, e.aguante / 700).toFixed(3) + ')';
+    if (e.aguante >= 700) {
+      respondida = true; dejarDeEscuchar();
+      var ult = e.desvios.slice(-12), prom = Math.round(ult.reduce(function (a, b) { return a + Math.abs(b); }, 0) / Math.max(1, ult.length));
+      $('fb').innerHTML = '<p><span class="si">¡Bien!</span> La aguantaste a ' + prom + ' cents de la nota, en promedio.</p>';
+      anotar(true); terminarPregunta(true); return;
+    }
+    if (ahora - e.desde > 9000) {
+      respondida = true; dejarDeEscuchar(); pintarAguja(null);
+      var l = e.desvios.slice(-30), m = l.length ? Math.round(l.reduce(function (a, b) { return a + b; }, 0) / l.length) : null;
+      $('fb').innerHTML = m == null ? '<p><span class="no">No te escuché.</span> Acercate al micrófono y probá de nuevo.</p>'
+        : '<p><span class="no">Casi.</span> Quedaste ' + Math.abs(m) + ' cents ' + (m > 0 ? 'arriba' : 'abajo') + ' de la nota. Probá otra vez escuchándola bien antes.</p>';
+      $('cantOido').textContent = '';
+      anotar(false); terminarPregunta(false); return;
+    }
+    requestAnimationFrame(oir);
+  }
+
+  /* ---------- eventos ---------- */
+  function elegirEj(id) {
+    if (!EJ[id]) return;
+    dejarDeEscuchar(); if (ctx) callar();
+    S.ej = id; save(); nuevaPregunta();
+  }
+  $('ejList').addEventListener('click', function (e) { var b = e.target.closest('[data-ej]'); if (b) elegirEj(b.getAttribute('data-ej')); });
+  $('niveles').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-nivel]'); if (!b) return;
+    S.nivel[S.ej] = b.getAttribute('data-nivel'); save(); dejarDeEscuchar(); nuevaPregunta();
+  });
+  $('opciones').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.hasAttribute('data-modo')) { S.modoInt = b.getAttribute('data-modo'); save(); nuevaPregunta(); }
+    else if (b.hasAttribute('data-arp')) { S.arpegio = b.getAttribute('data-arp') === '1'; save(); pintarOpciones(); }
+    else if (b.hasAttribute('data-voz')) { S.voz = b.getAttribute('data-voz'); save(); dejarDeEscuchar(); nuevaPregunta(); }
+  });
+  $('playBtn').addEventListener('click', function () {
+    if (!q) nuevaPregunta();
+    if (S.ej === 'cantar') { if (respondida) { nuevaPregunta(); } cantar(); return; }
+    if (S.ej === 'dictado' && !respondida) { q.puesto = [60]; pintarSlots(); }
+    q.tocar();
+  });
+  $('nextBtn').addEventListener('click', function () { clearTimeout(tSiguiente); nuevaPregunta(); if (S.ej === 'cantar') cantar(); else q.tocar(); });
+  $('resp').addEventListener('click', function (e) { var b = e.target.closest('[data-r]'); if (b) responder(b.getAttribute('data-r')); });
+  $('fb').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-comp]');
+    if (b && q && q.tocar) { var id = b.getAttribute('data-comp'); q.tocar(S.ej === 'intervalos' ? +id : id); return; }
+    var m = e.target.closest('[data-mel]');
+    if (m && q) tocarMelodia(m.getAttribute('data-mel') === 'r' ? q.r : q.puesto);
+  });
+  $('marcador').addEventListener('click', function (e) {
+    if (!e.target.closest('#resetBtn')) return;
+    CB.confirm('¿Borrar los aciertos de «' + EJ[S.ej].t + '» y empezar de cero?', 'Sí, de cero').then(function (si) {
+      if (!si) return;
+      delete S.stats[S.ej]; if (S.ej === 'afinacion') S.cents = {};
+      save(); nuevaPregunta();
+    });
+  });
+  $('teclado').addEventListener('pointerdown', function (e) { var b = e.target.closest('[data-m]'); if (!b) return; e.preventDefault(); tocarTecla(+b.getAttribute('data-m'), b); });
+  $('teclado').addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target.hasAttribute('data-m')) { e.preventDefault(); tocarTecla(+e.target.getAttribute('data-m'), e.target); } });
+  $('dicBorrar').addEventListener('click', function () { if (q && !respondida && q.puesto.length > 1) { q.puesto.pop(); pintarSlots(); } });
+  $('dicTonica').addEventListener('click', function () { var c = audio(); nota(60, c.currentTime + 0.01, 0.8, 0.8); });
+  document.addEventListener('keydown', function (e) {
+    var tg = e.target; if (tg && (tg.tagName === 'INPUT' || tg.tagName === 'TEXTAREA' || tg.tagName === 'SELECT') || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (document.querySelector('.cb-confirm')) return;
+    if (/^[1-9]$/.test(e.key) && !$('resp').hidden) { var b = $('resp').querySelectorAll('.resp__btn')[+e.key - 1]; if (b && !b.disabled) { e.preventDefault(); b.click(); } }
+    else if (e.code === 'Space' && !(tg && tg.tagName === 'BUTTON')) { e.preventDefault(); $('playBtn').click(); }
+    else if (e.key === 'Enter' && !$('nextBtn').hidden && !(tg && tg.tagName === 'BUTTON')) { e.preventDefault(); $('nextBtn').click(); }
+  });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) dejarDeEscuchar(); });
+  window.addEventListener('pagehide', dejarDeEscuchar);
+
+  /* ---------- arranque ---------- */
+  armarTeclado();
+  if (!EJ[S.ej]) S.ej = 'intervalos';
+  var pedido = new URLSearchParams(location.search).get('ejercicio');
+  if (pedido && EJ[pedido]) S.ej = pedido;
+  nuevaPregunta();
+  window.__oido = { S: S, q: function () { return q; }, responder: responder, tocarTecla: tocarTecla, melodia: melodia, cifrado: cifradoProgresion };  // para pruebas
+})();
+</script>
+</body>
+</html>

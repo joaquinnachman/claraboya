@@ -28,6 +28,7 @@
     'buscador-de-bpm': { name: 'Buscador de BPM', icon: 'bpm' },
     'piano': { name: 'Piano', icon: 'piano' },
     'grabador-de-ideas': { name: 'Grabador de ideas', icon: 'mic' },
+    'entrenamiento-de-oido': { name: 'Entrenamiento de oído', icon: 'oido' },
     'matriz-de-acordes': { name: 'Matriz de acordes', icon: 'matriz' },
     'brujula-armonica': { name: 'Brújula armónica', icon: 'brujula' },
     'hoja-de-ruta': { name: 'Hoja de ruta', icon: 'ruta' },
@@ -64,7 +65,8 @@
     prueba: '<path d="M9 3h6M10 3v6l-5.2 9.1A2 2 0 0 0 6.5 21h11a2 2 0 0 0 1.7-2.9L14 9V3"/><path d="M7.4 15h9.2"/>',
     nuevo: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><circle cx="12" cy="12" r="9.5"/>',
     compartir: '<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1"/>',
-    mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/>'
+    mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/>',
+    oido: '<path d="M7 9.5a5.5 5.5 0 0111 0c0 2.6-1.6 3.8-2.7 4.8-1 .9-1.5 1.7-1.5 3a3 3 0 01-5.5 1.6"/><path d="M10.2 9.8a2.3 2.3 0 014.6 0c0 1.1-.7 1.7-1.3 2.2"/>'
   };
   function svg(name, cls) {
     return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';

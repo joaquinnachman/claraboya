@@ -359,7 +359,8 @@
     'metronomo': 'Metrónomo',
     'buscador-de-bpm': 'Buscador de BPM',
     'piano': 'Piano',
-    'grabador-de-ideas': 'Grabador de ideas'
+    'grabador-de-ideas': 'Grabador de ideas',
+    'entrenamiento-de-oido': 'Entrenamiento de oído'
   };
   function toolUrl(slug, query) {
     var qs = '';

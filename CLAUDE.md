@@ -25,7 +25,7 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
 
 ## Qué hay
 - `web/index.html` + `style.css` + `main.js`: la página del estudio.
-- `web/herramientas/`: el selector y las 11 herramientas (01 Matriz de acordes … 10 Piano, 11 Grabador de ideas).
+- `web/herramientas/`: el selector y las 12 herramientas (01 Matriz de acordes … 10 Piano, 11 Grabador de ideas, 12 Entrenamiento de oído).
   Herramienta nueva: sumarla al menú `.tn__tools` de todas las páginas, al selector, a `TOOL_NAMES` (tools.js), a `TOOLS` (app.js), al inicio de la app, al sitemap y a los textos que dicen cuántas son.
   - `assets/tools.js`: guardado local, copias, avisos, parámetros entre herramientas y `CB.saveFile` (en la APK guarda en Descargas/Claraboya).
   - `assets/pwa.js`: service worker y botón Instalar de la web.
@@ -35,6 +35,7 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
 - `web/bajar/`: la página para pasar la app (Android: APK; iPhone: agregar a inicio; compu: link). Es el link que comparte el botón «Pasale la app a un amigo» y el del QR del estudio. No va en la APK.
 - Rider técnico: los textos del PDF en otros idiomas están en `rider-tecnico/idiomas.js` (claves sin prefijo = textos fijos, `v_` = valores de las listas, `c_` = lo que escriben las plantillas). Para letras fuera del latín común se carga `assets/vendor/fonts/dejavu-sans*.ttf`. El stage plot del PDF se arma aparte (`.sp`, 960 × 540, claro).
   Ojo con html2canvas: la regla general `img { display:block }` le corre el texto para abajo; mientras saca la foto se agrega un estilo que la deshace.
+- Entrenamiento de oído: siete ejercicios (intervalos, acordes, afinación, escalas, progresiones, dictado y cantá la nota). Suena con el mismo piano de la herramienta Piano y «Cantá la nota» usa el detector del afinador (`afinador/app/pitch.js`). Se puede abrir en un ejercicio con `?ejercicio=dictado`.
 - Grabador de ideas: las grabaciones van en IndexedDB (`claraboya-grabador`), no en la copia de «Tus datos». Tono y BPM se calculan en el teléfono (`grabador-de-ideas/analisis.js`).
   Cada idea tiene `capas` (`{ id, nombre, tipo, buf, dur, vol, mute, corrida }`; `corrida` en segundos). Las ideas de antes de la 7.3 traen el audio en `idea.buf`: se leen como una capa y se pasan al formato nuevo recién al sumarles otra, sin tocar el audio.
   La primera toma se graba con MediaRecorder (m4a); las capas, con un AudioWorklet (WAV) que arranca en un instante exacto del reloj de audio, y se les descuenta la demora del teléfono (`cbdev.grabador.latencia`, por teléfono, fuera de la copia).
