@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>!function(d,w){var s,a,L=location.search,q=/[?&]app=1(&|$)/.test(L),n=navigator,u=n.userAgent;try{s=w.sessionStorage;if(q||d.hasAttribute('data-app'))s.setItem('cbApp','1');if(/[?&]app=0(&|$)/.test(L))s.removeItem('cbApp')}catch(e){}a=d.hasAttribute('data-app')||q||!!w.Capacitor||!!(s&&s.getItem('cbApp')==='1');try{a=a||matchMedia('(display-mode: standalone)').matches||n.standalone===true}catch(e){}if(!a)return;d.setAttribute('data-app','');var v=document.querySelector('meta[name=viewport]');if(v){var c=v.content;if(c.indexOf('viewport-fit')<0)c+=', viewport-fit=cover';if(/iP(hone|ad|od)/.test(u)||/Mac/.test(u)&&n.maxTouchPoints>1)c+=', maximum-scale=1';v.content=c}var st=document.createElement('style');st.textContent='@view-transition{navigation:auto}';document.head.appendChild(st);function k(e,A){var t=s&&s.getItem('cbNav');if(!t&&A&&A.navigationType==='traverse'&&A.from&&A.entry&&A.entry.index<A.from.index)t='back';return t||'forward'}function z(t,y){if(t){t.types.add(y);[t.ready,t.finished,t.updateCallbackDone].forEach(function(p){p&&p.catch(function(){})})}}w.addEventListener('pageswap',function(e){z(e.viewTransition,k(e,e.activation))});w.addEventListener('pagereveal',function(e){z(e.viewTransition,k(e,w.navigation&&navigation.activation));try{s.removeItem('cbNav')}catch(x){}})}(document.documentElement,window)</script>
 <title>Grabador de ideas · Herramientas de producción | Claraboya Estudio</title>
-<meta name="description" content="Grabador de ideas gratis para músicos: grabá una melodía o un riff con el celular, con o sin click, y te dice en qué tono y a qué tempo está. Guardá la letra al lado y mandala por WhatsApp. De Claraboya Estudio.">
+<meta name="description" content="Grabador de ideas gratis para músicos: grabá una melodía o un riff con el celular, sumale capas (una voz, un coro, otra guitarra) y te dice en qué tono y a qué tempo está. Guardá la letra al lado y mandala por WhatsApp. De Claraboya Estudio.">
 <link rel="canonical" href="https://claraboyaestudio.netlify.app/herramientas/grabador-de-ideas/">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#1F2426">
@@ -13,7 +13,7 @@
 <meta property="og:locale" content="es_AR">
 <meta property="og:site_name" content="Claraboya Estudio">
 <meta property="og:title" content="Grabador de ideas · Herramientas de producción | Claraboya Estudio">
-<meta property="og:description" content="Grabador de ideas gratis para músicos: grabá una melodía o un riff con el celular, con o sin click, y te dice en qué tono y a qué tempo está. Guardá la letra al lado y mandala por WhatsApp. De Claraboya Estudio.">
+<meta property="og:description" content="Grabador de ideas gratis para músicos: grabá una melodía o un riff con el celular, sumale capas (una voz, un coro, otra guitarra) y te dice en qué tono y a qué tempo está. Guardá la letra al lado y mandala por WhatsApp. De Claraboya Estudio.">
 <meta property="og:url" content="https://claraboyaestudio.netlify.app/herramientas/grabador-de-ideas/">
 <meta property="og:image" content="https://claraboyaestudio.netlify.app/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -87,6 +87,61 @@
   .idea__actions{ display:flex; flex-wrap:wrap; gap:6px; }
   .idea__actions .btn{ flex:1 1 auto; justify-content:center; }
   .idea__actions .borrar{ color:#e8a0a2; }
+
+  /* capas */
+  .chip--capas{ background:#3a1012; color:#F1C9CA; }
+  .capas{ display:grid; gap:8px; padding:12px; border-radius:6px; background:var(--ink-3); }
+  .capas [hidden]{ display:none !important; }
+  .capas__head{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+  .capas__head b{ font:400 1.25rem/1 var(--display); letter-spacing:.03em; }
+  .capas__head .hint{ margin:0; font-size:.78rem; }
+  .capas__list{ list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+  .capa{ background:var(--ink-2); border-radius:6px; padding:6px 6px 8px 8px; display:grid; gap:2px; }
+  .capa--muda .capa__nombre, .capa--muda .capa__n{ opacity:.45; }
+  .capa__row{ display:flex; align-items:center; gap:6px; min-width:0; }
+  .capa__n{ flex:none; width:24px; height:24px; border-radius:50%; background:var(--bordo); display:grid; place-items:center; font:700 .74rem/1 var(--body); }
+  .capa input.capa__nombre{ flex:1; width:auto; min-width:0; min-height:40px; padding:6px 8px; border:1px solid transparent; border-radius:4px; background:transparent; color:var(--paper); font:700 .95rem/1.2 var(--body); }
+  .capa input.capa__nombre:focus{ border-color:var(--line); background:var(--ink-3); outline:none; }
+  .capa__btn{ flex:none; width:44px; height:40px; border:0; border-radius:6px; background:transparent; color:var(--soft); display:grid; place-items:center; cursor:pointer; touch-action:manipulation; }
+  .capa__btn svg{ width:20px; height:20px; }
+  .capa__btn[aria-pressed="true"]{ color:#e8a0a2; background:#3a1012; }
+  .capa__mas[aria-expanded="true"] svg{ transform:rotate(180deg); }
+  .capa__vol{ display:block; padding:0 4px; }
+  .capa__vol input{ width:100%; accent-color:#D9787A; margin:4px 0; }
+  .capa__extra{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; padding:6px 2px 0; border-top:1px solid var(--line); }
+  .capa__sync{ display:flex; align-items:center; gap:6px; font-size:.8rem; color:var(--soft); }
+  .capa__sync .pill{ min-height:36px; padding:0 12px; }
+  .capa__sync output{ min-width:64px; text-align:center; font-weight:700; color:var(--paper); font-variant-numeric:tabular-nums; }
+  .capas__add{ justify-self:start; display:inline-flex; align-items:center; gap:6px; }
+  .capas__add svg{ width:16px; height:16px; }
+  .capas__tip{ margin:0; font-size:.78rem; }
+  .linklike{ border:0; background:none; padding:0; color:#D9787A; font:inherit; font-weight:700; text-decoration:underline; cursor:pointer; }
+  .capas__rec{ display:grid; gap:10px; padding:12px; border-radius:6px; background:#3a1012; }
+  .capas__recFila{ display:flex; align-items:center; gap:10px; }
+  .capas__recBtns{ display:grid; grid-template-columns:1fr auto; gap:8px; }
+  .capas__recBtns .btn{ justify-content:center; }
+  .capas__punto{ width:12px; height:12px; border-radius:50%; background:#E0343B; flex:none; }
+  .capas__rec[data-estado="grabando"] .capas__punto{ animation:rec-parpadeo 1s steps(2, start) infinite; }
+  @keyframes rec-parpadeo{ to{ visibility:hidden; } }
+  .capas__tiempo{ font:400 1.4rem/1 var(--display); letter-spacing:.04em; min-width:5.5ch; font-variant-numeric:tabular-nums; }
+  .capas__vu{ flex:1 1 80px; height:8px; border-radius:4px; background:rgba(242,242,242,.12); overflow:hidden; }
+  .capas__vu i{ display:block; height:100%; background:linear-gradient(90deg, #740203, #D93A3C); transform-origin:left center; transform:scaleX(0); }
+  .idea__estudio{ justify-content:center; }
+  .med{ display:grid; gap:12px; }
+  .med [hidden]{ display:none !important; }
+  .med__t{ margin:0; font:400 1.7rem/1 var(--display); letter-spacing:.02em; }
+  .med__txt{ margin:0; line-height:1.5; }
+  .med__val{ display:flex; align-items:center; justify-content:center; gap:10px; }
+  .med__out{ min-width:90px; text-align:center; font:400 2rem/1 var(--display); font-variant-numeric:tabular-nums; }
+  .med__como{ margin:0; text-align:center; font-size:.8rem; }
+  .med .cb-confirm__actions{ justify-content:center; }
+  .est__pasos{ list-style:none; margin:0; padding:0; display:grid; gap:14px; }
+  .est__pasos li{ display:grid; grid-template-columns:28px minmax(0,1fr); gap:10px; align-items:start; }
+  .est__pasos li > div{ display:grid; gap:5px; }
+  .est__n{ width:28px; height:28px; border-radius:50%; background:var(--bordo); display:grid; place-items:center; font:400 1.1rem/1 var(--display); margin-top:8px; }
+  .est__btn{ justify-content:center; width:100%; }
+  .est__pasos .hint{ margin:0; font-size:.8rem; }
+  @media (max-width: 380px){ .capa__btn{ width:40px; } .capas__tiempo{ font-size:1.2rem; } }
   html[data-app] .ideas__title{ font-size:1.6rem; }
   @media (min-width: 900px){
     .grab{ display:grid; grid-template-columns:minmax(320px, 400px) minmax(0,1fr); gap:20px; align-items:start; }
@@ -94,7 +149,7 @@
     .grab .ideas{ margin-top:0; }
   }
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Grabador de ideas — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/grabador-de-ideas/", "description": "Grabador de ideas gratis para músicos: grabá una melodía o un riff con el celular, con o sin click, y te dice en qué tono y a qué tempo está. Guardá la letra al lado y mandala por WhatsApp. De Claraboya Estudio.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "provider": {"@type": "Organization", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Grabador de ideas — Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/herramientas/grabador-de-ideas/", "description": "Grabador de ideas gratis para músicos: grabá una melodía o un riff con el celular, sumale capas (una voz, un coro, otra guitarra) y te dice en qué tono y a qué tempo está. Guardá la letra al lado y mandala por WhatsApp. De Claraboya Estudio.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "inLanguage": "es-AR", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"}, "provider": {"@type": "Organization", "name": "Claraboya Estudio", "url": "https://claraboyaestudio.netlify.app/"}}</script>
 
 <link rel="manifest" href="../../manifest.webmanifest">
 <meta name="mobile-web-app-capable" content="yes">
@@ -132,7 +187,7 @@
     <div>
       <p class="tool-head__kicker"><b>11</b> · Para componer</p>
       <h1>Grabador de ideas</h1>
-      <p class="tool-head__sub">Grabá la idea apenas aparece: una melodía, un riff, un estribillo. Te dice en qué tono y a qué tempo está, guarda la letra al lado y la mandás por WhatsApp a la banda o al estudio.</p>
+      <p class="tool-head__sub">Grabá la idea apenas aparece: una melodía, un riff, un estribillo. Sumale capas arriba (una voz, un coro, otra guitarra), te dice en qué tono y a qué tempo está y la mandás por WhatsApp a la banda o al estudio.</p>
     </div>
   </header>
 
@@ -241,6 +296,9 @@
   var S = { click: false, bpm: 100, orden: 'nuevas' };
   try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved) for (var k in saved) if (k in S) S[k] = saved[k]; } catch (e) { /* nada */ }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* nada */ } }
+  // la demora es de este teléfono: no va en la copia de «Tus datos» (por eso no empieza con «cb.»)
+  var LAT_KEY = 'cbdev.grabador.latencia';
+  var WA_ESTUDIO = '5491168499750';
 
   var MAYOR = ['Do', 'Do#', 'Re', 'Mib', 'Mi', 'Fa', 'Fa#', 'Sol', 'Lab', 'La', 'Sib', 'Si'];
   var MENOR = ['Do', 'Do#', 'Re', 'Re#', 'Mi', 'Fa', 'Fa#', 'Sol', 'Sol#', 'La', 'Sib', 'Si'];
@@ -251,8 +309,13 @@
   var DONDE = (function () { try { return matchMedia('(pointer: coarse)').matches ? 'este teléfono' : 'esta compu'; } catch (e) { return 'este teléfono'; } })();
   document.querySelectorAll('[data-donde]').forEach(function (el) { el.textContent = DONDE; });
   function sesion(tipo) { try { if (navigator.audioSession) navigator.audioSession.type = tipo; } catch (e) { /* nada */ } }
+  var MIC = { audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } };
 
-  /* ---------- dónde se guardan las ideas (en el teléfono) ---------- */
+  /* ---------- dónde se guardan las ideas (en el teléfono) ----------
+     Cada idea tiene sus capas: [{ id, nombre, tipo, buf, dur, vol, mute, corrida }].
+     «corrida» son los segundos que la capa va después (+) o antes (−) del principio de la idea.
+     Las ideas viejas (antes de las capas) tienen el audio en idea.buf: se leen como una capa sola
+     y se pasan al formato nuevo recién cuando se les suma otra, sin tocar el audio. */
   var dbp = null;
   function db() {
     if (!dbp) dbp = new Promise(function (res, rej) {
@@ -283,7 +346,23 @@
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* nada */ }
   }
 
-  var ideas = [], abierta = null;
+  var ideas = [], abierta = null, capaAbierta = null;
+  function capasDe(idea) {
+    if (idea.capas && idea.capas.length) return idea.capas;
+    return [{ id: 'c0', nombre: 'Toma 1', tipo: idea.tipo, buf: idea.buf, dur: idea.dur, vol: 1, mute: false, corrida: 0 }];
+  }
+  function migrar(idea) {
+    if (idea.capas && idea.capas.length) return;
+    idea.capas = capasDe(idea);
+    delete idea.buf; delete idea.tipo;
+    idea.v = 2;
+  }
+  function durTotal(idea) {
+    var d = 0;
+    capasDe(idea).forEach(function (c) { d = Math.max(d, (c.corrida || 0) + (c.dur || 0)); });
+    return d || idea.dur || 0;
+  }
+  function ganancia(capa) { return capa.mute ? 0 : (capa.vol == null ? 1 : capa.vol); }
 
   /* ---------- audio ---------- */
   var ctx = null;
@@ -292,17 +371,39 @@
     if (ctx.state === 'suspended') ctx.resume();
     return ctx;
   }
-  function decodificar(idea) {
-    var c = ac(), copia = idea.buf.slice(0);
+  function decodificarBuf(buf) {
+    var c = ac(), copia = buf.slice(0);
     return new Promise(function (res, rej) {
       var p = c.decodeAudioData(copia, res, rej);
       if (p && p.then) p.then(res, rej);
     });
   }
+  var dec = {};  // audio ya leído de cada capa: «idea:capa» → AudioBuffer
+  function decCapa(idea, capa) {
+    var k = idea.id + ':' + capa.id;
+    if (dec[k]) return Promise.resolve(dec[k]);
+    return decodificarBuf(capa.buf).then(function (ab) { dec[k] = ab; return ab; });
+  }
+  function cargarCapas(idea) { return Promise.all(capasDe(idea).map(function (c) { return decCapa(idea, c).catch(function () { return null; }); })); }
+  function olvidar(ideaId) { Object.keys(dec).forEach(function (k) { if (k.indexOf(ideaId + ':') === 0) delete dec[k]; }); }
+  // programa todas las capas para que la posición «desde» de la idea suene en el instante t0
+  function programar(c, destino, idea, abs, t0, desde, gains) {
+    var srcs = [];
+    capasDe(idea).forEach(function (capa, k) {
+      var ab = abs[k]; if (!ab) return;
+      var rel = desde - (capa.corrida || 0);
+      if (rel >= ab.duration) return;
+      var g = c.createGain(); g.gain.value = ganancia(capa); g.connect(destino);
+      var s = c.createBufferSource(); s.buffer = ab; s.connect(g);
+      if (rel >= 0) s.start(t0, rel); else s.start(t0 - rel, 0);
+      srcs.push(s); if (gains) gains[capa.id] = g;
+    });
+    return srcs;
+  }
 
-  /* ---------- grabar ---------- */
+  /* ---------- grabar una idea nueva ---------- */
   var estado = 'quieto', rec = null, stream = null, chunks = [], formato = '', t0 = 0, durRec = 0;
-  var clickTimer = 0, nextClick = 0, beatN = 0, cuentaHasta = 0, arranque = 0, an = null, niveles = [], wake = null;
+  var clickTimer = 0, nextClick = 0, beatN = 0, clickBpm = 100, cuentaHasta = 0, arranque = 0, an = null, niveles = [], wake = null;
 
   function elegirFormato() {
     var c = ['audio/mp4;codecs=mp4a.40.2', 'audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
@@ -310,16 +411,16 @@
     for (var i = 0; i < c.length; i++) if (MediaRecorder.isTypeSupported(c[i])) return c[i];
     return '';
   }
-  function golpe(t, fuerte) {
-    var o = ctx.createOscillator(), g = ctx.createGain();
+  function golpe(t, fuerte, vol) {
+    var o = ctx.createOscillator(), g = ctx.createGain(), v = vol == null ? 1 : vol;
     o.type = 'square'; o.frequency.value = fuerte ? 2000 : 1500;
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(fuerte ? 0.45 : 0.28, t + 0.002);
+    g.gain.exponentialRampToValueAtTime((fuerte ? 0.45 : 0.28) * v, t + 0.002);
     g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
     o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.05);
   }
   function clickLoop() {
-    var beat = 60 / S.bpm;
+    var beat = 60 / clickBpm;
     while (nextClick < ctx.currentTime + 0.12) { golpe(nextClick, beatN % 4 === 0); nextClick += beat; beatN++; }
   }
   function despierto(si) {
@@ -329,7 +430,7 @@
   }
 
   function empezar() {
-    if (estado !== 'quieto') return;
+    if (estado !== 'quieto' || capaRec) return;
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
       CB.toast('Este navegador no deja grabar. Probá con Chrome o Safari actualizados.', true); return;
     }
@@ -337,7 +438,7 @@
     estado = 'pidiendo'; pintarRec();
     sesion('play-and-record');
     var c = ac();
-    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } }).then(function (s) {
+    navigator.mediaDevices.getUserMedia(MIC).then(function (s) {
       stream = s; formato = elegirFormato();
       try { rec = formato ? new MediaRecorder(s, { mimeType: formato, audioBitsPerSecond: 128000 }) : new MediaRecorder(s); }
       catch (e) { rec = new MediaRecorder(s); }
@@ -348,6 +449,7 @@
       an = c.createAnalyser(); an.fftSize = 1024; fuente.connect(an); niveles = [];
       despierto(true);
       if (S.click) {
+        clickBpm = S.bpm;
         var beat = 60 / S.bpm;
         nextClick = c.currentTime + 0.15; beatN = 0; cuentaHasta = nextClick + 4 * beat;
         clickLoop(); clickTimer = setInterval(clickLoop, 25);
@@ -389,7 +491,8 @@
     if (descartar) { CB.toast('Grabación descartada.'); return; }
     if (blob.size < 800 || durRec < 0.4) { CB.toast('Fue muy cortita: no la guardé.'); return; }
     blob.arrayBuffer().then(function (buf) {
-      var idea = { id: Date.now().toString(36), nombre: nombreNuevo(), fecha: Date.now(), dur: durRec, tipo: tipo, buf: buf,
+      var idea = { id: Date.now().toString(36), v: 2, nombre: nombreNuevo(), fecha: Date.now(), dur: durRec,
+        capas: [{ id: 'c0', nombre: 'Toma 1', tipo: tipo, buf: buf, dur: durRec, vol: 1, mute: false, corrida: 0 }],
         tono: null, bpm: conClick ? bpmClick : null, bpmDe: conClick ? 'click' : null, letra: '', picos: null, analizada: false };
       ideas.push(idea); abierta = idea.id;
       return guardar(idea).then(function () { persistir(); render(); return analizar(idea); });
@@ -409,9 +512,11 @@
   var cola = Promise.resolve();
   function analizar(idea) {
     cola = cola.then(function () {
-      return decodificar(idea).then(function (ab) {
-        idea.dur = ab.duration;
-        idea.picos = picos(ab, 120);
+      var capa = capasDe(idea)[0];
+      return decCapa(idea, capa).then(function (ab) {
+        capa.dur = ab.duration;
+        idea.dur = durTotal(idea);
+        if (capasDe(idea).length === 1) idea.picos = picos(ab, 120);
         var segs = Math.min(ab.duration, 120), sr = 11025;
         var OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
         var off = new OAC(1, Math.max(1, Math.ceil(segs * sr)), sr);
@@ -431,72 +536,466 @@
     });
     return cola;
   }
+  // la mezcla de todas las capas, como la escuchás (volumen y silencio incluidos)
+  function mezclar(idea, soloCapa) {
+    return cargarCapas(idea).then(function (abs) {
+      var capas = capasDe(idea), sr = ac().sampleRate, dur = durTotal(idea);
+      var OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      var off = new OAC(1, Math.max(1, Math.ceil(dur * sr)), sr);
+      capas.forEach(function (capa, k) {
+        var ab = abs[k]; if (!ab) return;
+        if (soloCapa != null ? k !== soloCapa : capa.mute) return;
+        var g = off.createGain(); g.gain.value = soloCapa != null ? 1 : ganancia(capa); g.connect(off.destination);
+        var s = off.createBufferSource(); s.buffer = ab; s.connect(g);
+        var o = capa.corrida || 0;
+        if (o >= 0) s.start(o); else s.start(0, -o);
+      });
+      return new Promise(function (res, rej) {
+        off.oncomplete = function (e) { res(e.renderedBuffer); };
+        var p = off.startRendering(); if (p && p.then) p.then(res, rej);
+      });
+    });
+  }
+  var tOnda = 0;
+  function recalcularOnda(idea, demora) {
+    clearTimeout(tOnda);
+    return new Promise(function (res) {
+      tOnda = setTimeout(function () {
+        mezclar(idea).then(function (m) { idea.picos = picos(m, 120); }).catch(function () { /* queda la anterior */ })
+          .then(function () { return guardar(idea); }).then(function () { render(); res(); }, function () { res(); });
+      }, demora || 0);
+    });
+  }
 
-  /* ---------- escuchar ---------- */
-  var player = { id: null, buf: null, src: null, inicio: 0, pos: 0, sonando: false };
+  /* ---------- escuchar (todas las capas juntas) ---------- */
+  var player = { id: null, srcs: [], gains: {}, inicio: 0, pos: 0, sonando: false, dur: 0 };
   function posicion() { return player.sonando && ctx ? ctx.currentTime - player.inicio : player.pos; }
   function detener(guardarPos) {
-    if (player.src) {
-      var s = player.src; player.src = null; s.onended = null;
-      try { s.stop(); } catch (e) { /* nada */ }
+    if (player.srcs.length) {
+      var ss = player.srcs; player.srcs = [];
+      ss.forEach(function (s) { s.onended = null; try { s.stop(); } catch (e) { /* nada */ } });
       if (guardarPos && ctx) player.pos = ctx.currentTime - player.inicio;
     }
+    player.gains = {};
     if (player.sonando) { player.sonando = false; render(); }
   }
   function reproducir(idea, desde) {
-    if (estado !== 'quieto') return;
+    if (estado !== 'quieto' || capaRec) return;
     sesion('playback');
     var c = ac();
-    var listo = player.id === idea.id && player.buf ? Promise.resolve(player.buf) : decodificar(idea).then(function (ab) { player.id = idea.id; player.buf = ab; player.pos = 0; return ab; });
+    if (player.id !== idea.id) { if (player.id) olvidar(player.id); player.id = idea.id; player.pos = 0; }
     detener(false);
-    return listo.then(function (ab) {
-      var off = desde != null ? desde : player.pos;
-      if (!(off >= 0) || off >= ab.duration - 0.05) off = 0;
-      var s = c.createBufferSource(); s.buffer = ab; s.connect(c.destination);
-      s.onended = function () { if (player.src === s) { player.src = null; player.sonando = false; player.pos = 0; render(); } };
-      s.start(0, off);
-      player.src = s; player.inicio = c.currentTime - off; player.pos = off; player.sonando = true;
+    return cargarCapas(idea).then(function (abs) {
+      var dur = durTotal(idea), off = desde != null ? desde : player.pos;
+      if (!(off >= 0) || off >= dur - 0.05) off = 0;
+      var t0 = c.currentTime + 0.02;
+      player.gains = {};
+      player.srcs = programar(c, c.destination, idea, abs, t0, off, player.gains);
+      if (!player.srcs.length) throw new Error('sin audio');
+      player.inicio = t0 - off; player.pos = off; player.dur = dur; player.sonando = true;
       render(); requestAnimationFrame(avance);
     }).catch(function () { CB.toast('No se pudo reproducir esta idea.', true); });
   }
   function avance() {
     if (!player.sonando) return;
+    if (posicion() >= player.dur) { detener(false); player.pos = 0; render(); return; }
     var li = document.querySelector('.idea[data-id="' + player.id + '"]');
     var idea = buscar(player.id);
     if (li && idea) dibujarOnda(li, idea);
     requestAnimationFrame(avance);
   }
+  function aplicarGanancias(idea) {
+    if (!player.sonando || player.id !== idea.id || !ctx) return;
+    capasDe(idea).forEach(function (capa) { var g = player.gains[capa.id]; if (g) g.gain.setTargetAtTime(ganancia(capa), ctx.currentTime, 0.015); });
+  }
+
+  /* ---------- grabar otra capa arriba de lo que ya hay ----------
+     Se graba con un AudioWorklet para saber exactamente en qué instante del reloj de audio
+     empieza la capa: así queda alineada con lo que estaba sonando. Lo único que hay que
+     descontar es la demora del teléfono (lo que tarda en sonar + lo que tarda en grabar). */
+  var CODIGO_CAPTURA = "class C extends AudioWorkletProcessor{constructor(){super();this.d=Infinity;this.h=Infinity;this.a=[];this.n=0;this.fin=true;" +
+    "this.port.onmessage=e=>{const m=e.data;if(m.tipo==='empezar'){this.d=m.desde;this.h=Infinity;this.fin=false}else if(m.tipo==='parar'){this.h=m.hasta}}}" +
+    "process(i){const sr=sampleRate,t=currentTime,ch=i[0]&&i[0][0],L=ch?ch.length:128,te=t+L/sr;" +
+    "if(!this.fin&&te>this.d&&t<this.h){const a=Math.max(0,Math.round((this.d-t)*sr)),b=Math.min(L,Math.round((this.h-t)*sr));" +
+    "if(b>a){this.a.push(ch?ch.slice(a,b):new Float32Array(b-a));this.n+=b-a}if(this.n>=24000)this.v()}" +
+    "if(!this.fin&&te>=this.h){this.v();this.port.postMessage({tipo:'fin'});this.fin=true;this.d=Infinity}return true}" +
+    "v(){if(!this.n)return;const o=new Float32Array(this.n);let p=0;for(const c of this.a){o.set(c,p);p+=c.length}" +
+    "this.port.postMessage({tipo:'datos',datos:o},[o.buffer]);this.a=[];this.n=0}}registerProcessor('cb-captura',C)";
+  var moduloCaptura = null;
+  function cargarModulo(c) {
+    if (!c.audioWorklet || !window.AudioWorkletNode) return Promise.resolve(false);
+    if (!moduloCaptura) {
+      var url = URL.createObjectURL(new Blob([CODIGO_CAPTURA], { type: 'application/javascript' }));
+      moduloCaptura = c.audioWorklet.addModule(url).then(function () { return true; }, function () { return false; });
+    }
+    return moduloCaptura;
+  }
+  // graba lo que entra por «fuente» entre dos instantes del reloj de audio
+  function captura(c, fuente) {
+    return cargarModulo(c).then(function (hayWorklet) {
+      var trozos = [], total = 0, alTerminar = null, mudo = c.createGain();
+      mudo.gain.value = 0; mudo.connect(c.destination);
+      function juntar() { var out = new Float32Array(total), o = 0; trozos.forEach(function (t) { out.set(t, o); o += t.length; }); trozos = []; return out; }
+      if (hayWorklet) {
+        var nodo = new AudioWorkletNode(c, 'cb-captura', { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1] });
+        nodo.port.onmessage = function (e) {
+          var m = e.data;
+          if (m.tipo === 'datos') { trozos.push(m.datos); total += m.datos.length; }
+          else if (m.tipo === 'fin' && alTerminar) { var f = alTerminar; alTerminar = null; f(); }
+        };
+        fuente.connect(nodo); nodo.connect(mudo);
+        return {
+          empezar: function (desde) { nodo.port.postMessage({ tipo: 'empezar', desde: desde }); },
+          parar: function (hasta) { return new Promise(function (res) { alTerminar = function () { res(juntar()); }; nodo.port.postMessage({ tipo: 'parar', hasta: hasta }); }); },
+          cerrar: function () { try { fuente.disconnect(nodo); nodo.disconnect(); mudo.disconnect(); nodo.port.close(); } catch (e) { /* nada */ } }
+        };
+      }
+      // navegadores sin AudioWorklet: ScriptProcessor (menos preciso, pero anda)
+      var sp = c.createScriptProcessor(2048, 1, 1), desde = Infinity, hasta = Infinity, activo = false;
+      sp.onaudioprocess = function (e) {
+        if (!activo) return;
+        var ch = e.inputBuffer.getChannelData(0), sr = c.sampleRate, L = ch.length;
+        var t = (e.playbackTime || c.currentTime) - L / sr, te = t + L / sr;
+        if (te > desde && t < hasta) {
+          var a = Math.max(0, Math.round((desde - t) * sr)), b = Math.min(L, Math.round((hasta - t) * sr));
+          if (b > a) { trozos.push(ch.slice(a, b)); total += b - a; }
+        }
+        if (te >= hasta && alTerminar) { activo = false; var f = alTerminar; alTerminar = null; f(); }
+      };
+      fuente.connect(sp); sp.connect(mudo);
+      return {
+        empezar: function (d) { desde = d; hasta = Infinity; activo = true; },
+        parar: function (h) { return new Promise(function (res) { hasta = h; alTerminar = function () { res(juntar()); }; if (!activo) { alTerminar = null; res(juntar()); } }); },
+        cerrar: function () { try { fuente.disconnect(sp); sp.disconnect(); mudo.disconnect(); } catch (e) { /* nada */ } }
+      };
+    });
+  }
+  function latenciaGuardada() {
+    try { var v = JSON.parse(localStorage.getItem(LAT_KEY) || 'null'); if (v && typeof v.s === 'number' && v.s >= 0 && v.s < 1) return v; } catch (e) { /* nada */ }
+    return null;
+  }
+  function latenciaCalculada(s) {
+    var c = ac(), out = (c.outputLatency || 0) + (c.baseLatency || 0), inn = 0;
+    try { var st = s && s.getAudioTracks()[0].getSettings(); if (st && st.latency > 0) inn = st.latency; } catch (e) { /* nada */ }
+    var v = out + inn;
+    if (!(v > 0.005)) v = 0.04;
+    return Math.min(0.5, v);
+  }
+  function latencia(s) { var g = latenciaGuardada(); return g ? g.s : latenciaCalculada(s); }
+
+  var capaRec = null;  // la capa que se está grabando: { id, estado, T0, beat, an, ... }
+  function grabarCapa(idea) {
+    if (estado !== 'quieto' || capaRec) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { CB.toast('Este navegador no deja grabar. Probá con Chrome o Safari actualizados.', true); return; }
+    detener(false);
+    var c = ac();
+    sesion('play-and-record');
+    var r = capaRec = { id: idea.id, estado: 'pidiendo', T0: 0, beat: 1 };
+    render(); pintarRec();
+    navigator.mediaDevices.getUserMedia(MIC).then(function (s) {
+      r.stream = s;
+      var fuente = c.createMediaStreamSource(s);
+      r.an = c.createAnalyser(); r.an.fftSize = 1024; fuente.connect(r.an);
+      return Promise.all([cargarCapas(idea), captura(c, fuente)]);
+    }).then(function (res) {
+      r.cap = res[1];
+      if (r.cancelado) { cerrarCapa(r); return; }
+      var bpm = idea.bpm, beat = bpm ? 60 / bpm : 1, cuenta = bpm ? 4 : 3, ahora = c.currentTime;
+      // cuenta de un compás (o 3-2-1 si la idea no tiene tempo) y arranca todo junto
+      for (var k = 0; k < cuenta; k++) golpe(ahora + 0.2 + k * beat, k === 0, bpm ? 1 : 0.5);
+      var T0 = ahora + 0.2 + cuenta * beat;
+      r.T0 = T0; r.beat = beat; r.latencia = latencia(r.stream);
+      r.cap.empezar(T0);
+      r.srcs = programar(c, c.destination, idea, res[0], T0, 0, null);
+      if (S.click && bpm) { clickBpm = bpm; nextClick = T0; beatN = 0; r.clickTimer = setInterval(clickLoop, 25); }
+      r.estado = 'cuenta'; despierto(true); render();
+      requestAnimationFrame(dibujarCapa);
+    }).catch(function (err) {
+      cerrarCapa(r); capaRec = null; render(); pintarRec();
+      CB.toast(err && err.name === 'NotAllowedError'
+        ? 'No hay permiso para el micrófono. Dalo en los ajustes del navegador o de la app y probá de nuevo.'
+        : 'No se pudo grabar la capa.', true);
+    });
+  }
+  function cerrarCapa(r) {
+    clearInterval(r.clickTimer);
+    (r.srcs || []).forEach(function (s) { try { s.stop(); } catch (e) { /* nada */ } });
+    if (r.cap) r.cap.cerrar();
+    if (r.stream) r.stream.getTracks().forEach(function (t) { t.stop(); });
+    despierto(false); sesion('playback');
+  }
+  function terminarCapa(descartar) {
+    var r = capaRec; if (!r) return;
+    if (!r.cap) { r.cancelado = true; capaRec = null; render(); pintarRec(); return; }  // todavía pedía el micrófono
+    if (r.terminando) return;
+    r.terminando = true;
+    var c = ctx, hasta = c.currentTime;
+    clearInterval(r.clickTimer);
+    (r.srcs || []).forEach(function (s) { try { s.stop(); } catch (e) { /* nada */ } });
+    r.cap.parar(hasta).then(function (datos) {
+      cerrarCapa(r); capaRec = null; pintarRec();
+      var idea = buscar(r.id);
+      if (descartar || !idea) { if (descartar) CB.toast('Capa descartada.'); render(); return; }
+      var sr = c.sampleRate;
+      if (datos.length < sr * 0.4) { CB.toast('Fue muy cortita: no la guardé.'); render(); return; }
+      var ab = c.createBuffer(1, datos.length, sr);
+      if (ab.copyToChannel) ab.copyToChannel(datos, 0); else ab.getChannelData(0).set(datos);
+      migrar(idea);
+      var capa = { id: 'c' + Date.now().toString(36), nombre: 'Capa ' + (idea.capas.length + 1), tipo: 'audio/wav',
+        buf: wavBuffer([datos], sr, 1), dur: datos.length / sr, vol: 1, mute: false, corrida: -(r.latencia || 0), fecha: Date.now() };
+      idea.capas.push(capa); dec[idea.id + ':' + capa.id] = ab;
+      idea.dur = durTotal(idea);
+      return recalcularOnda(idea).then(function () { persistir(); CB.toast('Listo: ' + capa.nombre + ' guardada.'); });
+    }).catch(function () { capaRec = null; render(); pintarRec(); CB.toast('No se pudo guardar la capa.', true); });
+  }
+  var nivelBuf = null;
+  function dibujarCapa() {
+    var r = capaRec; if (!r || !r.cap || r.terminando) return;
+    var falta = r.T0 - ctx.currentTime;
+    if (falta <= 0 && r.estado !== 'grabando') { r.estado = 'grabando'; render(); }
+    var li = document.querySelector('.idea[data-id="' + r.id + '"]');
+    if (li) {
+      var t = li.querySelector('.capas__tiempo');
+      if (t) t.textContent = falta > 0 ? 'Arranca en ' + Math.max(1, Math.ceil(falta / r.beat)) : mmss(-falta);
+      var vu = li.querySelector('.capas__vu i');
+      if (vu && r.an) {
+        if (!nivelBuf || nivelBuf.length !== r.an.fftSize) nivelBuf = new Float32Array(r.an.fftSize);
+        r.an.getFloatTimeDomainData(nivelBuf);
+        var m = 0; for (var i = 0; i < nivelBuf.length; i++) { var v = Math.abs(nivelBuf[i]); if (v > m) m = v; }
+        vu.style.transform = 'scaleX(' + Math.min(1, Math.sqrt(m) * 1.15).toFixed(3) + ')';
+      }
+    }
+    requestAnimationFrame(dibujarCapa);
+  }
+
+  /* ---------- medir la demora del teléfono ----------
+     Suenan 6 clicks por el parlante y se graban con el micrófono: lo que tardan en volver
+     es la demora que hay que descontarle a cada capa nueva. */
+  function detectarClicks(x, sr, tiempos) {
+    var y = new Float32Array(x.length);
+    for (var i = 1; i < x.length; i++) y[i] = Math.abs(x[i] - x[i - 1]);
+    var base = Array.prototype.slice.call(y.subarray(0, Math.round(sr * 0.4))).sort(function (a, b) { return a - b; });
+    var ruido = base.length ? base[Math.floor(base.length * 0.9)] : 0;
+    var demoras = [];
+    tiempos.forEach(function (ti) {
+      var a = Math.round(ti * sr), b = Math.min(y.length, a + Math.round(sr * 0.6)), max = 0, j;
+      for (j = a; j < b; j++) if (y[j] > max) max = y[j];
+      if (max < Math.max(ruido * 6, 0.02)) return;
+      var umbral = Math.max(ruido * 6, max * 0.35);
+      for (j = a; j < b; j++) if (y[j] >= umbral) { demoras.push((j - a) / sr); return; }
+    });
+    if (demoras.length < 4) return null;
+    demoras.sort(function (p, q) { return p - q; });
+    var med = demoras[Math.floor(demoras.length / 2)];
+    var cerca = demoras.filter(function (d) { return Math.abs(d - med) < 0.012; });
+    return cerca.length >= 4 ? med : null;
+  }
+  function medirDemora() {
+    if (estado !== 'quieto' || capaRec) return;
+    detener(false);
+    var wrap = document.createElement('div'), prevFoco = document.activeElement, midiendo = false, valor = null;
+    wrap.className = 'cb-confirm';
+    wrap.innerHTML = '<div class="cb-confirm__box med" role="dialog" aria-modal="true" aria-labelledby="medT">' +
+      '<h2 class="med__t" id="medT">Que las capas queden justas</h2>' +
+      '<p class="med__txt" data-txt>Medimos cuánto tarda ' + DONDE + ' entre que suena y que graba, y se lo descontamos a cada capa nueva. Sacá los auriculares, subí el volumen y dejá ' + DONDE + ' quieto: van a sonar 6 clicks.</p>' +
+      '<div class="med__val"><button class="pill" type="button" data-m="-10" aria-label="10 milisegundos menos">−10</button>' +
+      '<output class="med__out" data-out aria-live="polite"></output>' +
+      '<button class="pill" type="button" data-m="10" aria-label="10 milisegundos más">+10</button></div>' +
+      '<p class="hint med__como" data-como></p>' +
+      '<div class="cb-confirm__actions"><button type="button" class="btn ghost" data-auto>Que la calcule sola</button><button type="button" class="btn ghost" data-cerrar>Listo</button><button type="button" class="btn primary" data-medir>Medir</button></div></div>';
+    function pintar() {
+      var g = latenciaGuardada(), v = g ? g.s : latenciaCalculada(null);
+      wrap.querySelector('[data-out]').textContent = Math.round(v * 1000) + ' ms';
+      wrap.querySelector('[data-como]').textContent = g ? (g.como === 'medida' ? 'Medida en ' + DONDE + '.' : 'Ajustada a mano.') + ' Con auriculares bluetooth la demora es mayor: ajustala a mano hasta que la capa caiga justa.'
+        : 'Calculada por ' + DONDE + ' (aproximada). Para que quede justa, medila.';
+      wrap.querySelector('[data-auto]').hidden = !g;
+    }
+    function guardarLat(s, como) { try { localStorage.setItem(LAT_KEY, JSON.stringify({ s: Math.max(0, Math.min(0.9, s)), como: como })); } catch (e) { /* nada */ } pintar(); }
+    function cerrar() {
+      if (midiendo) return;
+      document.removeEventListener('keydown', onKey, true);
+      wrap.remove(); if (prevFoco && prevFoco.focus) prevFoco.focus();
+    }
+    function onKey(e) { if (e.key === 'Escape') { e.preventDefault(); cerrar(); } }
+    function medir() {
+      if (midiendo) return;
+      midiendo = true; wrap.querySelector('[data-medir]').disabled = true;
+      var txt = wrap.querySelector('[data-txt]');
+      txt.textContent = 'Midiendo… no toques nada.';
+      var c = ac(), st = null, cap = null;
+      sesion('play-and-record');
+      navigator.mediaDevices.getUserMedia(MIC).then(function (s) {
+        st = s; return captura(c, c.createMediaStreamSource(s));
+      }).then(function (k) {
+        cap = k;
+        var T0 = c.currentTime + 0.3, tiempos = [];
+        for (var i = 0; i < 6; i++) { var t = 0.5 + i * 0.7; tiempos.push(t); golpe(T0 + t, true, 1.6); }
+        cap.empezar(T0);
+        return new Promise(function (res) { setTimeout(res, (T0 + 4.8 - c.currentTime) * 1000); }).then(function () {
+          return cap.parar(c.currentTime);
+        }).then(function (x) { return detectarClicks(x, c.sampleRate, tiempos); });
+      }).then(function (d) {
+        if (d == null) txt.textContent = 'No escuché bien los clicks. Subí el volumen, sacá los auriculares y probá de nuevo, o ajustala a mano.';
+        else { guardarLat(d, 'medida'); txt.textContent = 'Listo: ' + DONDE + ' tarda ' + Math.round(d * 1000) + ' ms. Las capas nuevas se acomodan solas.'; }
+      }).catch(function () {
+        txt.textContent = 'No se pudo usar el micrófono. Revisá el permiso y probá de nuevo.';
+      }).then(function () {
+        if (cap) cap.cerrar();
+        if (st) st.getTracks().forEach(function (t) { t.stop(); });
+        sesion('playback'); midiendo = false; wrap.querySelector('[data-medir]').disabled = false;
+      });
+    }
+    wrap.addEventListener('click', function (e) {
+      if (e.target === wrap || e.target.closest('[data-cerrar]')) cerrar();
+      else if (e.target.closest('[data-medir]')) medir();
+      else if (e.target.closest('[data-auto]')) { try { localStorage.removeItem(LAT_KEY); } catch (er) { /* nada */ } pintar(); }
+      else {
+        var b = e.target.closest('[data-m]');
+        if (b) { var g = latenciaGuardada(), v = g ? g.s : latenciaCalculada(null); guardarLat(v + parseInt(b.getAttribute('data-m'), 10) / 1000, 'mano'); }
+      }
+    });
+    document.addEventListener('keydown', onKey, true);
+    document.body.appendChild(wrap);
+    pintar();
+    wrap.querySelector('[data-medir]').focus();
+  }
 
   /* ---------- archivos para compartir y guardar ---------- */
-  function wav(ab) {
-    var n = ab.length, chs = ab.numberOfChannels, sr = ab.sampleRate, data = new DataView(new ArrayBuffer(44 + n * 2));
-    function str(o, s) { for (var i = 0; i < s.length; i++) data.setUint8(o + i, s.charCodeAt(i)); }
+  function wavBuffer(canales, sr, chs) {
+    var n = canales[0].length, data = new DataView(new ArrayBuffer(44 + n * 2)), max = 0, i, c;
+    for (i = 0; i < n; i++) { var v0 = 0; for (c = 0; c < canales.length; c++) v0 += canales[c][i]; v0 = Math.abs(v0 / canales.length); if (v0 > max) max = v0; }
+    var esc0 = max > 0.99 ? 0.99 / max : 1;  // si la mezcla se pasa, se baja todo un poco para que no distorsione
+    function str(o, s) { for (var k = 0; k < s.length; k++) data.setUint8(o + k, s.charCodeAt(k)); }
     str(0, 'RIFF'); data.setUint32(4, 36 + n * 2, true); str(8, 'WAVE'); str(12, 'fmt ');
     data.setUint32(16, 16, true); data.setUint16(20, 1, true); data.setUint16(22, 1, true);
     data.setUint32(24, sr, true); data.setUint32(28, sr * 2, true); data.setUint16(32, 2, true); data.setUint16(34, 16, true);
     str(36, 'data'); data.setUint32(40, n * 2, true);
-    var canales = []; for (var c = 0; c < chs; c++) canales.push(ab.getChannelData(c));
-    for (var i = 0; i < n; i++) {
-      var v = 0; for (c = 0; c < chs; c++) v += canales[c][i]; v /= chs;
+    for (i = 0; i < n; i++) {
+      var v = 0; for (c = 0; c < canales.length; c++) v += canales[c][i]; v = v / canales.length * esc0;
       v = Math.max(-1, Math.min(1, v));
       data.setInt16(44 + i * 2, v < 0 ? v * 0x8000 : v * 0x7FFF, true);
     }
-    return new Blob([data.buffer], { type: 'audio/wav' });
+    return data.buffer;
   }
-  function nombreArchivo(idea, ext) { return (idea.nombre || 'Idea').replace(/[\\/:*?"<>|]/g, '-').trim() + '.' + ext; }
+  function wav(ab) {
+    var canales = []; for (var c = 0; c < ab.numberOfChannels; c++) canales.push(ab.getChannelData(c));
+    return new Blob([wavBuffer(canales, ab.sampleRate, 1)], { type: 'audio/wav' });
+  }
+  function base(idea) { return (idea.nombre || 'Idea').replace(/[\\/:*?"<>|]/g, '-').trim() || 'Idea'; }
+  function nombreArchivo(idea, ext) { return base(idea) + '.' + ext; }
   function textoIdea(idea) {
-    return [idea.nombre, idea.tono ? tonoTexto(idea.tono) : '', idea.bpm ? idea.bpm + ' BPM' : ''].filter(Boolean).join(' · ') + ' (grabada con la app de Claraboya)';
+    var n = capasDe(idea).length;
+    return [idea.nombre, idea.tono ? tonoTexto(idea.tono) : '', idea.bpm ? idea.bpm + ' BPM' : '', n > 1 ? n + ' capas' : ''].filter(Boolean).join(' · ') + ' (grabada con la app de Claraboya)';
+  }
+  // el audio de la idea: si es una sola capa va tal cual se grabó; si hay varias, la mezcla
+  function audioIdea(idea) {
+    var capas = capasDe(idea);
+    if (capas.length === 1) {
+      var c0 = capas[0], esM4a = /mp4|m4a|aac/.test(c0.tipo || '');
+      if (esM4a) return Promise.resolve({ blob: new Blob([c0.buf], { type: 'audio/mp4' }), nombre: nombreArchivo(idea, 'm4a') });
+      return decCapa(idea, c0).then(function (ab) { return { blob: wav(ab), nombre: nombreArchivo(idea, 'wav') }; });
+    }
+    return mezclar(idea).then(function (m) { return { blob: wav(m), nombre: base(idea) + ' - mezcla.wav' }; });
+  }
+  // cada capa suelta, todas del mismo largo y empezando en el mismo punto: se arrastran a la DAW y quedan alineadas
+  function capasSueltas(idea) {
+    var capas = capasDe(idea), out = [], p = Promise.resolve();
+    capas.forEach(function (capa, k) {
+      if (capa.mute) return;
+      p = p.then(function () { return mezclar(idea, k); }).then(function (m) {
+        out.push({ blob: wav(m), nombre: base(idea) + ' - ' + (k + 1) + ' ' + (capa.nombre || 'Capa').replace(/[\\/:*?"<>|]/g, '-') + '.wav' });
+      });
+    });
+    return p.then(function () { return out; });
   }
   function compartir(idea) {
-    var esM4a = /mp4|m4a|aac/.test(idea.tipo);
-    var archivo = esM4a ? Promise.resolve(new Blob([idea.buf], { type: 'audio/mp4' })) : decodificar(idea).then(wav);
-    archivo.then(function (b) {
-      return CB.share({ file: b, name: nombreArchivo(idea, esM4a ? 'm4a' : 'wav'), title: idea.nombre, text: textoIdea(idea) });
+    audioIdea(idea).then(function (a) {
+      return CB.share({ file: a.blob, name: a.nombre, title: idea.nombre, text: textoIdea(idea) });
     }).catch(function () { CB.toast('No se pudo compartir esta idea.', true); });
   }
   function guardarArchivo(idea) {
-    decodificar(idea).then(wav).then(function (b) { return CB.saveFile(b, nombreArchivo(idea, 'wav')); })
+    var p = capasDe(idea).length > 1 ? mezclar(idea).then(function (m) { return { blob: wav(m), nombre: base(idea) + ' - mezcla.wav' }; })
+      : cargarCapas(idea).then(function (abs) { return { blob: wav(abs[0]), nombre: nombreArchivo(idea, 'wav') }; });
+    p.then(function (a) { return CB.saveFile(a.blob, a.nombre); })
       .catch(function () { CB.toast('No se pudo guardar el archivo.', true); });
+  }
+
+  /* zip sin comprimir (los WAV casi no se achican): una sola descarga con todas las capas */
+  var CRC = null;
+  function crc32(u8) {
+    if (!CRC) { CRC = new Uint32Array(256); for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; CRC[n] = c >>> 0; } }
+    var x = 0xFFFFFFFF; for (var i = 0; i < u8.length; i++) x = CRC[(x ^ u8[i]) & 0xFF] ^ (x >>> 8);
+    return (x ^ 0xFFFFFFFF) >>> 0;
+  }
+  function zip(archivos) {
+    var partes = [], central = [], offset = 0, tamCentral = 0, enc = new TextEncoder(), d = new Date();
+    var hora = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+    var fecha = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+    archivos.forEach(function (a) {
+      var nom = enc.encode(a.nombre), n = a.datos.length, crc = crc32(a.datos);
+      var h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true);
+      h.setUint16(10, hora, true); h.setUint16(12, fecha, true); h.setUint32(14, crc, true); h.setUint32(18, n, true); h.setUint32(22, n, true);
+      h.setUint16(26, nom.length, true); h.setUint16(28, 0, true);
+      partes.push(h.buffer, nom, a.datos);
+      var c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true);
+      c.setUint16(12, hora, true); c.setUint16(14, fecha, true); c.setUint32(16, crc, true); c.setUint32(20, n, true); c.setUint32(24, n, true);
+      c.setUint16(28, nom.length, true); c.setUint32(42, offset, true);
+      central.push(c.buffer, nom); tamCentral += 46 + nom.length;
+      offset += 30 + nom.length + n;
+    });
+    var fin = new DataView(new ArrayBuffer(22));
+    fin.setUint32(0, 0x06054b50, true); fin.setUint16(8, archivos.length, true); fin.setUint16(10, archivos.length, true);
+    fin.setUint32(12, tamCentral, true); fin.setUint32(16, offset, true);
+    return new Blob(partes.concat(central, [fin.buffer]), { type: 'application/zip' });
+  }
+  function guardarCapas(idea) {
+    CB.toast('Preparando las capas…');
+    capasSueltas(idea).then(function (l) {
+      return Promise.all(l.map(function (a) { return a.blob.arrayBuffer().then(function (b) { return { nombre: a.nombre, datos: new Uint8Array(b) }; }); }));
+    }).then(function (l) { return CB.saveFile(zip(l), base(idea) + ' - capas.zip'); })
+      .catch(function () { CB.toast('No se pudieron guardar las capas.', true); });
+  }
+
+  /* ---------- «Grabala en Claraboya»: la idea, directo al estudio ---------- */
+  function mensajeEstudio(idea) {
+    var n = capasDe(idea).length;
+    var datos = ['«' + idea.nombre + '»', idea.tono ? tonoTexto(idea.tono) : '', idea.bpm ? idea.bpm + ' BPM' : '', n > 1 ? n + ' capas' : ''].filter(Boolean).join(' · ');
+    return 'Hola! Grabé una idea con la app de Claraboya y me gustaría grabarla en el estudio: ' + datos + '. Ahora les mando ' + (n > 1 ? 'los audios' : 'el audio') + '.';
+  }
+  function grabalaEnClaraboya(idea) {
+    var n = capasDe(idea).length, wrap = document.createElement('div'), prevFoco = document.activeElement;
+    var url = 'https://wa.me/' + WA_ESTUDIO + '?text=' + encodeURIComponent(mensajeEstudio(idea));
+    wrap.className = 'cb-confirm';
+    wrap.innerHTML = '<div class="cb-confirm__box med" role="dialog" aria-modal="true" aria-labelledby="estT">' +
+      '<h2 class="med__t" id="estT">Grabala en Claraboya</h2>' +
+      '<p class="med__txt">Mandale la idea al estudio y te decimos cómo grabarla. Son dos pasos:</p>' +
+      '<ol class="est__pasos">' +
+        '<li><span class="est__n" aria-hidden="true">1</span><div><a class="btn btn--wa est__btn" data-paso="1" href="' + esc(url) + '" target="_blank" rel="noopener">' + ICO_WA + 'Abrir el chat con el estudio</a><span class="hint">Va con un mensaje listo, con el tono y el tempo.</span></div></li>' +
+        '<li><span class="est__n" aria-hidden="true">2</span><div><button class="btn primary est__btn" type="button" data-paso="2">' + (n > 1 ? 'Mandar la mezcla y las ' + n + ' capas' : 'Mandar el audio') + '</button><span class="hint">En WhatsApp elegí el chat de Claraboya Estudio.' + (n > 1 ? ' Las capas van sueltas, listas para la compu.' : '') + '</span></div></li>' +
+      '</ol>' +
+      '<div class="cb-confirm__actions"><button type="button" class="btn ghost" data-cerrar>Cerrar</button></div></div>';
+    function cerrar() { document.removeEventListener('keydown', onKey, true); document.removeEventListener('visibilitychange', alVolver); wrap.remove(); if (prevFoco && prevFoco.focus) prevFoco.focus(); }
+    function onKey(e) { if (e.key === 'Escape') { e.preventDefault(); cerrar(); } }
+    function alVolver() { if (!document.hidden) { var b = wrap.querySelector('[data-paso="2"]'); if (b) b.focus(); } }
+    wrap.addEventListener('click', function (e) {
+      if (e.target === wrap || e.target.closest('[data-cerrar]')) { cerrar(); return; }
+      var paso = e.target.closest('[data-paso]'); if (!paso) return;
+      if (paso.getAttribute('data-paso') === '1') { if (window.CBUso) window.CBUso('grabala-chat'); return; }  // el link abre WhatsApp
+      paso.disabled = true; paso.textContent = 'Preparando…';
+      if (window.CBUso) window.CBUso('grabala-audio');
+      var arm = n > 1 ? Promise.all([audioIdea(idea), capasSueltas(idea)]).then(function (r) { return [r[0]].concat(r[1]); })
+        : audioIdea(idea).then(function (a) { return [a]; });
+      arm.then(function (l) {
+        return CB.shareFiles({ files: l.map(function (a) { return { blob: a.blob, name: a.nombre }; }), title: idea.nombre, text: textoIdea(idea) });
+      }).catch(function () { CB.toast('No se pudo preparar el audio.', true); })
+        .then(function () { paso.disabled = false; paso.textContent = n > 1 ? 'Mandar la mezcla y las ' + n + ' capas' : 'Mandar el audio'; });
+    });
+    document.addEventListener('keydown', onKey, true);
+    document.addEventListener('visibilitychange', alVolver);
+    document.body.appendChild(wrap);
+    wrap.querySelector('[data-paso="1"]').focus();
   }
 
   /* ---------- pantalla de grabación ---------- */
@@ -505,8 +1004,13 @@
     var btn = $('recBtn');
     btn.setAttribute('aria-pressed', String(estado !== 'quieto'));
     btn.setAttribute('aria-label', estado === 'quieto' ? 'Grabar' : 'Terminar y guardar');
+    btn.disabled = !!capaRec;
     $('discardBtn').hidden = estado !== 'grabando';
-    if (estado === 'quieto') { $('recTime').textContent = 'Tocá para grabar'; $('recState').textContent = 'Queda guardada en ' + DONDE + '.'; limpiarOnda(); }
+    if (estado === 'quieto') {
+      $('recTime').textContent = capaRec ? 'Grabando una capa' : 'Tocá para grabar';
+      $('recState').textContent = capaRec ? 'Terminala abajo, en la idea.' : 'Queda guardada en ' + DONDE + '.';
+      limpiarOnda();
+    }
     else if (estado === 'pidiendo') { $('recTime').textContent = '…'; $('recState').textContent = 'Pidiendo el micrófono.'; }
     else if (estado === 'cuenta') { $('recState').textContent = 'Cuenta de un compás: arrancá en el 1.'; }
     else { $('recState').textContent = 'Grabando. Tocá el botón para terminar y guardar.'; }
@@ -552,6 +1056,10 @@
   var ICO_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
   var ICO_PAUSA = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>';
   var ICO_CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  var ICO_SON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+  var ICO_MUDO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+  var ICO_MAS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+  var ICO_WA = '<svg class="btn__icon" viewBox="0 0 32 32" aria-hidden="true"><use href="#wa"/></svg>';
   function buscar(id) { for (var i = 0; i < ideas.length; i++) if (ideas[i].id === id) return ideas[i]; return null; }
   function ordenadas() {
     var q = ($('search').value || '').trim().toLowerCase();
@@ -566,13 +1074,14 @@
     return l;
   }
   function metaHtml(i) {
-    var d = new Date(i.fecha), chips = '';
+    var d = new Date(i.fecha), chips = '', n = capasDe(i).length;
     if (!i.analizada) chips = '<i class="chip chip--espera">Buscando tono y BPM…</i>';
     else {
       if (i.tono) chips += '<i class="chip">' + esc(tonoTexto(i.tono)) + '</i>';
       if (i.bpm) chips += '<i class="chip">' + i.bpm + ' BPM</i>';
     }
-    return '<span>' + d.getDate() + '/' + (d.getMonth() + 1) + ' · ' + mmss(i.dur) + '</span>' + chips;
+    if (n > 1) chips += '<i class="chip chip--capas">' + n + ' capas</i>';
+    return '<span>' + d.getDate() + '/' + (d.getMonth() + 1) + ' · ' + mmss(durTotal(i)) + '</span>' + chips;
   }
   function opcionesTono(t) {
     var v = t ? t.tonica + ':' + t.modo : '', o = '<option value="">Sin definir</option>';
@@ -583,8 +1092,52 @@
     });
     return o;
   }
+  function msTexto(s) { var ms = Math.round((s || 0) * 1000); return (ms > 0 ? '+' : ms < 0 ? '−' : '') + Math.abs(ms) + ' ms'; }
+  function capasHtml(i) {
+    var capas = capasDe(i), grabandoAca = capaRec && capaRec.id === i.id, h = '<div class="capas">';
+    h += '<div class="capas__head"><b>Capas</b><span class="hint">' + (capas.length > 1 ? capas.length + ' grabadas, suenan todas juntas' : 'Grabá otra arriba de esta') + '</span></div>';
+    if (capas.length > 1) {
+      h += '<ol class="capas__list">';
+      capas.forEach(function (c, k) {
+        var nro = k + 1, abiertaC = capaAbierta === c.id, vol = Math.round((c.vol == null ? 1 : c.vol) * 100);
+        h += '<li class="capa' + (c.mute ? ' capa--muda' : '') + '" data-capa="' + esc(c.id) + '">' +
+          '<div class="capa__row">' +
+            '<span class="capa__n" aria-hidden="true">' + nro + '</span>' +
+            '<label class="visually-hidden" for="cn-' + esc(i.id + c.id) + '">Nombre de la capa ' + nro + '</label>' +
+            '<input class="capa__nombre" id="cn-' + esc(i.id + c.id) + '" type="text" maxlength="40" data-cf="nombre" value="' + esc(c.nombre) + '">' +
+            '<button class="capa__btn" type="button" data-ca="mute" aria-pressed="' + !!c.mute + '" aria-label="' + (c.mute ? 'Volver a escuchar' : 'Silenciar') + ' la capa ' + nro + '">' + (c.mute ? ICO_MUDO : ICO_SON) + '</button>' +
+            '<button class="capa__btn capa__mas" type="button" data-ca="mas" aria-expanded="' + abiertaC + '" aria-label="Más opciones de la capa ' + nro + '">' + ICO_CHEV + '</button>' +
+          '</div>' +
+          '<label class="capa__vol"><span class="visually-hidden">Volumen de la capa ' + nro + '</span><input type="range" min="0" max="150" step="1" value="' + vol + '" data-cf="vol"></label>' +
+          '<div class="capa__extra"' + (abiertaC ? '' : ' hidden') + '>' +
+            '<div class="capa__sync"><span>Sincronía</span>' +
+              '<button class="pill" type="button" data-ca="antes" aria-label="Correrla 10 milisegundos antes">−10</button>' +
+              '<output aria-live="polite">' + msTexto(c.corrida) + '</output>' +
+              '<button class="pill" type="button" data-ca="despues" aria-label="Correrla 10 milisegundos después">+10</button>' +
+            '</div>' +
+            '<button class="btn small ghost borrar" type="button" data-ca="borrar">Borrar capa</button>' +
+          '</div>' +
+        '</li>';
+      });
+      h += '</ol>';
+    }
+    if (grabandoAca) {
+      h += '<div class="capas__rec" data-estado="' + capaRec.estado + '" role="group" aria-label="Grabando una capa nueva">' +
+        '<div class="capas__recFila"><span class="capas__punto" aria-hidden="true"></span>' +
+        '<span class="capas__tiempo">' + (capaRec.estado === 'pidiendo' ? 'Pidiendo el micrófono…' : '') + '</span>' +
+        '<span class="capas__vu" aria-hidden="true"><i></i></span></div>' +
+        '<div class="capas__recBtns"><button class="btn primary" type="button" data-a="capa-fin">Terminar y guardar</button>' +
+        '<button class="btn ghost" type="button" data-a="capa-descartar">Descartar</button></div>' +
+      '</div>';
+    } else {
+      h += '<button class="btn small capas__add" type="button" data-a="capa"' + (estado !== 'quieto' || capaRec ? ' disabled' : '') + '>' + ICO_MAS + 'Grabar otra capa</button>';
+    }
+    h += '<p class="hint capas__tip">Suena lo que ya grabaste' + (i.bpm ? ' (con una cuenta de un compás)' : '') + ' y grabás arriba. Con auriculares queda mejor. ' +
+      '<button class="linklike" type="button" data-a="medir">¿Quedó corrida? Medí la demora</button></p>';
+    return h + '</div>';
+  }
   function itemHtml(i) {
-    var abiertaYa = abierta === i.id, sonando = player.sonando && player.id === i.id;
+    var abiertaYa = abierta === i.id, sonando = player.sonando && player.id === i.id, multi = capasDe(i).length > 1;
     var auto = (i.tono && i.tono.auto) || i.bpmDe === 'auto';
     return '<div class="idea__row">' +
         '<button class="idea__play" type="button" data-a="play" aria-label="' + (sonando ? 'Pausar' : 'Escuchar') + '">' + (sonando ? ICO_PAUSA : ICO_PLAY) + '</button>' +
@@ -599,10 +1152,13 @@
           '<label>BPM' + (i.bpmDe === 'auto' ? ' <span class="idea__auto">(aprox.)</span>' : '') + '<input type="text" inputmode="numeric" maxlength="3" data-f="bpm" value="' + (i.bpm || '') + '" placeholder="—"></label>' +
         '</div>' +
         (auto ? '<p class="hint" style="margin:-4px 0 0">El tono y el BPM los calculé escuchando la grabación: si no coinciden, corregilos.</p>' : '') +
+        capasHtml(i) +
         '<label>Letra y notas<textarea data-f="letra" rows="3" placeholder="La letra, los acordes, lo que no te quieras olvidar">' + esc(i.letra) + '</textarea></label>' +
+        '<button class="btn btn--wa idea__estudio" type="button" data-a="estudio">' + ICO_WA + 'Grabala en Claraboya</button>' +
         '<div class="idea__actions">' +
-          '<button class="btn primary small" type="button" data-a="compartir">Compartir</button>' +
-          '<button class="btn small" type="button" data-a="guardar">Guardar archivo</button>' +
+          '<button class="btn primary small" type="button" data-a="compartir">Compartir' + (multi ? ' la mezcla' : '') + '</button>' +
+          '<button class="btn small" type="button" data-a="guardar">Guardar ' + (multi ? 'la mezcla' : 'archivo') + '</button>' +
+          (multi ? '<button class="btn small" type="button" data-a="guardar-capas">Guardar capas (.zip)</button>' : '') +
           (i.bpm ? '<a class="btn small ghost" data-a="ir" href="' + CB.toolUrl('metronomo', { bpm: i.bpm }) + '">Metrónomo a ' + i.bpm + '</a>' : '') +
           (i.tono ? '<a class="btn small ghost" data-a="ir" href="' + CB.toolUrl('piano', { tono: EN[i.tono.tonica], modo: i.tono.modo }) + '">Ver ' + esc(tonoTexto(i.tono)) + ' en el piano</a>' : '') +
           '<button class="btn small ghost borrar" type="button" data-a="borrar">Borrar</button>' +
@@ -615,7 +1171,7 @@
     if (!w) return;
     if (cv.width !== Math.round(w * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
     var g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
-    var p = i.picos || [], n = p.length || 60, paso = w / n, dur = i.dur || 1;
+    var p = i.picos || [], n = p.length || 60, paso = w / n, dur = durTotal(i) || 1;
     var frac = player.id === i.id ? Math.min(1, posicion() / dur) : 0;
     for (var k = 0; k < n; k++) {
       var a = Math.max(2, (p.length ? p[k] : 0.08) * (h - 14));
@@ -626,12 +1182,13 @@
   }
   function render() {
     var ul = $('list'), foco = document.activeElement, focoLi = foco && foco.closest && foco.closest('.idea__more') && foco.closest('.idea'), focoId = focoLi && focoLi.getAttribute('data-id');
+    var escribiendo = foco && (foco.tagName === 'INPUT' || foco.tagName === 'TEXTAREA' || foco.tagName === 'SELECT');
     var lista = ordenadas(), viejos = {};
     Array.prototype.forEach.call(ul.children, function (li) { viejos[li.getAttribute('data-id')] = li; });
     var frag = document.createDocumentFragment();
     lista.forEach(function (i) {
       var li = viejos[i.id];
-      if (li && i.id === focoId) {
+      if (li && i.id === focoId && escribiendo) {
         // se está escribiendo acá: solo se actualiza la fila de arriba
         li.querySelector('.idea__row').outerHTML = itemHtml(i).split('<div class="idea__bar"')[0];
       } else {
@@ -650,6 +1207,7 @@
     $('sortSel').hidden = ideas.length < 2;
     if (ideas.length && !lista.length) { $('empty').hidden = false; $('empty').textContent = 'No hay ideas que coincidan con la búsqueda.'; }
     if (focoId && foco && document.body.contains(foco)) foco.focus();
+    else if (focoId && foco && foco.id) { var otro = document.getElementById(foco.id); if (otro) otro.focus(); }
   }
 
   /* ---------- eventos ---------- */
@@ -662,9 +1220,36 @@
   $('sortSel').addEventListener('change', function () { S.orden = this.value; save(); render(); });
   $('search').addEventListener('input', render);
 
+  var tGuardar = 0;
+  function guardarLuego(idea) { clearTimeout(tGuardar); tGuardar = setTimeout(function () { guardar(idea); }, 350); }
+  function capaDe(el, idea) { var li = el.closest('.capa'), id = li && li.getAttribute('data-capa'); return id ? capasDe(idea).filter(function (c) { return c.id === id; })[0] : null; }
   $('list').addEventListener('click', function (e) {
-    var el = e.target.closest('[data-a]'); if (!el) return;
-    var li = el.closest('.idea'), idea = buscar(li.getAttribute('data-id')); if (!idea) return;
+    var el = e.target.closest('[data-a], [data-ca]'); if (!el) return;
+    var li = el.closest('.idea'), idea = li && buscar(li.getAttribute('data-id')); if (!idea) return;
+    var ca = el.getAttribute('data-ca');
+    if (ca) {
+      var capa = capaDe(el, idea); if (!capa) return;
+      if (ca === 'mute') { capa.mute = !capa.mute; aplicarGanancias(idea); guardarLuego(idea); recalcularOnda(idea, 400); render(); }
+      else if (ca === 'mas') { capaAbierta = capaAbierta === capa.id ? null : capa.id; render(); }
+      else if (ca === 'antes' || ca === 'despues') {
+        capa.corrida = Math.max(-1, Math.min(1, Math.round(((capa.corrida || 0) + (ca === 'antes' ? -0.01 : 0.01)) * 1000) / 1000));
+        idea.dur = durTotal(idea);
+        var out = el.parentNode.querySelector('output'); if (out) out.textContent = msTexto(capa.corrida);
+        if (player.sonando && player.id === idea.id) { var p = posicion(); reproducir(idea, Math.max(0, p - 2)); }
+        guardarLuego(idea); recalcularOnda(idea, 600);
+      } else if (ca === 'borrar') {
+        CB.confirm('¿Borrar «' + capa.nombre + '»? No se puede recuperar.', 'Sí, borrar').then(function (si) {
+          if (!si) return;
+          if (player.id === idea.id) detener(false);
+          idea.capas = idea.capas.filter(function (c) { return c !== capa; });
+          delete dec[idea.id + ':' + capa.id];
+          idea.dur = durTotal(idea);
+          recalcularOnda(idea).then(function () { CB.toast('Capa borrada.'); });
+          render();
+        });
+      }
+      return;
+    }
     var a = el.getAttribute('data-a');
     if (a === 'play') {
       if (player.sonando && player.id === idea.id) detener(true); else reproducir(idea);
@@ -672,10 +1257,17 @@
       abierta = abierta === idea.id ? null : idea.id; render();
     } else if (a === 'compartir') compartir(idea);
     else if (a === 'guardar') guardarArchivo(idea);
+    else if (a === 'guardar-capas') guardarCapas(idea);
+    else if (a === 'estudio') grabalaEnClaraboya(idea);
+    else if (a === 'capa') grabarCapa(idea);
+    else if (a === 'capa-fin') terminarCapa(false);
+    else if (a === 'capa-descartar') terminarCapa(true);
+    else if (a === 'medir') medirDemora();
     else if (a === 'borrar') {
       CB.confirm('¿Borrar «' + idea.nombre + '»? No se puede recuperar.', 'Sí, borrar').then(function (si) {
         if (!si) return;
-        if (player.id === idea.id) { detener(false); player.id = null; player.buf = null; }
+        if (player.id === idea.id) { detener(false); player.id = null; }
+        olvidar(idea.id);
         borrar(idea.id).then(function () {
           ideas = ideas.filter(function (x) { return x !== idea; });
           if (abierta === idea.id) abierta = null;
@@ -689,25 +1281,36 @@
     var bar = e.target.closest('.idea__bar'); if (!bar) return;
     var li = bar.closest('.idea'), idea = buscar(li.getAttribute('data-id')); if (!idea) return;
     var r = bar.getBoundingClientRect(), frac = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
-    reproducir(idea, frac * (idea.dur || 0));
+    reproducir(idea, frac * durTotal(idea));
   });
-  var tGuardar = 0;
   $('list').addEventListener('input', function (e) {
+    var li = e.target.closest('.idea'), idea = li && buscar(li.getAttribute('data-id')); if (!idea) return;
+    var cf = e.target.getAttribute('data-cf');
+    if (cf) {
+      var capa = capaDe(e.target, idea); if (!capa) return;
+      if (cf === 'nombre') capa.nombre = e.target.value.trim().slice(0, 40) || 'Capa';
+      else if (cf === 'vol') {
+        var v = parseInt(e.target.value, 10);
+        capa.vol = v >= 0 && v <= 150 ? v / 100 : 1;
+        aplicarGanancias(idea); recalcularOnda(idea, 600);
+      }
+      guardarLuego(idea);
+      return;
+    }
     var f = e.target.getAttribute('data-f'); if (!f) return;
-    var li = e.target.closest('.idea'), idea = buscar(li.getAttribute('data-id')); if (!idea) return;
-    if (f === 'nombre') idea.nombre = e.target.value.trim() || 'Idea sin nombre';
+    if (f === 'nombre') idea.nombre = e.target.value.trim().slice(0, 80) || 'Idea sin nombre';
     else if (f === 'letra') idea.letra = e.target.value;
     else if (f === 'bpm') {
-      var v = parseInt(e.target.value.replace(/\D/g, ''), 10);
-      idea.bpm = v >= 30 && v <= 300 ? v : null; idea.bpmDe = idea.bpm ? 'mano' : null;
+      var b = parseInt(e.target.value.replace(/\D/g, ''), 10);
+      idea.bpm = b >= 30 && b <= 300 ? b : null; idea.bpmDe = idea.bpm ? 'mano' : null;
     } else if (f === 'tono') {
       var p = e.target.value.split(':');
-      idea.tono = e.target.value ? { tonica: +p[0], modo: p[1], auto: false } : null;
+      var ton = parseInt(p[0], 10);
+      idea.tono = e.target.value && ton >= 0 && ton < 12 && (p[1] === 'mayor' || p[1] === 'menor') ? { tonica: ton, modo: p[1], auto: false } : null;
     }
     li.querySelector('.idea__name').textContent = idea.nombre;
     li.querySelector('.idea__meta').innerHTML = metaHtml(idea);
-    clearTimeout(tGuardar);
-    tGuardar = setTimeout(function () { guardar(idea); }, 350);
+    guardarLuego(idea);
   });
   $('list').addEventListener('change', function (e) {
     var f = e.target.getAttribute('data-f');
@@ -716,9 +1319,12 @@
   document.addEventListener('keydown', function (e) {
     var tg = e.target, escribiendo = tg && (tg.tagName === 'INPUT' || tg.tagName === 'TEXTAREA' || tg.tagName === 'SELECT');
     if (escribiendo || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (e.code === 'Space' && !(tg && tg.tagName === 'BUTTON')) { e.preventDefault(); $('recBtn').click(); }
+    if (e.code === 'Space' && !(tg && tg.tagName === 'BUTTON')) {
+      e.preventDefault();
+      if (capaRec) terminarCapa(false); else $('recBtn').click();
+    }
   });
-  window.addEventListener('pagehide', function () { if (estado === 'grabando') parar(false); });
+  window.addEventListener('pagehide', function () { if (estado === 'grabando') parar(false); if (capaRec) terminarCapa(false); });
   window.addEventListener('resize', function () { render(); });
 
   /* ---------- arranque ---------- */
@@ -731,7 +1337,8 @@
     $('empty').textContent = 'Este navegador no deja guardar ideas (¿modo incógnito?). Podés grabar, pero compartila antes de cerrar.';
     $('empty').hidden = false;
   });
-  window.__grabador = { S: S, ideas: function () { return ideas; }, estado: function () { return estado; }, parar: parar }; // para pruebas
+  window.__grabador = { S: S, ideas: function () { return ideas; }, estado: function () { return estado; }, parar: parar, // para pruebas
+    capa: function () { return capaRec; }, terminarCapa: terminarCapa, detectarClicks: detectarClicks, zip: zip, mezclar: mezclar, capasSueltas: capasSueltas };
 })();
 </script>
 </body>

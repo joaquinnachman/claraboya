@@ -125,6 +125,59 @@ public class MainActivity extends BridgeActivity {
             }
         }
 
+        /* Varios archivos juntos (la mezcla y las capas de una idea): JS los va pasando de a pedazos
+           con agregarArchivo y después abre un solo menú con compartirArchivos. */
+        @JavascriptInterface
+        public void limpiarCompartir() {
+            File dir = new File(ctx.getCacheDir(), "compartir");
+            File[] viejos = dir.listFiles();
+            if (viejos != null) for (File f : viejos) f.delete();
+        }
+
+        @JavascriptInterface
+        public String agregarArchivo(String nombre, String base64) {
+            try {
+                File dir = new File(ctx.getCacheDir(), "compartir");
+                if (!dir.exists()) dir.mkdirs();
+                File archivo = new File(dir, limpio(nombre));
+                try (OutputStream out = new FileOutputStream(archivo, true)) { out.write(Base64.decode(base64, Base64.DEFAULT)); }
+                return "ok";
+            } catch (Exception e) {
+                return "error";
+            }
+        }
+
+        @JavascriptInterface
+        public String compartirArchivos(String nombresJson, String mime, final String texto) {
+            try {
+                org.json.JSONArray nombres = new org.json.JSONArray(nombresJson);
+                File dir = new File(ctx.getCacheDir(), "compartir");
+                final java.util.ArrayList<Uri> uris = new java.util.ArrayList<>();
+                for (int k = 0; k < nombres.length(); k++) {
+                    File f = new File(dir, limpio(nombres.getString(k)));
+                    if (f.exists()) uris.add(FileProvider.getUriForFile(ctx, ctx.getPackageName() + ".fileprovider", f));
+                }
+                if (uris.isEmpty()) return "No hay archivos para compartir.";
+                final String tipo = mime == null || mime.isEmpty() ? "*/*" : mime;
+                runOnUiThread(() -> {
+                    Intent i = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                    i.setType(tipo);
+                    i.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                    if (texto != null && !texto.isEmpty()) i.putExtra(Intent.EXTRA_TEXT, texto);
+                    i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(Intent.createChooser(i, "Compartir"));
+                });
+                return "ok";
+            } catch (Exception e) {
+                return "No se pudo compartir: " + e.getMessage();
+            }
+        }
+
+        private String limpio(String nombre) {
+            String n = nombre == null ? "archivo" : nombre.replaceAll("[\\\\/:*?\"<>|]", "-").replace("..", "-");
+            return n.isEmpty() ? "archivo" : n;
+        }
+
         /* ---------- actualización ---------- */
 
         /** ¿Android ya le dio permiso a Claraboya para instalar su actualización? */

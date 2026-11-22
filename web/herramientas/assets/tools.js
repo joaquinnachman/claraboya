@@ -139,7 +139,7 @@
   function safeFilename(name) {
     var m = /^(.*?)(\.[a-z0-9]{2,5})?$/i.exec(String(name || 'archivo'));
     var base = (m[1] || 'archivo').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^A-Za-z0-9 _-]+/g, ' ').trim().replace(/\s+/g, '-').toLowerCase() || 'archivo';
+      .replace(/[^A-Za-z0-9 _-]+/g, ' ').trim().replace(/\s+/g, '-').replace(/-{2,}/g, '-').toLowerCase() || 'archivo';
     return base + (m[2] || '').toLowerCase();
   }
   function saveFile(blob, filename) {
@@ -216,6 +216,45 @@
     if (navigator.share) return navigator.share({ title: o.title, text: o.text, url: o.url }).then(function () { return 'ok'; }, cancel);
     var copy = navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(full) : Promise.reject();
     return copy.then(function () { toast('Link copiado: pegalo donde quieras.'); return 'copiado'; }, function () { window.prompt('Copiá este link:', o.url || full); return 'copiado'; });
+  }
+
+  /* Compartir varios archivos juntos (por ejemplo, la mezcla y las capas de una idea).
+     o: { files: [{ blob, name }], title, text }. En la APK los va pasando de a pedazos al puente
+     nativo y abre un solo menú; en la web usa el menú del navegador; si nada deja, los guarda. */
+  function shareFiles(o) {
+    var lista = (o.files || []).filter(function (f) { return f && f.blob; });
+    if (!lista.length) return Promise.resolve('nada');
+    if (lista.length === 1) return share({ file: lista[0].blob, name: lista[0].name, title: o.title, text: o.text });
+    var nativo = window.ClaraboyaNativo;
+    var cancel = function (e) { if (e && e.name === 'AbortError') return 'cancelado'; throw e; };
+    if (nativo && nativo.compartirArchivos && nativo.agregarArchivo) {
+      var nombres = lista.map(function (f) { return safeFilename(f.name); });
+      nativo.limpiarCompartir();
+      var p = Promise.resolve();
+      lista.forEach(function (f, i) {
+        p = p.then(function () { return blobToBase64(f.blob); }).then(function (b64) {
+          for (var k = 0; k < b64.length; k += 2097152) {   // de a 2 MB (múltiplo de 4: cada pedazo se decodifica solo)
+            if (nativo.agregarArchivo(nombres[i], b64.slice(k, k + 2097152)) !== 'ok') throw new Error('no se pudo');
+          }
+        });
+      });
+      return p.then(function () {
+        var r = nativo.compartirArchivos(JSON.stringify(nombres), lista[0].blob.type || 'application/octet-stream', o.text || '');
+        if (r !== 'ok') throw new Error(r);
+        return 'ok';
+      }).catch(function () { return saveAll(); });
+    }
+    var files = [];
+    try { files = lista.map(function (f) { return new File([f.blob], safeFilename(f.name), { type: f.blob.type }); }); } catch (e) { files = []; }
+    if (files.length && navigator.canShare && navigator.canShare({ files: files })) {
+      return navigator.share({ files: files, title: o.title || '', text: o.text || '' }).then(function () { return 'ok'; }, cancel);
+    }
+    function saveAll() {
+      var q = Promise.resolve();
+      lista.forEach(function (f) { q = q.then(function () { return saveFile(f.blob, f.name); }); });
+      return q.then(function () { toast('Los guardé en el teléfono: mandalos desde ahí.'); return 'guardado'; });
+    }
+    return saveAll();
   }
 
   /* ---------- copia de seguridad (exportar / importar) ---------- */
@@ -366,6 +405,7 @@
     db: function () { return Promise.resolve(localDb); },
     saveFile: saveFile,
     share: share,
+    shareFiles: shareFiles,
     toast: toast,
     confirm: confirmBox,
     params: params,

@@ -36,6 +36,9 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
 - Rider técnico: los textos del PDF en otros idiomas están en `rider-tecnico/idiomas.js` (claves sin prefijo = textos fijos, `v_` = valores de las listas, `c_` = lo que escriben las plantillas). Para letras fuera del latín común se carga `assets/vendor/fonts/dejavu-sans*.ttf`. El stage plot del PDF se arma aparte (`.sp`, 960 × 540, claro).
   Ojo con html2canvas: la regla general `img { display:block }` le corre el texto para abajo; mientras saca la foto se agrega un estilo que la deshace.
 - Grabador de ideas: las grabaciones van en IndexedDB (`claraboya-grabador`), no en la copia de «Tus datos». Tono y BPM se calculan en el teléfono (`grabador-de-ideas/analisis.js`).
+  Cada idea tiene `capas` (`{ id, nombre, tipo, buf, dur, vol, mute, corrida }`; `corrida` en segundos). Las ideas de antes de la 7.3 traen el audio en `idea.buf`: se leen como una capa y se pasan al formato nuevo recién al sumarles otra, sin tocar el audio.
+  La primera toma se graba con MediaRecorder (m4a); las capas, con un AudioWorklet (WAV) que arranca en un instante exacto del reloj de audio, y se les descuenta la demora del teléfono (`cbdev.grabador.latencia`, por teléfono, fuera de la copia).
+  «Grabala en Claraboya»: abre wa.me con el mensaje y después comparte mezcla + capas sueltas con `CB.shareFiles` (en la APK, `agregarArchivo` de a pedazos + `compartirArchivos`).
 - Modo app: lo activa un script chico en el `<head>` de cada página si es la APK, la web instalada o `?app=1`.
   En iPhone y iPad no hay APK: la app es la web agregada a inicio (misma interfaz que Android). En Safari, `pwa.js` muestra un aviso con los pasos (`window.CBInstalar`).
   El `<meta name="viewport">` va antes de ese script, que le suma `viewport-fit=cover` en modo app. `?app=0` vuelve a la web común en esa pestaña.

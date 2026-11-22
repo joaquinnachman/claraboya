@@ -3,6 +3,12 @@
 Una sola versión para todo: la web, las herramientas y las apps.
 La versión vive en el archivo `VERSION`. Lo nuevo se anota en "Próxima versión" y sale los lunes.
 
+## Próxima versión
+- Grabador de ideas con capas: grabás una voz, un coro u otra guitarra arriba de lo que ya grabaste, escuchándolo (con una cuenta de un compás si la idea tiene tempo). Cada capa tiene su volumen, se puede silenciar, nombrar, correr unos milisegundos o borrar, y la idea suena con todas juntas.
+- Para que las capas queden justas, el grabador descuenta la demora del teléfono; con «Medí la demora» la mide con unos clicks por el parlante (o la ajustás a mano si usás auriculares bluetooth).
+- Botón «Grabala en Claraboya» en cada idea: abre el chat con el estudio con un mensaje listo (nombre, tono, tempo y capas) y después manda la mezcla y cada capa suelta, listas para la compu.
+- Guardar capas (.zip): todas las capas sueltas, del mismo largo y alineadas, para arrastrarlas a la compu.
+
 ## 7.2.0 — 16/11/2026
 - Ícono nuevo de la app: los cuatro cuadros de la claraboya ahora son un vúmetro, para que se note que es una app de música. Es también el logo de toda la app (Inicio, Estudio y la pantalla de carga), y cada tanto se mueve como un vúmetro de verdad (si lo tocás, también). En iPhone, para ver el ícono nuevo hay que borrar el acceso directo y volver a agregarlo a inicio.
 - Rider técnico en otros idiomas: el PDF sale en castellano, inglés, portugués, francés, italiano o alemán (títulos, columnas, escenario y lo que vino de las plantillas, que se traduce solo; lo que escribiste vos queda igual). Con «Otro idioma…» escribís vos los textos, incluso con otros alfabetos (polaco, griego, ruso…).
