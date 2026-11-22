@@ -1,13 +1,14 @@
 name: Publicar versión
 
-# Los lunes a las 9 (hora de Argentina) sale todo lo que se juntó en "proxima":
+# Los lunes a las 8:47 (hora de Argentina) sale todo lo que se juntó en "proxima":
 # 1. se fija el número de versión y se cierra la entrada de CAMBIOS.md,
 # 2. se arma la APK oficial y se publica como Release,
 # 3. "proxima" pasa a "main" y Netlify publica la web (que ya apunta a la APK nueva y a la AirMix vigente).
 # También se puede correr a mano desde la pestaña Actions ("Run workflow").
 on:
   schedule:
-    - cron: '0 12 * * 1'
+    # 11:47 UTC = 8:47 en Argentina. No en punto: GitHub demora mucho lo programado a la hora justa.
+    - cron: '47 11 * * 1'
   workflow_dispatch:
 
 permissions:

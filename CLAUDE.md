@@ -12,7 +12,7 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
 - Nunca escribir el número de versión a mano en las páginas: se usa `{{VERSION}}` y lo completa `scripts/build.mjs`.
 
 ## Cómo se publica
-- `Publicar versión` (`.github/workflows/publicar.yml`), lunes 9:00 de Argentina, o a mano desde Actions:
+- `Publicar versión` (`.github/workflows/publicar.yml`), lunes 8:47 de Argentina (no en punto: GitHub demora lo programado a la hora justa), o a mano desde Actions:
   1. cierra la versión (`scripts/cerrar-version.mjs`): número final y título en `CAMBIOS.md`;
   2. arma la APK oficial y crea el Release `vX.Y.Z` (marcado como último);
   3. pasa `proxima` a `main` y Netlify publica la web.
@@ -52,6 +52,7 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
     En la app, `initVumetro()` (app.js) pone el SVG adentro de la página y cada 7 a 13 s lo hace moverse un par de segundos (también al tocarlo) y vuelve a quedar como el ícono; usa los `data-` que escribe `iconos.py` y no se mueve con «reducir movimiento».
   - `app/keystore/claraboya.jks`: llave de firma, pública (mismo criterio que AirMix). No cambiarla: si cambia, hay que desinstalar para actualizar.
 - La APK la arma GitHub Actions (`.github/workflows/app.yml`); no hay SDK de Android local.
+  Maven Central a veces devuelve 429: la compilación busca primero en el espejo de Google, guarda las piezas en caché y reintenta hasta 3 veces.
 
 ## AirMix
 - Vive en su propio repo (`joaquinnachman/airmix`, apps nativas Kotlin + Swift). No se copia acá.

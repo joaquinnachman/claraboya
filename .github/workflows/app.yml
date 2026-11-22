@@ -39,6 +39,28 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      # Las piezas de Android que se bajan quedan guardadas entre compilaciones
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('app/package.json') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      # Maven Central a veces responde "demasiados pedidos" (429) y tira la compilación:
+      # primero se busca en el espejo de Google y, si no está, en los de siempre.
+      - name: Espejo de Maven Central
+        run: |
+          mkdir -p ~/.gradle/init.d
+          cat > ~/.gradle/init.d/espejo.gradle <<'GRADLE'
+          def espejo = 'https://maven-central.storage-download.googleapis.com/maven2/'
+          allprojects {
+            buildscript.repositories.maven { url espejo; name 'EspejoMavenCentral' }
+            repositories.maven { url espejo; name 'EspejoMavenCentral' }
+          }
+          GRADLE
+
       - name: Armar la web y el contenido de la app
         run: |
           node scripts/build.mjs
@@ -89,11 +111,17 @@ jobs:
         working-directory: app/android
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon \
-            -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/app/keystore/claraboya.jks \
-            -Pandroid.injected.signing.store.password=claraboya-app \
-            -Pandroid.injected.signing.key.alias=claraboya \
-            -Pandroid.injected.signing.key.password=claraboya-app
+          # hasta 3 intentos: si un servidor de piezas falla, se espera y se vuelve a probar
+          for intento in 1 2 3; do
+            if ./gradlew assembleRelease --no-daemon \
+              -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/app/keystore/claraboya.jks \
+              -Pandroid.injected.signing.store.password=claraboya-app \
+              -Pandroid.injected.signing.key.alias=claraboya \
+              -Pandroid.injected.signing.key.password=claraboya-app; then break; fi
+            [ $intento = 3 ] && exit 1
+            echo "Falló el intento $intento; se reintenta en $((intento * 60)) segundos."
+            sleep $((intento * 60))
+          done
           cp app/build/outputs/apk/release/app-release.apk $GITHUB_WORKSPACE/Claraboya.apk
           ls -la $GITHUB_WORKSPACE/Claraboya.apk
 
