@@ -44,6 +44,11 @@ Dueño: Joaquín Nachman. Es la fuente única: de acá salen la web, la web inst
   En iPhone y iPad no hay APK: la app es la web agregada a inicio (misma interfaz que Android). En Safari, `pwa.js` muestra un aviso con los pasos (`window.CBInstalar`).
   El `<meta name="viewport">` va antes de ese script, que le suma `viewport-fit=cover` en modo app. `?app=0` vuelve a la web común en esa pestaña.
   En modo app se esconden cabecera, pie, textos de presentación y bloques de descarga de la web.
+- Contador anónimo de uso: `netlify/functions/uso.mjs` (`/api/uso`, Netlify Functions + Netlify Blobs, única dependencia `@netlify/blobs` en `package.json`).
+  Cada apertura o acción es una entrada vacía `AAAA-MM/DD/tipo.que.plataforma.azar`; los totales salen de listar los nombres. Solo acepta lo que está en sus listas (herramientas, acciones, plataformas), desde la web o la APK, con tope por IP.
+  Lo manda `tools.js` (al abrir cada página y con `CBUso('accion')`); no manda nada en localhost, en pruebas automáticas ni si se apagó en Estudio (`cb.app.sinEstadisticas`).
+  Herramienta o acción nueva: sumarla también a las listas de `uso.mjs` y a los nombres de `web/uso/`.
+  Los números se ven en `/uso/` (página escondida, sin clave por decisión de Joaquín, `noindex`, sin links, fuera de la APK y del sitemap).
 - `web/sw.js`: service worker. Con internet pide todo a la red; sin internet sirve la copia guardada.
 - `app/`: la APK (Capacitor 6). `scripts/build-app.mjs` arma `app/www` desde `dist/`:
   marca las páginas con `data-app data-native` y cambia los links `carpeta/` por `carpeta/index.html`

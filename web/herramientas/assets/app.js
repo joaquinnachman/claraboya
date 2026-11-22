@@ -66,6 +66,7 @@
     nuevo: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><circle cx="12" cy="12" r="9.5"/>',
     compartir: '<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1"/>',
     mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/>',
+    estadisticas: '<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',
     oido: '<path d="M7 9.5a5.5 5.5 0 0111 0c0 2.6-1.6 3.8-2.7 4.8-1 .9-1.5 1.7-1.5 3a3 3 0 01-5.5 1.6"/><path d="M10.2 9.8a2.3 2.3 0 014.6 0c0 1.1-.7 1.7-1.3 2.2"/>'
   };
   function svg(name, cls) {
@@ -593,6 +594,14 @@
         setCanal(canalBox.checked ? 'prueba' : 'oficial');
         toast(canalBox.checked ? 'Listo: vas a recibir las versiones de prueba.' : 'Listo: solo las versiones de los lunes.');
         if (status) { status.textContent = 'Buscando…'; checkUpdate(true).then(paintStatus); }
+      });
+    }
+    var uso = document.querySelector('[data-cb-uso]');
+    if (uso) {
+      try { uso.checked = localStorage.getItem('cb.app.sinEstadisticas') !== '1'; } catch (e) { uso.checked = true; }
+      uso.addEventListener('change', function () {
+        try { if (uso.checked) localStorage.removeItem('cb.app.sinEstadisticas'); else localStorage.setItem('cb.app.sinEstadisticas', '1'); } catch (e) { /* nada */ }
+        toast(uso.checked ? 'Gracias: así sabemos qué mejorar.' : 'Listo: no se manda nada más.');
       });
     }
     document.querySelectorAll('[data-cb-backup-all]').forEach(function (b) { b.addEventListener('click', backupAll); });

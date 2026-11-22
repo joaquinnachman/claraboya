@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uso de las herramientas · Claraboya</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1F2426">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preload" href="../fonts/bebas.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../herramientas/assets/tools.css">
+<style>
+  body{ background:var(--ink); }
+  .uso{ width:min(100% - 32px, 860px); margin:0 auto; padding:24px 0 48px; display:grid; gap:18px; }
+  .uso [hidden]{ display:none !important; }
+  .uso__head{ display:flex; flex-wrap:wrap; align-items:end; justify-content:space-between; gap:12px; }
+  .uso h1{ margin:0; font:400 clamp(2rem, 7vw, 2.8rem)/1 var(--display); letter-spacing:.02em; }
+  .uso__nota{ margin:4px 0 0; color:var(--soft); font-size:.88rem; line-height:1.5; }
+  .mes{ display:flex; align-items:center; gap:6px; }
+  .mes button{ width:44px; height:44px; border:0; border-radius:6px; background:var(--ink-3); color:var(--paper); font:500 1.3rem/1 var(--body); cursor:pointer; }
+  .mes button:disabled{ opacity:.35; cursor:default; }
+  .mes output{ min-width:150px; text-align:center; font:400 1.5rem/1 var(--display); letter-spacing:.04em; }
+  .tiles{ display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; }
+  .tile{ background:var(--ink-2); border-radius:6px; padding:14px 16px; display:grid; gap:4px; }
+  .tile b{ font:400 2.4rem/1 var(--display); letter-spacing:.02em; font-variant-numeric:tabular-nums; }
+  .tile span{ font-size:.8rem; color:var(--soft); line-height:1.35; }
+  .tile em{ font-style:normal; font-weight:700; color:var(--paper); }
+  .caja{ background:var(--ink-2); border-radius:6px; padding:16px; display:grid; gap:12px; }
+  .caja h2{ margin:0; font:400 1.5rem/1 var(--display); letter-spacing:.03em; }
+  .barras{ list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+  .barra{ display:grid; grid-template-columns:minmax(110px, 34%) minmax(0, 1fr) 48px; align-items:center; gap:10px; font-size:.86rem; position:relative; border-radius:4px; padding:3px 2px; }
+  .barra:hover, .barra:focus-visible{ background:var(--ink-3); outline:none; }
+  .barra__n{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--soft); }
+  .barra__v{ text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
+  .barra__t{ height:14px; display:flex; align-items:center; }
+  .barra__t i{ display:block; height:14px; min-width:2px; border-radius:0 4px 4px 0; background:var(--rosa); }
+  .tip{ position:fixed; z-index:10; pointer-events:none; background:var(--paper); color:var(--ink); border-radius:4px; padding:8px 10px; font-size:.78rem; line-height:1.45; box-shadow:0 8px 24px rgba(0,0,0,.4); max-width:240px; }
+  .dias{ display:flex; align-items:flex-end; gap:2px; height:120px; border-bottom:1px solid var(--line); }
+  .dias span{ flex:1; position:relative; height:100%; display:flex; align-items:flex-end; }
+  .dias i{ display:block; width:100%; min-height:1px; border-radius:3px 3px 0 0; background:var(--rosa); }
+  .dias span:hover i, .dias span:focus-visible i{ background:#F1C9CA; }
+  .dias span:focus-visible{ outline:none; }
+  .dias__ejes{ display:flex; justify-content:space-between; font-size:.7rem; color:var(--faint); }
+  .vacio{ margin:0; color:var(--soft); }
+  #datos{ display:grid; gap:12px; }
+  @media (max-width: 560px){
+    .barra{ grid-template-columns:minmax(0, 1fr) auto; grid-template-areas:"n v" "t t"; row-gap:4px; padding:4px 2px; }
+    .barra__n{ grid-area:n; } .barra__v{ grid-area:v; } .barra__t{ grid-area:t; }
+  }
+  .uso__pie{ margin:0; font-size:.78rem; color:var(--faint); line-height:1.5; }
+</style>
+</head>
+<body>
+<main class="uso">
+  <div class="uso__head">
+    <div>
+      <h1>Uso de las herramientas</h1>
+      <p class="uso__nota">Cuántas veces se abrió cada una, en la web y en la app. Es anónimo: no hay nada de las personas, solo los totales.</p>
+    </div>
+    <div class="mes"><button type="button" id="antes" aria-label="Mes anterior">‹</button><output id="mesTxt" aria-live="polite">…</output><button type="button" id="despues" aria-label="Mes siguiente">›</button></div>
+  </div>
+  <p class="vacio" id="estado">Cargando…</p>
+  <div id="datos" hidden>
+    <div class="tiles">
+      <div class="tile"><b id="tTotal">0</b><span>veces se abrió una herramienta</span></div>
+      <div class="tile"><b id="tApp">0</b><span>de esas, desde la app (Android, iPhone o instalada)</span></div>
+      <div class="tile"><b id="tChat">0</b><span>abrieron el chat con «Grabala en Claraboya» (<em id="tAudio">0</em> mandaron el audio)</span></div>
+      <div class="tile"><b id="tTurno">0</b><span>tocaron «Reservar» en los lugares libres de la semana</span></div>
+    </div>
+    <section class="caja" aria-labelledby="hT"><h2 id="hT">Por herramienta</h2><ol class="barras" id="herr"></ol></section>
+    <section class="caja" aria-labelledby="dT"><h2 id="dT">Por día</h2><div class="dias" id="dias"></div><div class="dias__ejes"><span>1</span><span id="ultimoDia"></span></div></section>
+    <section class="caja" aria-labelledby="pT"><h2 id="pT">Desde dónde</h2><ol class="barras" id="plat"></ol></section>
+  </div>
+  <p class="uso__pie">Los números se actualizan cada 5 minutos. Los que apagaron «Mandar estadísticas anónimas» en la app no cuentan, y tampoco las pruebas automáticas.</p>
+</main>
+<div class="tip" id="tip" hidden></div>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var NOMBRES = { inicio: 'Inicio de la app', estudio: 'Estudio (app)', herramientas: 'Selector de herramientas', 'matriz-de-acordes': 'Matriz de acordes', 'brujula-armonica': 'Brújula armónica',
+    'hoja-de-ruta': 'Hoja de ruta', 'rider-tecnico': 'Rider técnico', 'armador-de-setlists': 'Armador de setlists', 'calentamiento-vocal': 'Calentamiento vocal',
+    afinador: 'Afinador', metronomo: 'Metrónomo', 'buscador-de-bpm': 'Buscador de BPM', piano: 'Piano', 'grabador-de-ideas': 'Grabador de ideas', 'entrenamiento-de-oido': 'Entrenamiento de oído' };
+  var PLAT = { web: 'Web', android: 'App Android', iphone: 'App iPhone', instalada: 'Web instalada' };
+  var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  var hoy = new Date(), actual = hoy.getFullYear() * 12 + hoy.getMonth(), mes = actual;
+  function clave(m) { return Math.floor(m / 12) + '-' + ('0' + (m % 12 + 1)).slice(-2); }
+  function barras(el, filas, tip) {
+    var max = filas.reduce(function (a, f) { return Math.max(a, f.v); }, 0) || 1;
+    el.innerHTML = filas.map(function (f, i) {
+      return '<li class="barra" tabindex="0" data-i="' + i + '"><span class="barra__n">' + esc(f.n) + '</span><span class="barra__t"><i style="width:' + (f.v / max * 100).toFixed(1) + '%"></i></span><span class="barra__v">' + f.v + '</span></li>';
+    }).join('') || '<li class="vacio">Todavía nada este mes.</li>';
+    el._tips = filas.map(tip || function () { return ''; });
+  }
+  function desglose(h) { return Object.keys(PLAT).filter(function (k) { return h[k]; }).map(function (k) { return PLAT[k] + ': ' + h[k]; }).join('<br>'); }
+  function pintar(t) {
+    var acc = t.acciones || {}, app = (t.plataformas.android || 0) + (t.plataformas.iphone || 0) + (t.plataformas.instalada || 0);
+    $('tTotal').textContent = t.total; $('tApp').textContent = app;
+    $('tChat').textContent = (acc['grabala-chat'] || {}).total || 0;
+    $('tAudio').textContent = (acc['grabala-audio'] || {}).total || 0;
+    $('tTurno').textContent = (acc.reservar || {}).total || 0;
+    var herr = Object.keys(t.abrir).map(function (k) { return { n: NOMBRES[k] || k, v: t.abrir[k].total, d: t.abrir[k] }; }).sort(function (a, b) { return b.v - a.v; });
+    barras($('herr'), herr, function (f) { return '<b>' + esc(f.n) + '</b><br>' + desglose(f.d); });
+    barras($('plat'), Object.keys(PLAT).map(function (k) { return { n: PLAT[k], v: t.plataformas[k] || 0 }; }).sort(function (a, b) { return b.v - a.v; }));
+    var y = Math.floor(mes / 12), m = mes % 12, nd = new Date(y, m + 1, 0).getDate(), max = 1, h = '';
+    for (var d = 1; d <= nd; d++) max = Math.max(max, t.dias[('0' + d).slice(-2)] || 0);
+    for (d = 1; d <= nd; d++) { var v = t.dias[('0' + d).slice(-2)] || 0; h += '<span tabindex="0" data-dia="' + d + '" data-v="' + v + '"><i style="height:' + (v / max * 100).toFixed(1) + '%"></i></span>'; }
+    $('dias').innerHTML = h; $('ultimoDia').textContent = nd;
+    $('datos').hidden = false;
+    $('estado').hidden = !!t.total; $('estado').textContent = t.total ? '' : 'Todavía no hay aperturas en este mes.';
+    $('datos').setAttribute('aria-busy', 'false');
+  }
+  function cargar() {
+    $('mesTxt').textContent = MESES[mes % 12] + ' ' + Math.floor(mes / 12);
+    $('despues').disabled = mes >= actual;
+    $('estado').hidden = false; $('estado').textContent = 'Cargando…';
+    fetch('/api/uso?mes=' + clave(mes)).then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+      .then(pintar).catch(function () { $('datos').hidden = true; $('estado').textContent = 'No se pudieron traer los números. Probá de nuevo en un rato.'; });
+  }
+  $('antes').addEventListener('click', function () { mes--; cargar(); });
+  $('despues').addEventListener('click', function () { if (mes < actual) { mes++; cargar(); } });
+  // al pasar por encima (o con el teclado): el detalle
+  var tip = $('tip');
+  function mostrar(e, html) {
+    if (!html) { tip.hidden = true; return; }
+    tip.innerHTML = html; tip.hidden = false;
+    var r = e.target.getBoundingClientRect(), x = e.clientX || (r.left + r.width / 2), y = e.clientY || r.top;
+    tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, Math.max(8, x + 12)) + 'px';
+    tip.style.top = Math.max(8, y - tip.offsetHeight - 10) + 'px';
+  }
+  function enBarra(e) { var li = e.target.closest('.barra'), ol = li && li.parentNode; mostrar(e, li && ol._tips ? ol._tips[+li.getAttribute('data-i')] : ''); }
+  function enDia(e) { var s = e.target.closest('[data-dia]'); mostrar(e, s ? '<b>' + s.getAttribute('data-dia') + ' de ' + MESES[mes % 12] + '</b><br>' + s.getAttribute('data-v') + ' aperturas' : ''); }
+  ['herr', 'plat'].forEach(function (id) { $(id).addEventListener('pointermove', enBarra); $(id).addEventListener('focusin', enBarra); $(id).addEventListener('pointerleave', function () { tip.hidden = true; }); $(id).addEventListener('focusout', function () { tip.hidden = true; }); });
+  $('dias').addEventListener('pointermove', enDia); $('dias').addEventListener('focusin', enDia);
+  $('dias').addEventListener('pointerleave', function () { tip.hidden = true; }); $('dias').addEventListener('focusout', function () { tip.hidden = true; });
+  cargar();
+})();
+</script>
+</body>
+</html>

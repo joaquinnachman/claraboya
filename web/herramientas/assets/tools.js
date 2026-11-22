@@ -13,6 +13,34 @@
     if (navigator.audioSession && TOOL !== 'afinador' && TOOL !== 'herramientas') navigator.audioSession.type = 'playback';
   } catch (e) { /* nada */ }
 
+  /* ---------- contador anónimo de uso ----------
+     Solo cuenta qué herramienta se abre (y un par de acciones, como «Grabala en Claraboya») y desde
+     qué plataforma: nada de la persona, ni identificadores, ni cookies. Lo recibe /api/uso
+     (netlify/functions/uso.mjs). Se apaga en Estudio → «Mandar estadísticas anónimas». */
+  var USO_OFF = 'cb.app.sinEstadisticas';
+  function usoPlataforma() {
+    var d = document.documentElement, n = navigator, ios = /iP(hone|ad|od)/.test(n.userAgent) || (/Mac/.test(n.userAgent) && n.maxTouchPoints > 1);
+    if (window.Capacitor || d.hasAttribute('data-native')) return 'android';
+    var instalada = false;
+    try { instalada = matchMedia('(display-mode: standalone)').matches || n.standalone === true; } catch (e) { /* nada */ }
+    return instalada ? (ios ? 'iphone' : 'instalada') : 'web';
+  }
+  function usoEnviar(datos) {
+    try {
+      if (localStorage.getItem(USO_OFF) === '1') return;
+      if (navigator.webdriver) return;   // pruebas automáticas: no cuentan
+      var pl = usoPlataforma(), local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+      if (local && pl !== 'android') return;   // la APK se sirve desde https://localhost; en la compu de desarrollo, no
+      datos.p = pl;
+      var url = pl === 'android' ? 'https://claraboyaestudio.netlify.app/api/uso' : '/api/uso', cuerpo = JSON.stringify(datos);
+      if (navigator.sendBeacon && navigator.sendBeacon(url, new Blob([cuerpo], { type: 'text/plain' }))) return;
+      if (window.fetch) fetch(url, { method: 'POST', body: cuerpo, keepalive: true, mode: 'no-cors', headers: { 'Content-Type': 'text/plain' } }).catch(function () {});
+    } catch (e) { /* nada: contar nunca puede romper nada */ }
+  }
+  window.CBUso = function (accion) { usoEnviar({ e: 'accion', a: String(accion || '') }); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { usoEnviar({ e: 'abrir', h: TOOL }); });
+  else usoEnviar({ e: 'abrir', h: TOOL });
+
   /* ---------- almacenamiento ---------- */
   var hasLS = (function () {
     try { var k = '__cb_test'; localStorage.setItem(k, '1'); localStorage.removeItem(k); return true; }

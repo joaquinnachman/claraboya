@@ -1,0 +1,8 @@
+{
+  "name": "claraboya-web",
+  "private": true,
+  "description": "Web de Claraboya Estudio. La única dependencia es la del contador anónimo de uso (netlify/functions/uso.mjs).",
+  "dependencies": {
+    "@netlify/blobs": "8.2.0"
+  }
+}

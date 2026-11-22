@@ -6,3 +6,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+# El contador anónimo de uso (/api/uso) es una función de Netlify que guarda en Netlify Blobs.
+[functions]
+  directory = "netlify/functions"

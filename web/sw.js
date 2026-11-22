@@ -101,6 +101,7 @@ self.addEventListener('fetch', function (event) {
   var url = new URL(request.url);
   if (url.origin !== self.location.origin) return;          // Deezer, iTunes, YouTube, Spotify: directo
   if (url.pathname.indexOf('/descargas/') === 0) return;   // las .apk no se guardan
+  if (url.pathname.indexOf('/api/') === 0 || url.pathname.indexOf('/uso/') === 0) return;   // los números, siempre frescos
   if (url.pathname === '/sw.js') return;
 
   event.respondWith(isStatic(url) ? cacheFirst(request) : networkFirst(request));
