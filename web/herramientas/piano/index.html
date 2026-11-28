@@ -437,10 +437,29 @@
   }
   function freq(m) { return 440 * Math.pow(2, (m - 69) / 12); }
 
+  /* Cuántas notas pueden sonar juntas. Tocando rápido (y más con el pedal) se juntaban decenas de voces
+     y en Android el audio se cortaba un par de segundos. Pasado el tope se apaga la más vieja, y una tecla
+     que se vuelve a tocar apaga su sonido anterior, como en un piano de verdad. */
+  var MAX_VOCES = (window.matchMedia && matchMedia('(pointer: coarse)').matches) ? 20 : 32;
+  var activas = [];
+  function hacerLugar(m, t) {
+    activas = activas.filter(function (v) { return !v.apagada && v.fin > ctx.currentTime; });
+    activas.forEach(function (v) { if (v.m === m && !v.down) v.apagar(t, 0.03); });
+    var vivas = activas.filter(function (v) { return !v.apagada; });
+    while (vivas.length >= MAX_VOCES) {
+      var libre = null;
+      for (var i = 0; i < vivas.length; i++) if (!vivas[i].down) { libre = vivas[i]; break; }
+      var v = libre || vivas[0];
+      v.apagar(t, 0.015);
+      vivas.splice(vivas.indexOf(v), 1);
+    }
+  }
+
   function makeVoice(m, vel, t) {
+    hacerLugar(m, t);
     var f = freq(m);
     var out = ctx.createGain(); out.gain.value = 1; out.connect(master);
-    var oscs = [];
+    var oscs = [], nodos = [out];   // todo lo de esta nota, para soltarlo apenas termina
     var level = 0.2 * vel * Math.max(0.6, Math.min(1.35, Math.pow(261.6 / f, 0.2)));
     var T = Math.max(0.7, Math.min(7.5, 5.5 * Math.pow(261.6 / f, 0.6)));   // las graves duran más
     var end;
@@ -448,8 +467,8 @@
     if (S.sound === 'organ') {
       var o = ctx.createOscillator(); o.setPeriodicWave(W.organ); o.frequency.value = f;
       var g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(level * 0.62, t + 0.012);
-      o.connect(g); g.connect(out); oscs.push(o);
-      click(out, t, 0.012 * vel, 3000);
+      o.connect(g); g.connect(out); oscs.push(o); nodos.push(g);
+      click(out, t, 0.012 * vel, 3000, nodos);
       end = t + 600;   // suena hasta que se suelta
     } else if (S.sound === 'epiano') {
       var car = ctx.createOscillator(); car.type = 'sine'; car.frequency.value = f;
@@ -461,10 +480,11 @@
       var tg = ctx.createGain(); tg.gain.setValueAtTime(f * 0.7 * vel, t); tg.gain.setTargetAtTime(0, t, 0.03);
       tine.connect(tg); tg.connect(car.frequency);
       var ga = ctx.createGain(); ga.gain.setValueAtTime(0, t); ga.gain.linearRampToValueAtTime(level * 1.15, t + 0.004); ga.gain.setTargetAtTime(0.0001, t + 0.004, T * 0.32);
-      car.connect(ga); ga.connect(out); oscs.push(car, mod, tine);
+      car.connect(ga); ga.connect(out); oscs.push(car, mod, tine); nodos.push(mg, tg, ga);
       end = t + T * 1.8;
     } else {
       var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.4;
+      try { lp.frequency.automationRate = 'k-rate'; } catch (e) { /* navegadores viejos: igual anda */ }   // el brillo cambia de a bloques: mucho menos trabajo
       lp.frequency.setValueAtTime(Math.min(16000, f * 12 + 2500 * vel), t);
       lp.frequency.setTargetAtTime(Math.min(9000, f * 3.2 + 400), t + 0.01, Math.min(0.6, T * 0.12));
       var a = ctx.createOscillator(); a.setPeriodicWave(W.bright); a.frequency.value = f;
@@ -476,32 +496,45 @@
       gB.gain.setValueAtTime(0, t); gB.gain.linearRampToValueAtTime(level * 0.85, t + 0.006);
       gB.gain.setTargetAtTime(0.0001, t + 0.006, T * 0.3);
       a.connect(gA); b.connect(gB); gA.connect(lp); gB.connect(lp); lp.connect(out);
-      oscs.push(a, b);
-      click(out, t, 0.05 * vel, Math.max(1200, Math.min(4500, f * 4)));
+      oscs.push(a, b); nodos.push(lp, gA, gB);
+      click(out, t, 0.05 * vel, Math.max(1200, Math.min(4500, f * 4)), nodos);
       end = t + T * 1.6;
     }
+    nodos = nodos.concat(oscs);
     oscs.forEach(function (o) { o.start(t); o.stop(end); });
+    function parar(at) { oscs.forEach(function (o) { try { o.stop(at); } catch (e) {} }); v.fin = Math.min(v.fin, at); }
     var v = {
-      m: m, done: false,
-      kill: function () {
-        var now = ctx.currentTime; v.done = true;
-        out.gain.cancelScheduledValues(now); out.gain.setTargetAtTime(0, now, 0.02);
-        oscs.forEach(function (o) { try { o.stop(now + 0.2); } catch (e) {} });
+      m: m, done: false, down: false, apagada: false, fin: end,
+      kill: function () { v.apagar(ctx.currentTime, 0.02); },
+      // apagar rápido (para hacer lugar o al cortar): sin clic, en unos milisegundos
+      apagar: function (at, tc) {
+        if (v.apagada) return; v.apagada = v.done = true;
+        at = Math.max(at || 0, ctx.currentTime);
+        out.gain.cancelScheduledValues(at); out.gain.setTargetAtTime(0, at, tc);
+        parar(at + tc * 8);
       },
       release: function (at) {
         if (v.done) return; v.done = true;
         at = Math.max(at || 0, ctx.currentTime);
         out.gain.setTargetAtTime(0, at, S.sound === 'organ' ? 0.025 : 0.07);
-        oscs.forEach(function (o) { try { o.stop(at + 0.5); } catch (e) {} });
+        parar(at + 0.5);
       }
     };
+    // cuando la nota termina, se desarma: si no, los pedazos quedan colgados del audio y lo van trabando
+    oscs[0].onended = function () {
+      v.apagada = true;
+      nodos.forEach(function (n) { try { n.disconnect(); } catch (e) { /* ya estaba suelto */ } });
+      var i = activas.indexOf(v); if (i >= 0) activas.splice(i, 1);
+    };
+    activas.push(v);
     return v;
   }
-  function click(dest, t, gain, fc) {
+  function click(dest, t, gain, fc, nodos) {
     var src = ctx.createBufferSource(); src.buffer = noise;
     var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = fc; bp.Q.value = 1.2;
     var g = ctx.createGain(); g.gain.setValueAtTime(gain, t); g.gain.setTargetAtTime(0, t, 0.012);
     src.connect(bp); bp.connect(g); g.connect(dest); src.start(t); src.stop(t + 0.06);
+    if (nodos) nodos.push(src, bp, g);
   }
 
   /* ---------- tocar y soltar (con pedal) ---------- */
@@ -512,12 +545,14 @@
   function press(m, vel, fromUser) {
     var c = audio(); if (!c) return null;
     var v = makeVoice(m, vel == null ? 0.8 : vel, c.currentTime + 0.003);
+    v.down = true;
     downCount[m] = (downCount[m] || 0) + 1; paintKey(m);
     if (fromUser) heard(m);
     return v;
   }
   function lift(v) {
     if (!v) return;
+    v.down = false;
     downCount[v.m] = Math.max(0, (downCount[v.m] || 0) - 1); paintKey(v.m);
     if (sustainOn()) held.push(v); else v.release();
   }

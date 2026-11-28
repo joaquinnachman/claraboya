@@ -294,6 +294,7 @@
     var T = Math.max(0.7, Math.min(7.5, 5.5 * Math.pow(261.6 / f, 0.6)));
     var out = ctx.createGain(); out.gain.value = 1; out.connect(master);
     var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.4;
+    try { lp.frequency.automationRate = 'k-rate'; } catch (e) { /* navegadores viejos: igual anda */ }
     lp.frequency.setValueAtTime(Math.min(16000, f * 12 + 2500 * v), t);
     lp.frequency.setTargetAtTime(Math.min(9000, f * 3.2 + 400), t + 0.01, Math.min(0.6, T * 0.12));
     var a = ctx.createOscillator(); a.setPeriodicWave(W.bright); a.frequency.value = f;
@@ -313,6 +314,11 @@
     out.gain.setValueAtTime(1, fin); out.gain.setTargetAtTime(0, fin, 0.08);
     a.start(t); b.start(t); a.stop(fin + 0.6); b.stop(fin + 0.6);
     var voz = { g: out, o: [a, b] }; sonando.push(voz);
+    // al terminar se desarma la nota, para que no queden pedazos colgados del audio (en Android lo traban)
+    a.onended = function () {
+      [out, lp, a, b, gA, gB, src, bp, gc].forEach(function (n) { try { n.disconnect(); } catch (e) { /* ya estaba suelto */ } });
+      var i = sonando.indexOf(voz); if (i >= 0) sonando.splice(i, 1);
+    };
     if (sonando.length > 40) sonando.shift();
     return voz;
   }
